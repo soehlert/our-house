@@ -1,0 +1,24 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="stats">
+    <div class="stat-card">
+        <h3>Appliances</h3>
+        <p>{{ appliance_count }} tracked</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Rooms</h3>
+        <p>{{ room_count }} defined</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Circuits</h3>
+        <p>{{ circuit_count }} mapped</p>
+    </div>
+</div>
+
+<p><a href="/admin/">Go to Admin Interface</a> to start adding your house data!</p>
+{% endblock %}

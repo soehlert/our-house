@@ -1,0 +1,13 @@
+services:
+  django:
+    image: ghcr.io/soehlert/our-house:latest
+    ports:
+      - "8021:8000"
+    volumes:
+      - ./db.sqlite3:/app/db.sqlite3
+      - ./media:/app/media
+    restart: unless-stopped
+
+volumes:
+  house_tracker_db:
+  house_tracker_media:
