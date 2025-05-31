@@ -15,9 +15,10 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+env_file = BASE_DIR / '.env'
+if env_file.exists():
+    from dotenv import load_dotenv
+    load_dotenv(env_file)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
@@ -71,7 +72,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'housetracker.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -81,7 +81,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'data' / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

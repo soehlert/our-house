@@ -24,19 +24,19 @@
             {% if appliance.image %}
                 <img src="{{ appliance.image.url }}" alt="{{ appliance.name }}" class="w-full h-32 object-cover rounded-md mb-3">
             {% endif %}
-            <h3 class="font-semibold text-gray-900 mb-2">{{ appliance.name }}</h3>
-            <div class="space-y-1 text-sm text-gray-600 mb-3">
-                <p><span class="font-medium">Brand:</span> {{ appliance.brand|default:"Not specified" }}</p>
-                <p><span class="font-medium">Model:</span> {{ appliance.model_number|default:"Not specified" }}</p>
-                <p><span class="font-medium">Room:</span> {{ appliance.room|default:"Not assigned" }}</p>
-            </div>
+            <h3 class="font-semibold text-gray-900 mb-2">{{ appliance.name  | title}}</h3>
             <div class="flex flex-wrap gap-1 mb-3">
                 {% if not appliance.owners_manual %}
                     <span class="inline-block bg-red-500 text-white text-xs px-2 py-1 rounded">Missing Manual</span>
                 {% endif %}
             </div>
+            <div class="space-y-1 text-sm text-gray-600 mb-3">
+                <p><span class="font-medium">Brand:</span> {{ appliance.brand|default:"Not specified" }}</p>
+                <p><span class="font-medium">Model:</span> {{ appliance.model_number|default:"Not specified" }}</p>
+                <p><span class="font-medium">Room:</span> {{ appliance.room|default:"Not assigned" }}</p>
+            </div>
             <a href="{% url 'tracker:appliance_update' appliance.pk %}"
-               class="inline-block bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-500 transition-colors">
+               class="inline-block bg-blue-500 text-white text-sm px-3 py-1 mt-4 rounded hover:bg-blue-600 transition-colors">
                 Edit
             </a>
         </div>

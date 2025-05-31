@@ -28,52 +28,54 @@
                         <span class="inline-block bg-blue-500 text-white text-xs px-2 py-1 rounded">{{ item.model_name }}</span>
                     </div>
                 </div>
-                {% if item.model_name == 'Appliance' %}
-                    <a href="{% url 'tracker:appliance_detail' item.id %}"
-                       class="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-500 transition-colors mr-2">
-                        View
-                    </a>
-                    <a href="{% url 'tracker:appliance_update' item.id %}"
-                       class="bg-gray-500 text-white text-sm px-3 py-1 rounded hover:bg-gray-600 transition-colors">
-                        Edit
-                    </a>
-                {% elif item.model_name == 'Room' %}
-                    <a href="{% url 'tracker:room_detail' item.id %}"
-                       class="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-500 transition-colors mr-2">
-                        View
-                    </a>
-                    <a href="{% url 'tracker:room_update' item.id %}"
-                       class="bg-gray-500 text-white text-sm px-3 py-1 rounded hover:bg-gray-600 transition-colors">
-                        Edit
-                    </a>
-                {% elif item.model_name == 'Circuit' %}
-                    <a href="{% url 'tracker:circuit_detail' item.id %}"
-                       class="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-500 transition-colors mr-2">
-                        View
-                    </a>
-                    <a href="{% url 'tracker:circuit_update' item.id %}"
-                       class="bg-gray-500 text-white text-sm px-3 py-1 rounded hover:bg-gray-600 transition-colors">
-                        Edit
-                    </a>
-                {% elif item.model_name == 'Outlet' %}
-                    <a href="{% url 'tracker:outlet_detail' item.id %}"
-                       class="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-500 transition-colors mr-2">
-                        View
-                    </a>
-                    <a href="{% url 'tracker:outlet_update' item.id %}"
-                       class="bg-gray-500 text-white text-sm px-3 py-1 rounded hover:bg-gray-600 transition-colors">
-                        Edit
-                    </a>
-                {% elif item.model_name == 'PaintColor' %}
-                    <a href="{% url 'tracker:paint_color_detail' item.id %}"
-                       class="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-500 transition-colors mr-2">
-                        View
-                    </a>
-                    <a href="{% url 'tracker:paint_color_update' item.id %}"
-                       class="bg-gray-500 text-white text-sm px-3 py-1 rounded hover:bg-gray-600 transition-colors">
-                        Edit
-                    </a>
-                {% endif %}
+                <div class="flex space-x-2">
+                    {% if item.model_name == 'Appliance' %}
+                        <a href="{% url 'tracker:appliance_detail' item.id %}"
+                           class="px-3 py-1.5 text-xs font-medium bg-green-500 text-white rounded-md hover:bg-green-700">
+                            View
+                        </a>
+                        <a href="{% url 'tracker:appliance_update' item.id %}"
+                           class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                            Edit
+                        </a>
+                    {% elif item.model_name == 'Room' %}
+                        <a href="{% url 'tracker:room_detail' item.id %}"
+                           class="px-3 py-1.5 text-xs font-medium bg-green-500 text-white rounded-md hover:bg-green-700">
+                            View
+                        </a>
+                        <a href="{% url 'tracker:room_update' item.id %}"
+                           class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                            Edit
+                        </a>
+                    {% elif item.model_name == 'Circuit' %}
+                        <a href="{% url 'tracker:circuit_detail' item.id %}"
+                           class="px-3 py-1.5 text-xs font-medium bg-green-500 text-white rounded-md hover:bg-green-700">
+                            View
+                        </a>
+                        <a href="{% url 'tracker:circuit_update' item.id %}"
+                           class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                            Edit
+                        </a>
+                    {% elif item.model_name == 'Outlet' %}
+                        <a href="{% url 'tracker:outlet_detail' item.id %}"
+                           class="px-3 py-1.5 text-xs font-medium bg-green-500 text-white rounded-md hover:bg-green-700">
+                            View
+                        </a>
+                        <a href="{% url 'tracker:outlet_update' item.id %}"
+                           class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                            Edit
+                        </a>
+                    {% elif item.model_name == 'PaintColor' %}
+                        <a href="{% url 'tracker:paint_color_detail' item.id %}"
+                           class="px-3 py-1.5 text-xs font-medium bg-green-500 text-white rounded-md hover:bg-green-700">
+                            View
+                        </a>
+                        <a href="{% url 'tracker:paint_color_update' item.id %}"
+                           class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                            Edit
+                        </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
         {% endfor %}

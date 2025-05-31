@@ -10,7 +10,7 @@
                 <p class="mt-1 text-sm text-gray-600">{% block list_description %}Manage your items{% endblock %}</p>
             </div>
             <a href="{% block create_url %}#{% endblock %}"
-               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-500 focus:outline-none transition-colors">
+               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-colors">
                 <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
@@ -18,6 +18,7 @@
             </a>
         </div>
     </div>
+
     <!-- Search/Filter Bar -->
     {% block search_bar %}
     <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
@@ -34,10 +35,58 @@
         </div>
     </div>
     {% endblock %}
+
     <!-- Content -->
     <div class="px-6 py-4 bg-white">
         {% block list_content %}
-        <p class="text-gray-500">No items found.</p>
+        {% if object_list %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for item in object_list %}
+                    <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                        <!-- Optional image section -->
+                        {% block card_image %}{% endblock %}
+
+                        <!-- Content section -->
+                        <div class="p-4">
+                            <!-- Title -->
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">
+                                {% block card_title %}{{ item }}{% endblock %}
+                            </h3>
+
+                            <!-- Optional badge -->
+                            {% block card_badge %}{% endblock %}
+
+                            <!-- Card content -->
+                            {% block card_content %}{% endblock %}
+
+                            <!-- Action buttons -->
+                            <div class="flex space-x-2 mt-3">
+                                <a href="{% block item_detail_url %}#{% endblock %}"
+                                   class="px-3 py-1.5 text-xs font-medium bg-green-500 text-white text-sm px-3 py-1 rounded rounded-md hover:bg-green-700">
+                                    View
+                                </a>
+                                <a href="{% block item_edit_url %}#{% endblock %}"
+                                   class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                                    Edit
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            {% block empty_state %}
+            <div class="text-center py-12">
+                {% block empty_icon %}
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-8V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v1M7 6V4a1 1 0 011-1h4a1 1 0 011 1v2"></path>
+                </svg>
+                {% endblock %}
+                <h3 class="mt-2 text-sm font-medium text-gray-900">{% block empty_title %}No items{% endblock %}</h3>
+                <p class="mt-1 text-sm text-gray-500">{% block empty_description %}Get started by creating a new item.{% endblock %}</p>
+            </div>
+            {% endblock %}
+        {% endif %}
         {% endblock %}
     </div>
 </div>

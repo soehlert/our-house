@@ -2,6 +2,7 @@ from pydantic import BaseModel, HttpUrl, field_validator, Field
 from django.core.exceptions import ValidationError
 
 
+# noinspection PyMethodParameters
 class PurchaseLocationValidator(BaseModel):
     """Pydantic model for validating PurchaseLocation data."""
     name: str = Field(..., min_length=1, max_length=100)
@@ -24,4 +25,5 @@ class PurchaseLocationValidator(BaseModel):
             raise ValueError('Name cannot be a placeholder value')
         return v.title()
 
+    # ignore any fields from the form that aren't in the model
     model_config = {'extra': 'ignore'}

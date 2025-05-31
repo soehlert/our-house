@@ -79,6 +79,14 @@ class Appliance(models.Model):
         FIFTY_AMP = "50A", "50A"
         SIXTY_AMP = "60A", "60A"
 
+    class Volts(models.TextChoices):
+        ONETWENTY = "120V", "120V"
+        TWOFORTY = "240V", "240V"
+
+    class PoleType(models.TextChoices):
+        SINGLE = "single", "Single Pole"
+        DOUBLE = "double", "Double Pole"
+
     name = models.CharField(max_length=100)
     brand = models.CharField(max_length=100, blank=True)
     model_number = models.CharField(max_length=100, blank=True)
@@ -112,7 +120,9 @@ class Appliance(models.Model):
     warranty_expires = models.DateField(null=True, blank=True)
 
     # Technical
-    power_demands = models.CharField(max_length=5, choices=BreakerSize.choices)
+    power_demands = models.CharField(max_length=5, null=True, blank=True, choices=BreakerSize.choices)
+    pole_type = models.CharField(max_length=10, null=True, blank=True, choices=PoleType.choices)
+    voltage = models.CharField(max_length=10, null=True, blank=True, choices=Volts.choices)
     room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True, blank=True)
 
     # Notes
@@ -138,7 +148,13 @@ class PaintColor(models.Model):
     paint_base = models.CharField(max_length=100, blank=True)
     finish_type = models.CharField(max_length=50, blank=True)
     purchase_date = models.DateField(null=True, blank=True)
-    purchase_location = models.CharField(max_length=100, blank=True)
+    purchase_location = models.ForeignKey(
+        PurchaseLocation,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='paint_colors'
+    )
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -150,7 +166,7 @@ class PaintColor(models.Model):
         room_names = ", ".join(room.name for room in self.rooms.all()[:3])
         if self.rooms.count() > 3:
             room_names += "..."
-        return f"{self.paint_color} ({self.paint_code}) - {room_names}"
+        return f"{self.paint_color} - {room_names}"
 
 
 class CircuitDiagram(models.Model):
@@ -182,7 +198,7 @@ class Circuit(models.Model):
         SINGLE = "single", "Single Pole"
         DOUBLE = "double", "Double Pole"
 
-    rooms = models.ManyToManyField(Room, blank=True, related_name='circuits')
+    rooms = models.ManyToManyField(Room, related_name='circuits')
     circuit_number = models.IntegerField()
     description = models.CharField(max_length=255)
 
@@ -191,7 +207,7 @@ class Circuit(models.Model):
     afci = models.BooleanField(default=False, verbose_name="AFCI Protected")
     cafi = models.BooleanField(default=False, verbose_name="CAFI Protected")
     pole_type = models.CharField(max_length=10, choices=PoleType.choices)
-    voltage = models.CharField(max_length=10, blank=True, choices=Volts.choices)
+    voltage = models.CharField(max_length=10, choices=Volts.choices)
 
     diagrams = models.ManyToManyField(CircuitDiagram, blank=True, related_name='circuits')
     notes = models.TextField(blank=True)
@@ -205,3 +221,27 @@ class Circuit(models.Model):
 
     def __str__(self) -> str:
         return f"Circuit {self.circuit_number} - {self.description}"
+
+
+class Outlet(models.Model):
+    """Define outlets.
+
+    Note: Outlet is the electrician term for any device in the circuit where power goes out. I realize that sounds real
+    'akshually' but it's the best description I got here.
+    """
+    class DeviceType(models.TextChoices):
+        RECEPTACLE = "RECEPTACLE", "Receptacle"
+        SWITCH = "SWITCH", "Switch"
+        LIGHT = "LIGHT", "Light"
+
+    device_type = models.CharField(max_length=50, choices=DeviceType.choices)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='outlets')
+    circuit = models.ForeignKey(Circuit, on_delete=models.CASCADE, related_name='outlets')
+    location_description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['room__name', 'device_type']
+
+    def __str__(self) -> str:
+        return f"{self.get_device_type_display()} in {self.room.name} - Circuit {self.circuit.circuit_number}"

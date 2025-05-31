@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Room, Appliance, PaintColor, Circuit, CircuitDiagram, PurchaseLocation
+from .models import Appliance, Circuit, CircuitDiagram, Outlet, PaintColor, PurchaseLocation, Room
 
 
 @admin.register(Room)
@@ -26,14 +26,14 @@ class ApplianceAdmin(admin.ModelAdmin):
 @admin.register(PaintColor)
 class PaintColorAdmin(admin.ModelAdmin):
     list_display = ['paint_color', 'paint_code', 'paint_brand', 'purchase_date']
-    list_filter = ['paint_brand', 'purchase_date']
+    list_filter = ['paint_brand', 'paint_base', 'finish_type']
     search_fields = ['paint_color', 'paint_code']
     filter_horizontal = ['rooms']
 
 
 @admin.register(Circuit)
 class CircuitAdmin(admin.ModelAdmin):
-    list_display = ['circuit_number', 'description', 'breaker_size', 'pole_type', 'gfci', 'afci']
+    list_display = ['circuit_number', 'description', 'breaker_size', 'pole_type', 'gfci', 'afci', 'cafi']
     list_filter = ['breaker_size', 'pole_type', 'gfci', 'afci', 'cafi']
     search_fields = ['circuit_number', 'description']
     filter_horizontal = ['rooms', 'diagrams']
@@ -43,3 +43,10 @@ class CircuitAdmin(admin.ModelAdmin):
 class CircuitDiagramAdmin(admin.ModelAdmin):
     list_display = ['description', 'created_at']
     readonly_fields = ['created_at']
+
+
+@admin.register(Outlet)
+class OutletAdmin(admin.ModelAdmin):
+    list_display = ['device_type', 'room', 'circuit', 'location_description']
+    list_filter = ['device_type', 'room', 'circuit']
+    search_fields = ['location_description', 'room__name', 'circuit__description']

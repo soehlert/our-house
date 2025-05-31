@@ -3,40 +3,60 @@
 {% block list_title %}Appliances{% endblock %}
 {% block list_description %}Manage appliances in your house{% endblock %}
 {% block create_url %}{% url 'tracker:appliance_create' %}{% endblock %}
-{% block create_button_text %}Add appliance{% endblock %}
+{% block create_button_text %}Add Appliance{% endblock %}
 
-{% block list_content %}
-{% if appliances %}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {% for appliance in appliances %}
-            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 class="text-lg font-medium text-gray-900">
-                    <a href="{% url 'tracker:appliance_detail' appliance.pk %}" class="hover:text-primary">
-                        {{ appliance.name }}
-                    </a>
-                </h3>
-                <div class="mt-3 flex space-x-2">
-                    <a href="{% url 'tracker:appliance_detail' appliance.pk %}"
-                       class="text-sm text-primary hover:text-blue-700">View</a>
-                    <a href="{% url 'tracker:appliance_update' appliance.pk %}"
-                       class="text-sm text-gray-600 hover:text-gray-800">Edit</a>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-{% else %}
-    <div class="text-center py-12">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z"></path>
+{% block card_image %}
+<div class="h-32 bg-gray-100 flex items-center justify-center">
+    {% if item.image %}
+        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="h-full w-full object-cover">
+    {% else %}
+        <svg class="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
         </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900">No appliances</h3>
-        <p class="mt-1 text-sm text-gray-500">Get started by creating a new appliance.</p>
-        <div class="mt-6">
-            <a href="{% url 'tracker:appliance_create' %}"
-               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700">
-                Add appliance
-            </a>
-        </div>
-    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block card_title %}{{ item.name }}{% endblock %}
+
+{% block card_badge %}
+{% if item.appliance_type %}
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+    {% if item.appliance_type == 'gas' %}bg-orange-100 text-orange-800
+    {% elif item.appliance_type == 'electric' %}bg-blue-100 text-blue-800
+    {% elif item.appliance_type == 'induction' %}bg-purple-100 text-purple-800
+    {% else %}bg-gray-100 text-gray-800
+    {% endif %}">
+    {{ item.get_appliance_type_display }}
+</span>
 {% endif %}
 {% endblock %}
+
+{% block card_content %}
+{% if item.brand or item.model_number %}
+    <div class="text-sm text-gray-600 mb-2">
+        {% if item.brand %}{{ item.brand }}{% endif %}
+        {% if item.brand and item.model_number %} - {% endif %}
+        {% if item.model_number %}{{ item.model_number }}{% endif %}
+    </div>
+{% endif %}
+{% if item.room %}
+    <div class="flex items-center text-sm text-gray-600 mb-2">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        </svg>
+        <span class="font-medium">Room:</span>
+        <span class="ml-1">{{ item.room.name }}</span>
+    </div>
+{% endif %}
+{% if item.notes %}
+    <p class="text-sm text-gray-600 line-clamp-2">{{ item.notes|truncatewords:15 }}</p>
+{% endif %}
+{% endblock %}
+
+{% block item_detail_url %}{% url 'tracker:appliance_detail' item.pk %}{% endblock %}
+{% block item_edit_url %}{% url 'tracker:appliance_update' item.pk %}{% endblock %}
+
+{% block empty_title %}No appliances{% endblock %}
+{% block empty_description %}Get started by adding a new appliance.{% endblock %}
