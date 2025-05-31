@@ -21,10 +21,12 @@ def room_create(request):
     """Create a new room."""
     if request.method == 'POST':
         form = RoomForm(request.POST)
-        if 'save_and_add_another' in request.POST:
-            return redirect('tracker:add_room')
-        else:
-            return redirect('tracker:room_detail', pk=room.pk)
+        if form.is_valid():
+            room = form.save()
+            if 'save_and_add_another' in request.POST:
+                return redirect('tracker:room_create')
+            else:
+                return redirect('tracker:room_detail', pk=room.pk)
     else:
         form = RoomForm()
 
