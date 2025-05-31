@@ -1,0 +1,43 @@
+{% extends 'tracker/base_list.html' %}
+
+{% block list_title %}Rooms{% endblock %}
+{% block list_description %}Manage rooms in your house{% endblock %}
+
+{% block create_url %}{% url 'tracker:room_create' %}{% endblock %}
+{% block create_button_text %}Add Room{% endblock %}
+
+{% block list_content %}
+{% if rooms %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for room in rooms %}
+            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                <h3 class="text-lg font-medium text-gray-900">
+                    <a href="{% url 'tracker:room_detail' room.pk %}" class="hover:text-primary">
+                        {{ room.name }}
+                    </a>
+                </h3>
+                <div class="mt-3 flex space-x-2">
+                    <a href="{% url 'tracker:room_detail' room.pk %}"
+                       class="text-sm text-primary hover:text-blue-700">View</a>
+                    <a href="{% url 'tracker:room_update' room.pk %}"
+                       class="text-sm text-gray-600 hover:text-gray-800">Edit</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No rooms</h3>
+        <p class="mt-1 text-sm text-gray-500">Get started by creating a new room.</p>
+        <div class="mt-6">
+            <a href="{% url 'tracker:room_create' %}"
+               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700">
+                Add Room
+            </a>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

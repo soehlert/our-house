@@ -1,0 +1,17 @@
+{% extends 'tracker/base_form.html' %}
+
+{% block form_title %}
+    {% if paint_color %}Edit Paint Color{% else %}Add New Paint Color{% endif %}
+{% endblock %}
+
+{% block form_description %}
+    {% if paint_color %}Update paint color information{% else %}Enter paint color details{% endif %}
+{% endblock %}
+
+{% block cancel_url %}
+    {% if paint_color %}{% url 'tracker:paint_color_detail' pk=paint_color.pk %}{% else %}{% url 'tracker:paint_color_list' %}{% endif %}
+{% endblock %}
+
+{% block submit_text %}
+    {% if paint_color %}Update Paint Color{% else %}Create Paint Color{% endif %}
+{% endblock %}

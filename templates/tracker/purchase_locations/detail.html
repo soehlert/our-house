@@ -1,0 +1,94 @@
+{% extends 'tracker/base_detail.html' %}
+
+{% block detail_title %}{{ purchase_location.name }}{% endblock %}
+{% block detail_subtitle %}Purchase Location{% endblock %}
+
+{% block detail_actions %}
+    <a href="{% url 'tracker:purchase_location_update' purchase_location.pk %}"
+       class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+        Edit
+    </a>
+    <a href="{% url 'tracker:purchase_location_delete' purchase_location.pk %}"
+       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">
+        Delete
+    </a>
+{% endblock %}
+
+{% block detail_content %}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Basic Information -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
+            <div class="space-y-3">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Name</dt>
+                    <dd class="text-sm text-gray-900">{{ purchase_location.name }}</dd>
+                </div>
+                {% if purchase_location.website %}
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Website</dt>
+                    <dd class="text-sm text-gray-900">
+                        <a href="{{ purchase_location.website }}" target="_blank" rel="noopener noreferrer"
+                           class="text-blue-600 hover:text-blue-800 flex items-center">
+                            {{ purchase_location.website }}
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                            </svg>
+                        </a>
+                    </dd>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Notes -->
+        {% if purchase_location.notes %}
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Notes</h3>
+            <div class="prose prose-sm max-w-none">
+                <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ purchase_location.notes }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <!-- Related Items -->
+    <div class="mt-8">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Items Purchased Here</h3>
+        <!-- Appliances -->
+        {% if purchase_location.appliance_set.exists %}
+            <div class="mb-6">
+                <h4 class="text-md font-medium text-gray-700 mb-2">Appliances</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {% for appliance in purchase_location.appliance_set.all %}
+                        <div class="border border-gray-200 rounded p-3">
+                            <a href="{% url 'tracker:appliance_detail' appliance.pk %}" class="text-sm font-medium text-primary hover:text-blue-700">
+                                {{ appliance.name }}
+                            </a>
+                            {% if appliance.brand %}
+                                <p class="text-xs text-gray-500">{{ appliance.brand }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        <!-- Paint Colors -->
+        {% if purchase_location.paintcolor_set.exists %}
+            <div class="mb-6">
+                <h4 class="text-md font-medium text-gray-700 mb-2">Paint Colors</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {% for paint_color in purchase_location.paintcolor_set.all %}
+                        <div class="border border-gray-200 rounded p-3">
+                            <a href="{% url 'tracker:paint_color_detail' paint_color.pk %}" class="text-sm font-medium text-primary hover:text-blue-700">
+                                {{ paint_color.paint_color }}
+                            </a>
+                            <p class="text-xs text-gray-500">{{ paint_color.paint_code }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        {% if not purchase_location.appliance_set.exists and not purchase_location.paintcolor_set.exists %}
+            <p class="text-sm text-gray-500 italic">No items have been purchased from this location yet.</p>
+        {% endif %}
+    </div>
+{% endblock %}

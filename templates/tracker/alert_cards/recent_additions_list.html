@@ -1,0 +1,88 @@
+{% extends 'tracker/base_list.html' %}
+
+{% block list_title %}Recent Additions{% endblock %}
+{% block list_description %}Items added to the system in the last 7 days{% endblock %}
+{% block create_url %}{% url 'tracker:home' %}{% endblock %}
+{% block create_button_text %}Back to Dashboard{% endblock %}
+
+{% block search_bar %}
+<div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+        <a href="{% url 'tracker:home' %}" class="text-primary hover:text-blue-600 font-medium">
+            ← Back to Dashboard
+        </a>
+        <span class="text-sm text-gray-600">{{ recent_items|length }} item{{ recent_items|length|pluralize }} added this week</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block list_content %}
+{% if recent_items %}
+    <div class="space-y-4">
+        {% for item in recent_items %}
+        <div class="border border-blue-200 rounded-lg p-4 bg-blue-50 border-l-4 border-l-blue-500">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-2">
+                        <h3 class="font-semibold text-gray-900">{{ item.name }}</h3>
+                        <span class="inline-block bg-blue-500 text-white text-xs px-2 py-1 rounded">{{ item.model_name }}</span>
+                    </div>
+                </div>
+                {% if item.model_name == 'Appliance' %}
+                    <a href="{% url 'tracker:appliance_detail' item.id %}"
+                       class="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-500 transition-colors mr-2">
+                        View
+                    </a>
+                    <a href="{% url 'tracker:appliance_update' item.id %}"
+                       class="bg-gray-500 text-white text-sm px-3 py-1 rounded hover:bg-gray-600 transition-colors">
+                        Edit
+                    </a>
+                {% elif item.model_name == 'Room' %}
+                    <a href="{% url 'tracker:room_detail' item.id %}"
+                       class="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-500 transition-colors mr-2">
+                        View
+                    </a>
+                    <a href="{% url 'tracker:room_update' item.id %}"
+                       class="bg-gray-500 text-white text-sm px-3 py-1 rounded hover:bg-gray-600 transition-colors">
+                        Edit
+                    </a>
+                {% elif item.model_name == 'Circuit' %}
+                    <a href="{% url 'tracker:circuit_detail' item.id %}"
+                       class="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-500 transition-colors mr-2">
+                        View
+                    </a>
+                    <a href="{% url 'tracker:circuit_update' item.id %}"
+                       class="bg-gray-500 text-white text-sm px-3 py-1 rounded hover:bg-gray-600 transition-colors">
+                        Edit
+                    </a>
+                {% elif item.model_name == 'Outlet' %}
+                    <a href="{% url 'tracker:outlet_detail' item.id %}"
+                       class="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-500 transition-colors mr-2">
+                        View
+                    </a>
+                    <a href="{% url 'tracker:outlet_update' item.id %}"
+                       class="bg-gray-500 text-white text-sm px-3 py-1 rounded hover:bg-gray-600 transition-colors">
+                        Edit
+                    </a>
+                {% elif item.model_name == 'PaintColor' %}
+                    <a href="{% url 'tracker:paint_color_detail' item.id %}"
+                       class="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-500 transition-colors mr-2">
+                        View
+                    </a>
+                    <a href="{% url 'tracker:paint_color_update' item.id %}"
+                       class="bg-gray-500 text-white text-sm px-3 py-1 rounded hover:bg-gray-600 transition-colors">
+                        Edit
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-12">
+        <div class="text-gray-400 text-6xl mb-4">📝</div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No recent additions</h3>
+        <p class="text-gray-600">No items have been added in the last 7 days.</p>
+    </div>
+{% endif %}
+{% endblock %}

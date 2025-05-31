@@ -1,0 +1,19 @@
+{% extends 'tracker/base_form.html' %}
+
+{% block form_title %}
+    {% if object %}Edit Room{% else %}Add New Room{% endif %}
+{% endblock %}
+
+{% block form_description %}
+    {% if object %}
+        Update the details for {{ object.name }}
+    {% else %}
+        Create a new room in your house
+    {% endif %}
+{% endblock %}
+
+{% block cancel_url %}{% url 'tracker:room_list' %}{% endblock %}
+
+{% block submit_text %}
+    {% if object %}Update Room{% else %}Create Room{% endif %}
+{% endblock %}

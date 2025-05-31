@@ -1,0 +1,17 @@
+{% extends 'tracker/base_form.html' %}
+
+{% block form_title %}
+    {% if circuit %}Edit Circuit {{ circuit.circuit_number }}{% else %}Add New Circuit{% endif %}
+{% endblock %}
+
+{% block form_description %}
+    {% if circuit %}Update circuit information{% else %}Enter circuit details{% endif %}
+{% endblock %}
+
+{% block cancel_url %}
+    {% if circuit %}{% url 'tracker:circuit_detail' pk=circuit.pk %}{% else %}{% url 'tracker:circuit_list' %}{% endif %}
+{% endblock %}
+
+{% block submit_text %}
+    {% if circuit %}Update Circuit{% else %}Create Circuit{% endif %}
+{% endblock %}

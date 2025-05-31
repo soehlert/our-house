@@ -1,0 +1,168 @@
+{% extends 'tracker/base_detail.html' %}
+
+{% block detail_title %}{{ circuit.description }}{% endblock %}
+{% block detail_description %}Circuit - {{ circuit.circuit_number }}{% endblock %}
+
+{% block detail_actions %}
+    <a href="{% url 'tracker:circuit_update' circuit.pk %}"
+       class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+        Edit
+    </a>
+    <a href="{% url 'tracker:circuit_delete' circuit.pk %}"
+       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">
+        Delete
+    </a>
+{% endblock %}
+
+{% block detail_content %}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Basic Information -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Circuit Details</h3>
+            <div class="space-y-3">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Circuit Number</dt>
+                    <dd class="text-sm text-gray-900">{{ circuit.circuit_number }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Description</dt>
+                    <dd class="text-sm text-gray-900">{{ circuit.description }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Breaker Size</dt>
+                    <dd class="text-sm text-gray-900">{{ circuit.breaker_size }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Pole Type</dt>
+                    <dd class="text-sm text-gray-900">{{ circuit.get_pole_type_display }}</dd>
+                </div>
+                {% if circuit.voltage %}
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Voltage</dt>
+                    <dd class="text-sm text-gray-900">{{ circuit.voltage }}</dd>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Safety Features -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Safety Features</h3>
+            <div class="space-y-3">
+                <div class="flex items-center">
+                    <span class="text-sm font-medium text-gray-500 w-16">GFCI:</span>
+                    {% if circuit.gfci %}
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Protected</span>
+                    {% else %}
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Not Protected</span>
+                    {% endif %}
+                </div>
+                <div class="flex items-center">
+                    <span class="text-sm font-medium text-gray-500 w-16">AFCI:</span>
+                    {% if circuit.afci %}
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Protected</span>
+                    {% else %}
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Not Protected</span>
+                    {% endif %}
+                </div>
+                <div class="flex items-center">
+                    <span class="text-sm font-medium text-gray-500 w-16">CAFI:</span>
+                    {% if circuit.cafi %}
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Protected</span>
+                    {% else %}
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Not Protected</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- Outlets on this Circuit -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Outlets</h3>
+                <a href="{% url 'tracker:outlet_create' %}?circuit={{ circuit.pk }}"
+                   class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-500">
+                    <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Add Outlet
+                </a>
+            </div>
+            {% if circuit.outlets.exists %}
+                <div class="space-y-3">
+                    {% for outlet in circuit.outlets.all %}
+                        <div class="border border-gray-200 rounded p-3 bg-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">
+                                        {{ outlet.get_device_type_display }}
+                                        {% if outlet.room %}
+                                            <span class="text-gray-500">in {{ outlet.room.name }}</span>
+                                        {% endif %}
+                                    </div>
+                                    {% if outlet.location_description %}
+                                        <div class="text-xs text-gray-600 mt-1">{{ outlet.location_description }}</div>
+                                    {% endif %}
+                                </div>
+                                <a href="{% url 'tracker:outlet_detail' outlet.pk %}"
+                                   class="text-primary hover:text-blue-600 text-sm font-medium">
+                                    View
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-6">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">No outlets assigned</h3>
+                    <p class="mt-1 text-sm text-gray-500">Get started by adding an outlet to this circuit.</p>
+                </div>
+            {% endif %}
+        </div>
+        <!-- Rooms Served -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Rooms Served</h3>
+            {% if circuit.rooms.exists %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {% for room in circuit.rooms.all %}
+                        <div class="border border-gray-200 rounded p-3 bg-white">
+                            <a href="{% url 'tracker:room_detail' room.pk %}" class="text-sm font-medium text-primary hover:text-blue-700">
+                                {{ room.name }}
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-6">
+                    <p class="text-sm text-gray-500">No rooms assigned to this circuit.</p>
+                </div>
+            {% endif %}
+        </div>
+        <!-- Circuit Diagrams -->
+        {% if circuit.diagrams.exists %}
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Circuit Diagrams</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {% for diagram in circuit.diagrams.all %}
+                    <div class="border border-gray-200 rounded p-3 bg-white">
+                        <div class="text-sm font-medium text-gray-900">{{ diagram.description|default:"Circuit Diagram" }}</div>
+                        {% if diagram.image %}
+                            <img src="{{ diagram.image.url }}" alt="{{ diagram.description }}" class="mt-2 max-w-full h-auto rounded">
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        <!-- Notes -->
+        {% if circuit.notes %}
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 lg:col-span-2">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Notes</h3>
+            <div class="prose prose-sm max-w-none">
+                <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ circuit.notes }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}

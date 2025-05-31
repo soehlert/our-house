@@ -1,0 +1,86 @@
+{% extends 'tracker/base_detail.html' %}
+
+{% block title %}{{ paint_color.paint_color }} }}{% endblock %}
+
+{% block detail_title %}{{ paint_color.rooms }}{% endblock %}
+{% block detail_description %}{{ paint_color.paint_code }}{% endblock %}
+
+{% block edit_url %}{% url 'tracker:paint_color_update' paint_color.pk %}{% endblock %}
+{% block delete_url %}{% url 'tracker:paint_color_delete' paint_color.pk %}{% endblock %}
+
+{% block detail_content %}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="space-y-6">
+            <div class="bg-white shadow rounded-lg p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Paint Details</h3>
+                <dl class="space-y-3">
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">Color</dt>
+                        <dd class="text-sm text-gray-900">{{ paint_color.paint_color }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">Code</dt>
+                        <dd class="text-sm text-gray-900">{{ paint_color.paint_code }}</dd>
+                    </div>
+                    {% if paint_color.paint_brand %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Brand</dt>
+                            <dd class="text-sm text-gray-900">{{ paint_color.paint_brand }}</dd>
+                        </div>
+                    {% endif %}
+                    {% if paint_color.paint_base %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Base</dt>
+                            <dd class="text-sm text-gray-900">{{ paint_color.paint_base }}</dd>
+                        </div>
+                    {% endif %}
+                    {% if paint_color.finish_type %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Finish</dt>
+                            <dd class="text-sm text-gray-900">{{ paint_color.finish_type }}</dd>
+                        </div>
+                    {% endif %}
+                </dl>
+            </div>
+            {% if paint_color.rooms.exists %}
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Rooms</h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for room in paint_color.rooms.all %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                {{ room.name }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="space-y-6">
+            {% if paint_color.purchase_date or paint_color.purchase_location %}
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Purchase Information</h3>
+                    <dl class="space-y-3">
+                        {% if paint_color.purchase_date %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Purchase Date</dt>
+                                <dd class="text-sm text-gray-900">{{ paint_color.purchase_date }}</dd>
+                            </div>
+                        {% endif %}
+                        {% if paint_color.purchase_location %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Purchase Location</dt>
+                                <dd class="text-sm text-gray-900">{{ paint_color.purchase_location }}</dd>
+                            </div>
+                        {% endif %}
+                    </dl>
+                </div>
+            {% endif %}
+            {% if paint_color.notes %}
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Notes</h3>
+                    <p class="text-sm text-gray-900 whitespace-pre-wrap">{{ paint_color.notes }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

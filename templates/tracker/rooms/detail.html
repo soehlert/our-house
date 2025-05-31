@@ -1,0 +1,38 @@
+{% extends 'tracker/base_detail.html' %}
+
+{% block detail_title %}{{ room.name }}{% endblock %}
+{% block detail_description %}Room information and related items{% endblock %}
+
+{% block edit_url %}{% url 'tracker:room_update' pk=room.pk %}{% endblock %}
+{% block delete_url %}{% url 'tracker:room_delete' pk=room.pk %}{% endblock %}
+
+{% block detail_content %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
+            <dl class="space-y-3">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Room Name</dt>
+                    <dd class="text-sm text-gray-900">{{ room.name }}</dd>
+                </div>
+            </dl>
+        </div>
+        <div>
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Related Items</h3>
+            <div class="space-y-3">
+                <div>
+                    <span class="text-sm font-medium text-gray-500">Appliances:</span>
+                    <span class="text-sm text-gray-900">{{ room.appliance_set.count }}</span>
+                </div>
+                <div>
+                    <span class="text-sm font-medium text-gray-500">Circuits:</span>
+                    <span class="text-sm text-gray-900">{{ room.circuits.count }}</span>
+                </div>
+                <div>
+                    <span class="text-sm font-medium text-gray-500">Paint Colors:</span>
+                    <span class="text-sm text-gray-900">{{ room.paint_colors.count }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

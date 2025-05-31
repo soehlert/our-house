@@ -1,0 +1,17 @@
+{% extends 'tracker/base_form.html' %}
+
+{% block form_title %}
+    {% if appliance %}Edit Appliance{% else %}Add New Appliance{% endif %}
+{% endblock %}
+
+{% block form_description %}
+    {% if appliance %}Update appliance information and documentation{% else %}Enter appliance details and documentation{% endif %}
+{% endblock %}
+
+{% block cancel_url %}
+    {% if appliance %}{% url 'tracker:appliance_detail' pk=appliance.pk %}{% else %}{% url 'tracker:appliance_list' %}{% endif %}
+{% endblock %}
+
+{% block submit_text %}
+    {% if appliance %}Update Appliance{% else %}Create Appliance{% endif %}
+{% endblock %}

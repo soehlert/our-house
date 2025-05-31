@@ -1,0 +1,83 @@
+{% extends 'tracker/base_list.html' %}
+
+{% block list_title %}Electrical Circuits{% endblock %}
+{% block list_description %}Manage electrical circuits in your house{% endblock %}
+
+{% block create_url %}{% url 'tracker:circuit_create' %}{% endblock %}
+{% block create_button_text %}Add Circuit{% endblock %}
+
+{% block list_content %}
+{% if circuits %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for circuit in circuits %}
+            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-lg font-medium text-gray-900">
+                        <a href="{% url 'tracker:circuit_detail' circuit.pk %}" class="hover:text-primary">
+                            Circuit {{ circuit.circuit_number }}
+                        </a>
+                    </h3>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {{ circuit.breaker_size }}
+                    </span>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">{{ circuit.description }}</p>
+                <div class="space-y-1 mb-3">
+                    <div class="flex items-center text-sm text-gray-600">
+                        <span class="font-medium">Type:</span>
+                        <span class="ml-1">{{ circuit.get_pole_type_display }}</span>
+                        {% if circuit.voltage %}
+                            <span class="ml-2">{{ circuit.voltage }}</span>
+                        {% endif %}
+                    </div>
+                    {% if circuit.gfci or circuit.afci or circuit.cafi %}
+                        <div class="flex flex-wrap gap-1 mt-2">
+                            {% if circuit.gfci %}
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">GFCI</span>
+                            {% endif %}
+                            {% if circuit.afci %}
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">AFCI</span>
+                            {% endif %}
+                            {% if circuit.cafi %}
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">CAFI</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                {% if circuit.rooms.exists %}
+                    <div class="mb-3">
+                        <p class="text-xs text-gray-500 mb-1">Serves:</p>
+                        <div class="flex flex-wrap gap-1">
+                            {% for room in circuit.rooms.all %}
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                    {{ room.name }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="flex space-x-2">
+                    <a href="{% url 'tracker:circuit_detail' circuit.pk %}"
+                       class="text-sm text-primary hover:text-blue-700">View</a>
+                    <a href="{% url 'tracker:circuit_update' circuit.pk %}"
+                       class="text-sm text-gray-600 hover:text-gray-800">Edit</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No circuits</h3>
+        <p class="mt-1 text-sm text-gray-500">Get started by adding a new circuit.</p>
+        <div class="mt-6">
+            <a href="{% url 'tracker:circuit_create' %}"
+               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700">
+                Add Circuit
+            </a>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

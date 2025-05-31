@@ -1,0 +1,17 @@
+{% extends 'tracker/base_form.html' %}
+
+{% block form_title %}
+    {% if purchase_location %}Edit Purchase Location{% else %}Add New Purchase Location{% endif %}
+{% endblock %}
+
+{% block form_description %}
+    {% if purchase_location %}Update purchase location information{% else %}Enter purchase location details{% endif %}
+{% endblock %}
+
+{% block cancel_url %}
+    {% if purchase_location %}{% url 'tracker:purchase_location_detail' pk=purchase_location.pk %}{% else %}{% url 'tracker:purchase_location_list' %}{% endif %}
+{% endblock %}
+
+{% block submit_text %}
+    {% if purchase_location %}Update Location{% else %}Create Location{% endif %}
+{% endblock %}

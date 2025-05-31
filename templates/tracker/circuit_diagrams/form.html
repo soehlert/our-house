@@ -1,0 +1,17 @@
+{% extends 'tracker/base_form.html' %}
+
+{% block form_title %}
+    {% if circuit_diagram %}Edit Circuit Diagram{% else %}Add New Circuit Diagram{% endif %}
+{% endblock %}
+
+{% block form_description %}
+    {% if circuit_diagram %}Update circuit diagram information{% else %}Upload a new circuit diagram{% endif %}
+{% endblock %}
+
+{% block cancel_url %}
+    {% if circuit_diagram %}{% url 'tracker:circuit_diagram_detail' pk=circuit_diagram.pk %}{% else %}{% url 'tracker:circuit_diagram_list' %}{% endif %}
+{% endblock %}
+
+{% block submit_text %}
+    {% if circuit_diagram %}Update Diagram{% else %}Create Diagram{% endif %}
+{% endblock %}

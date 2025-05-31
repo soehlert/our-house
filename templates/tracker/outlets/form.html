@@ -1,0 +1,17 @@
+{% extends 'tracker/base_form.html' %}
+
+{% block form_title %}
+    {% if outlet %}Edit Outlet{% else %}Add New Outlet{% endif %}
+{% endblock %}
+
+{% block form_description %}
+    {% if outlet %}Update outlet information{% else %}Enter outlet details{% endif %}
+{% endblock %}
+
+{% block cancel_url %}
+    {% if outlet %}{% url 'tracker:outlet_detail' pk=outlet.pk %}{% else %}{% url 'tracker:outlet_list' %}{% endif %}
+{% endblock %}
+
+{% block submit_text %}
+    {% if outlet %}Update Outlet{% else %}Create Outlet{% endif %}
+{% endblock %}

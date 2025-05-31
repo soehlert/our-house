@@ -1,0 +1,127 @@
+{% extends 'tracker/base_list.html' %}
+
+{% block list_title %}Warranty Status{% endblock %}
+{% block list_description %}Appliances with expired or expiring warranties{% endblock %}
+{% block create_url %}{% url 'tracker:appliance_create' %}{% endblock %}
+{% block create_button_text %}Add Appliance{% endblock %}
+
+{% block search_bar %}
+<div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+        <a href="{% url 'tracker:home' %}" class="text-primary hover:text-blue-600 font-medium">
+            ← Back to Dashboard
+        </a>
+        <span class="text-sm text-gray-600">
+            {{ total_count }} warrant{{ total_count|pluralize:"y,ies" }} need attention
+            ({{ expired_appliances|length }} expired, {{ expiring_appliances|length }} expiring soon)
+        </span>
+    </div>
+</div>
+{% endblock %}
+
+{% block list_content %}
+{% if expired_appliances or expiring_appliances %}
+    <!-- Expired Warranties Section -->
+    {% if expired_appliances %}
+    <div class="mb-8">
+        <h3 class="text-lg font-medium text-red-800 mb-4 flex items-center">
+            <svg class="h-5 w-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Expired Warranties ({{ expired_appliances|length }})
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for appliance in expired_appliances %}
+            <div class="border border-red-200 rounded-lg p-4 bg-red-50 border-l-4 border-l-red-500">
+                {% if appliance.image %}
+                    <img src="{{ appliance.image.url }}" alt="{{ appliance.name }}" class="w-full h-32 object-cover rounded-md mb-3">
+                {% endif %}
+                <h3 class="font-semibold text-gray-900 mb-2">{{ appliance.name }}</h3>
+                <div class="space-y-1 text-sm text-gray-600 mb-3">
+                    <p><span class="font-medium">Brand:</span> {{ appliance.brand|default:"Not specified" }}</p>
+                    <p><span class="font-medium">Model:</span> {{ appliance.model_number|default:"Not specified" }}</p>
+                    <p><span class="font-medium">Room:</span> {{ appliance.room|default:"Not assigned" }}</p>
+                </div>
+                <div class="bg-red-100 border border-red-300 rounded p-2 mb-3">
+                    <p class="text-sm">
+                        <span class="font-medium text-red-800">Warranty Expired:</span>
+                        <span class="text-red-900 font-semibold">{{ appliance.warranty_expires|date:"M d, Y" }}</span>
+                    </p>
+                    {% if appliance.purchase_date %}
+                        <p class="text-sm text-red-700 mt-1">
+                            <span class="font-medium">Purchased:</span> {{ appliance.purchase_date|date:"M d, Y" }}
+                        </p>
+                    {% endif %}
+                </div>
+                <div class="flex gap-2">
+                    <a href="{% url 'tracker:appliance_detail' appliance.pk %}"
+                       class="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-700 transition-colors">
+                        View
+                    </a>
+                    <a href="{% url 'tracker:appliance_update' appliance.pk %}"
+                       class="bg-gray-500 text-white text-sm px-3 py-1 rounded hover:bg-gray-600 transition-colors">
+                        Edit
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    <!-- Expiring Soon Section -->
+    {% if expiring_appliances %}
+    <div class="mb-8">
+        <h3 class="text-lg font-medium text-yellow-800 mb-4 flex items-center">
+            <svg class="h-5 w-5 text-yellow-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+            Expiring Soon ({{ expiring_appliances|length }})
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for appliance in expiring_appliances %}
+            <div class="border border-yellow-200 rounded-lg p-4 bg-yellow-50 border-l-4 border-l-yellow-500">
+                {% if appliance.image %}
+                    <img src="{{ appliance.image.url }}" alt="{{ appliance.name }}" class="w-full h-32 object-cover rounded-md mb-3">
+                {% endif %}
+                <h3 class="font-semibold text-gray-900 mb-2">{{ appliance.name }}</h3>
+                <div class="space-y-1 text-sm text-gray-600 mb-3">
+                    <p><span class="font-medium">Brand:</span> {{ appliance.brand|default:"Not specified" }}</p>
+                    <p><span class="font-medium">Model:</span> {{ appliance.model_number|default:"Not specified" }}</p>
+                    <p><span class="font-medium">Room:</span> {{ appliance.room|default:"Not assigned" }}</p>
+                </div>
+                <div class="bg-yellow-100 border border-yellow-300 rounded p-2 mb-3">
+                    <p class="text-sm">
+                        <span class="font-medium text-yellow-800">Warranty Expires:</span>
+                        <span class="text-yellow-900 font-semibold">{{ appliance.warranty_expires|date:"M d, Y" }}</span>
+                    </p>
+                    {% if appliance.purchase_date %}
+                        <p class="text-sm text-yellow-700 mt-1">
+                            <span class="font-medium">Purchased:</span> {{ appliance.purchase_date|date:"M d, Y" }}
+                        </p>
+                    {% endif %}
+                </div>
+                <div class="flex gap-2">
+                    <a href="{% url 'tracker:appliance_detail' appliance.pk %}"
+                       class="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-500 transition-colors">
+                        View
+                    </a>
+                    <a href="{% url 'tracker:appliance_update' appliance.pk %}"
+                       class="bg-gray-500 text-white text-sm px-3 py-1 rounded hover:bg-gray-600 transition-colors">
+                        Edit
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+{% else %}
+    <div class="text-center py-12">
+        <svg class="h-16 w-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">All warranties are current!</h3>
+        <p class="text-gray-600">No appliances have expired or expiring warranties.</p>
+    </div>
+{% endif %}
+{% endblock %}
