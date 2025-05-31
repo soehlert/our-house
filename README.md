@@ -1,7 +1,6 @@
 # House Tracker
 
-![Build and Push](https://github.com/soehlert/our_house/actions/workflows/docker-build.yml/badge.svg)
-![Docker Image](https://ghcr-badge.egpl.dev/soehlert/our-house/latest_tag?trim=major&label=latest)
+[![Build and Push Docker Image](https://github.com/soehlert/our-house/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/soehlert/our-house/actions/workflows/build-and-push.yml)
 
 A Django application for tracking and managing information about your house, including appliances, paint colors, electrical circuits, and more. 
 Features an interactive electrical panel diagram generator that visualizes your home's electrical system.
@@ -76,38 +75,45 @@ For production deployment, consider:
 1. **Environment Variables**
 
    Set in your environment or .env file:
-   `DEBUG=False`
-   `SECRET_KEY=your-secret-key-here`
-   `ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com`
+   ```bash
+   DEBUG=False
+   SECRET_KEY=your-secret-key-here
+   ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
+   ```
 
 2. **Reverse Proxy** (nginx example)
+   ```bash
+   server {
+       listen 80;
+       server_name yourdomain.com;
 
-   `server {`
-       `listen 80;`
-       `server_name yourdomain.com;`
+       location / {
+           proxy_pass http://127.0.0.1:8000;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+       }
 
-       `location / {`
-           `proxy_pass http://127.0.0.1:8000;`
-           `proxy_set_header Host $host;`
-           `proxy_set_header X-Real-IP $remote_addr;`
-       `}`
+       location /media/ {
+           alias /path/to/your/media/;
+       }
 
-       `location /media/ {`
-           `alias /path/to/your/media/;`
-       `}`
-
-       `location /static/ {`
-           `alias /path/to/your/static/;`
-       `}`
-   `}`
+       location /static/ {
+           alias /path/to/your/static/;
+       }
+   }
+   ```
 
 3. **Backup Strategy**
 
    Backup database:
-   `docker-compose exec web uv run python manage.py dumpdata > backup.json`
+   ```bash
+   docker-compose exec web uv run python manage.py dumpdata > backup.json
+   ```
 
    Backup media files:
-   `tar -czf media_backup.tar.gz media/`
+   ```bash
+   tar -czf media_backup.tar.gz media/
+   ```
 
 ## License
 
