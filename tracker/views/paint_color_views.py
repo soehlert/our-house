@@ -22,7 +22,7 @@ def paint_color_create(request):
         form = PaintColorForm(request.POST)
         if form.is_valid():
             paint_color = form.save()
-            messages.success(request, f'Paint Color "{paint_color.name}" created successfully.')
+            messages.success(request, f'Paint Color "{paint_color.paint_color}" created successfully.')
             if 'save_and_add_another' in request.POST:
                 return redirect('tracker:paint_color_create')
             else:
@@ -65,9 +65,8 @@ def paint_color_delete(request, pk):
     paint_color = get_object_or_404(PaintColor, pk=pk)
 
     if request.method == 'POST':
-        paint_color_name = paint_color.paint_color
         paint_color.delete()
-        messages.success(request, f'Paint color "{paint_color_name}" deleted successfully.')
+        messages.success(request, f'Paint color "{paint_color.paint_color}" deleted successfully.')
         return redirect('tracker:paint_color_list')
 
     return render(request, 'tracker/paint_colors/confirm_delete.html', {'paint_color': paint_color})
