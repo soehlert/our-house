@@ -66,7 +66,12 @@ class ElectricalPanelGenerator:
         else:
             max_circuit = max(circuits.keys())
 
-        # Ensure we show complete rows (even numbers only)
+            for circuit_num, circuit in circuits.items():
+                if circuit.pole_type == 'double':
+                    effective_max = circuit_num + 2
+                    max_circuit = max(max_circuit, effective_max)
+
+        # Ensure we show complete rows
         if max_circuit % 2 == 1:
             max_circuit += 1
 
