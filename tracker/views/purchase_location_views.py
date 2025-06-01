@@ -27,7 +27,10 @@ def purchase_location_create(request):
         if form.is_valid():
             purchase_location = form.save()
             messages.success(request, f'Purchase location "{purchase_location.name}" created successfully.')
-            return redirect('tracker:purchase_location_detail', pk=purchase_location.pk)
+            if 'save_and_add_another' in request.POST:
+                return redirect('tracker:purchase_location_create')
+            else:
+                return redirect('tracker:purchase_location_detail', pk=purchase_location.pk)
     else:
         form = PurchaseLocationForm()
 

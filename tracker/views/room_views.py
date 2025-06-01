@@ -23,6 +23,7 @@ def room_create(request):
         form = RoomForm(request.POST)
         if form.is_valid():
             room = form.save()
+            messages.success(request, f'Room "{room.name}" created successfully.')
             if 'save_and_add_another' in request.POST:
                 return redirect('tracker:room_create')
             else:

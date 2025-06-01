@@ -22,8 +22,11 @@ def circuit_create(request):
         form = CircuitForm(request.POST)
         if form.is_valid():
             circuit = form.save()
-            messages.success(request, f'Circuit {circuit.circuit_number} created successfully.')
-            return redirect('tracker:circuit_detail', pk=circuit.pk)
+            messages.success(request, f'Circuit "{circuit.description}" created successfully.')
+            if 'save_and_add_another' in request.POST:
+                return redirect('tracker:circuit_create')
+            else:
+                return redirect('tracker:circuit_detail', pk=circuit.pk)
     else:
         form = CircuitForm()
 

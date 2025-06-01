@@ -23,7 +23,10 @@ def appliance_create(request):
         if form.is_valid():
             appliance = form.save()
             messages.success(request, f'Appliance "{appliance.name}" created successfully.')
-            return redirect('tracker:appliance_detail', pk=appliance.pk)
+            if 'save_and_add_another' in request.POST:
+                return redirect('tracker:appliance_create')
+            else:
+                return redirect('tracker:appliance_detail', pk=appliance.pk)
     else:
         form = ApplianceForm()
 

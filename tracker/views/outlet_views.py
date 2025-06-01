@@ -33,8 +33,11 @@ def outlet_create(request):
         form = OutletForm(request.POST)
         if form.is_valid():
             outlet = form.save()
-            messages.success(request, f'Outlet in {outlet.room.name} created successfully.')
-            return redirect('tracker:outlet_detail', pk=outlet.pk)
+            messages.success(request, f'Outlet "{outlet.location_description}" created successfully.')
+            if 'save_and_add_another' in request.POST:
+                return redirect('tracker:outlet_create')
+            else:
+                return redirect('tracker:outlet_detail', pk=outlet.pk)
     else:
         form = OutletForm()
 

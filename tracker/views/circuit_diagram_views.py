@@ -23,11 +23,14 @@ def circuit_diagram_detail(request, pk):
 def circuit_diagram_create(request):
     """Create a new circuit diagram."""
     if request.method == 'POST':
-        form = CircuitDiagramForm(request.POST, request.FILES)
+        form = CircuitDiagramForm(request.POST)
         if form.is_valid():
             circuit_diagram = form.save()
-            messages.success(request, f'Circuit diagram "{circuit_diagram}" created successfully.')
-            return redirect('tracker:circuit_diagram_detail', pk=circuit_diagram.pk)
+            messages.success(request, f'Circuit diagram "{circuit_diagram.description}" created successfully.')
+            if 'save_and_add_another' in request.POST:
+                return redirect('tracker:circuit_diagram_create')
+            else:
+                return redirect('tracker:circuit_diagram_detail', pk=circuit_diagram.pk)
     else:
         form = CircuitDiagramForm()
 

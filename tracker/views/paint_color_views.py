@@ -22,8 +22,11 @@ def paint_color_create(request):
         form = PaintColorForm(request.POST)
         if form.is_valid():
             paint_color = form.save()
-            messages.success(request, f'Paint color "{paint_color.paint_color}" created successfully.')
-            return redirect('tracker:paint_color_detail', pk=paint_color.pk)
+            messages.success(request, f'Paint Color "{paint_color.name}" created successfully.')
+            if 'save_and_add_another' in request.POST:
+                return redirect('tracker:paint_color_create')
+            else:
+                return redirect('tracker:paint_color_detail', pk=paint_color.pk)
     else:
         form = PaintColorForm()
 
