@@ -155,28 +155,28 @@
                     <div class="space-y-2">
                         {% if appliance.receipt %}
                             <div class="border border-gray-200 rounded p-3 bg-white">
-                                <a href="{{ appliance.receipt.url }}" class="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
+                                <a href="{{ appliance.receipt.url }}" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
                                     📄 Receipt
                                 </a>
                             </div>
                         {% endif %}
                         {% if appliance.owners_manual %}
                             <div class="border border-gray-200 rounded p-3 bg-white">
-                                <a href="{{ appliance.owners_manual.url }}" class="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
+                                <a href="{{ appliance.owners_manual.url }}" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
                                     📖 Owner's Manual
                                 </a>
                             </div>
                         {% endif %}
                         {% if appliance.specs %}
                             <div class="border border-gray-200 rounded p-3 bg-white">
-                                <a href="{{ appliance.specs.url }}" class="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
+                                <a href="{{ appliance.specs.url }}" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
                                     📋 Specifications
                                 </a>
                             </div>
                         {% endif %}
                         {% if appliance.install_docs %}
                             <div class="border border-gray-200 rounded p-3 bg-white">
-                                <a href="{{ appliance.install_docs.url }}" class="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
+                                <a href="{{ appliance.install_docs.url }}" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
                                     🔧 Installation Docs
                                 </a>
                             </div>
