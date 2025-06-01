@@ -14,9 +14,9 @@ Features an interactive electrical panel diagram generator that visualizes your 
 ![Appliance Detail](docs/images/Appliance%20Detail.png "Appliance detail")
 - **Electrical System Mapping**: Document circuits, breakers, and safety features
 ![Circuit List](docs/images/Circuit%20List.png "List of circuits")
+![Circuit Detail](docs/images/Room%20Detail.png "Detail view of a room")
 - **Room Management**: Organize your house by rooms and spaces
 ![Room List](docs/images/Room%20List.png "List of rooms")
-![Room Detail](docs/images/Room%20Detail.png "Detail view of a room")
 - **Paint Colors**: Track paint codes, brands, and which rooms they're used in
 ![Paint Detail](docs/images/Paint%20Detail.png "Detail view of paint color")
 
