@@ -3,22 +3,36 @@
 {% block title %}{{ appliance.name }}{% endblock %}
 
 {% block detail_title %}{{ appliance.name }}{% endblock %}
-{% block detail_description %}{{ appliance.brand }} {{ appliance.model_number }}{% endblock %}
+{% block detail_subtitle %}{{ appliance.brand }} {{ appliance.model_number }}{% endblock %}
 
-{% block edit_url %}{% url 'tracker:appliance_update' pk=appliance.pk %}{% endblock %}
-{% block delete_url %}{% url 'tracker:appliance_delete' pk=appliance.pk %}{% endblock %}
+{% block detail_actions %}
+    <a href="{% url 'tracker:appliance_update' appliance.pk %}"
+       class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+        Edit
+    </a>
+    <a href="{% url 'tracker:appliance_delete' appliance.pk %}"
+       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">
+        Delete
+    </a>
+{% endblock %}
 
 {% block detail_content %}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="space-y-6">
-            {% if appliance.image %}
-                <div class="bg-white shadow rounded-lg p-6">
-                    <img src="{{ appliance.image.url }}" alt="{{ appliance.name }}" class="w-full h-64 object-cover rounded-lg">
-                </div>
-            {% endif %}
-            <div class="bg-white shadow rounded-lg p-6">
+    <div class="grid grid-cols-1 {% if appliance.image %}lg:grid-cols-3{% else %}lg:grid-cols-2{% endif %} gap-6">
+        <!-- Image Column (if exists) -->
+        {% if appliance.image %}
+        <div class="lg:col-span-1">
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <img src="{{ appliance.image.url }}" alt="{{ appliance.name }}" class="w-full h-auto object-cover rounded-lg">
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Left Column (or full width if no image) -->
+        <div class="{% if appliance.image %}lg:col-span-1{% else %}lg:col-span-1{% endif %} space-y-6">
+            <!-- Basic Information -->
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
-                <dl class="space-y-3">
+                <div class="space-y-3">
                     <div>
                         <dt class="text-sm font-medium text-gray-500">Name</dt>
                         <dd class="text-sm text-gray-900">{{ appliance.name }}</dd>
@@ -46,15 +60,20 @@
                     {% if appliance.room %}
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Room</dt>
-                            <dd class="text-sm text-gray-900">{{ appliance.room.name }}</dd>
+                            <dd class="text-sm text-gray-900">
+                                <a href="{% url 'tracker:room_detail' appliance.room.pk %}" class="text-blue-600 hover:text-blue-800">
+                                    {{ appliance.room.name }}
+                                </a>
+                            </dd>
                         </div>
                     {% endif %}
-                </dl>
+                </div>
             </div>
+            <!-- Electrical Information -->
             {% if appliance.power_demands or appliance.voltage or appliance.pole_type %}
-                <div class="bg-white shadow rounded-lg p-6">
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Electrical</h3>
-                    <dl class="space-y-3">
+                    <div class="space-y-3">
                         {% if appliance.power_demands %}
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Power Requirements</dt>
@@ -73,15 +92,17 @@
                                 <dd class="text-sm text-gray-900">{{ appliance.get_pole_type_display }}</dd>
                             </div>
                         {% endif %}
-                    </dl>
+                    </div>
                 </div>
             {% endif %}
         </div>
-        <div class="space-y-6">
+        <!-- Right Column -->
+        <div class="{% if appliance.image %}lg:col-span-1{% else %}lg:col-span-1{% endif %} space-y-6">
+            <!-- Purchase Information -->
             {% if appliance.purchase_date or appliance.purchase_location or appliance.purchase_price %}
-                <div class="bg-white shadow rounded-lg p-6">
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Purchase Information</h3>
-                    <dl class="space-y-3">
+                    <div class="space-y-3">
                         {% if appliance.purchase_date %}
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Purchase Date</dt>
@@ -91,7 +112,11 @@
                         {% if appliance.purchase_location %}
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Purchase Location</dt>
-                                <dd class="text-sm text-gray-900">{{ appliance.purchase_location.name }}</dd>
+                                <dd class="text-sm text-gray-900">
+                                    <a href="{% url 'tracker:purchase_location_detail' appliance.purchase_location.pk %}" class="text-blue-600 hover:text-blue-800">
+                                        {{ appliance.purchase_location.name }}
+                                    </a>
+                                </dd>
                             </div>
                         {% endif %}
                         {% if appliance.purchase_price %}
@@ -100,21 +125,20 @@
                                 <dd class="text-sm text-gray-900">${{ appliance.purchase_price }}</dd>
                             </div>
                         {% endif %}
-                    </dl>
+                    </div>
                 </div>
             {% endif %}
-            <div class="bg-white shadow rounded-lg p-6">
+            <!-- Status -->
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Status</h3>
-                <dl class="space-y-3">
-                    <div>
-                        <dt class="text-sm font-medium text-gray-500">Registered</dt>
-                        <dd class="text-sm text-gray-900">
-                            {% if appliance.registered %}
-                                <span class="text-green-600">Yes</span>
-                            {% else %}
-                                <span class="text-red-600">No</span>
-                            {% endif %}
-                        </dd>
+                <div class="space-y-3">
+                    <div class="flex items-center">
+                        <span class="text-sm font-medium text-gray-500 w-24">Registered:</span>
+                        {% if appliance.registered %}
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Yes</span>
+                        {% else %}
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">No</span>
+                        {% endif %}
                     </div>
                     {% if appliance.warranty_expires %}
                         <div>
@@ -122,33 +146,55 @@
                             <dd class="text-sm text-gray-900">{{ appliance.warranty_expires }}</dd>
                         </div>
                     {% endif %}
-                </dl>
+                </div>
             </div>
+            <!-- Documentation -->
             {% if appliance.receipt or appliance.owners_manual or appliance.specs or appliance.install_docs %}
-                <div class="bg-white shadow rounded-lg p-6">
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Documentation</h3>
                     <div class="space-y-2">
                         {% if appliance.receipt %}
-                            <a href="{{ appliance.receipt.url }}" class="block text-sm text-blue-600 hover:text-blue-800">📄 Receipt</a>
+                            <div class="border border-gray-200 rounded p-3 bg-white">
+                                <a href="{{ appliance.receipt.url }}" class="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
+                                    📄 Receipt
+                                </a>
+                            </div>
                         {% endif %}
                         {% if appliance.owners_manual %}
-                            <a href="{{ appliance.owners_manual.url }}" class="block text-sm text-blue-600 hover:text-blue-800">📖 Owner's Manual</a>
+                            <div class="border border-gray-200 rounded p-3 bg-white">
+                                <a href="{{ appliance.owners_manual.url }}" class="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
+                                    📖 Owner's Manual
+                                </a>
+                            </div>
                         {% endif %}
                         {% if appliance.specs %}
-                            <a href="{{ appliance.specs.url }}" class="block text-sm text-blue-600 hover:text-blue-800">📋 Specifications</a>
+                            <div class="border border-gray-200 rounded p-3 bg-white">
+                                <a href="{{ appliance.specs.url }}" class="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
+                                    📋 Specifications
+                                </a>
+                            </div>
                         {% endif %}
                         {% if appliance.install_docs %}
-                            <a href="{{ appliance.install_docs.url }}" class="block text-sm text-blue-600 hover:text-blue-800">🔧 Installation Docs</a>
+                            <div class="border border-gray-200 rounded p-3 bg-white">
+                                <a href="{{ appliance.install_docs.url }}" class="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
+                                    🔧 Installation Docs
+                                </a>
+                            </div>
                         {% endif %}
                     </div>
                 </div>
             {% endif %}
-            {% if appliance.notes %}
-                <div class="bg-white shadow rounded-lg p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Notes</h3>
-                    <p class="text-sm text-gray-900 whitespace-pre-wrap">{{ appliance.notes }}</p>
-                </div>
-            {% endif %}
         </div>
     </div>
+    <!-- Notes -->
+    {% if appliance.notes %}
+    <div class="mt-6">
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Notes</h3>
+            <div class="prose prose-sm max-w-none">
+                <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ appliance.notes }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 {% endblock %}
