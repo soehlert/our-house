@@ -5,7 +5,7 @@ from .models import Appliance, Circuit, CircuitDiagram, Outlet, PaintColor, Purc
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     list_display = ['name', 'created_at']
-    search_fields = ['name']
+    search_fields = ['name', 'location_description']
 
 
 @admin.register(PurchaseLocation)

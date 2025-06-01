@@ -5,7 +5,7 @@
 {% block create_url %}{% url 'tracker:room_create' %}{% endblock %}
 {% block create_button_text %}Add Room{% endblock %}
 
-{% block card_title %}{{ item.name }}{% endblock %}
+{% block card_title %}{{ item.name }} - {{ item.location_description }}{% endblock %}
 
 {% block card_content %}
 <div class="space-y-2 mb-2">

@@ -5,16 +5,22 @@ from tracker.models import Appliance, Circuit, CircuitDiagram, Outlet, PaintColo
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        fields = ['name']
+        fields = ['name', "location_description"]
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white shadow-sm',
-                'placeholder': 'e.g., Main Bedroom, Kitchen, Living Room',
+                'placeholder': 'Human friendly name',
+                'data-group': 'details'
+            }),
+            'location_description': forms.TextInput(attrs={
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white shadow-sm',
+                'placeholder': 'Specific location of room',
                 'data-group': 'details'
             })
         }
         help_texts = {
-            'name': 'Enter a descriptive name for this room'
+            'name': 'Enter a human friendly name for this room',
+            'location_description': 'Enter a descriptive name for this room',
         }
 
 
