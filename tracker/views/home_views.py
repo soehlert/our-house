@@ -9,15 +9,31 @@ from tracker.models import Room, Appliance, PurchaseLocation, PaintColor, Circui
 from tracker.utils import generate_electrical_panel_image
 
 
+def _get_warranty_data():
+    """Helper function to get warranty expiration data."""
+    today = timezone.now().date()
+
+    expired_appliances = Appliance.objects.filter(
+        warranty_expires__lt=today,
+        warranty_expires__isnull=False
+    ).order_by('warranty_expires')
+
+    expiring_appliances = Appliance.objects.filter(
+        warranty_expires__gte=today,
+        warranty_expires__lte=today + timedelta(days=90)
+    ).order_by('warranty_expires')
+
+    return {
+        'expired_appliances': expired_appliances,
+        'expiring_appliances': expiring_appliances,
+        'total_count': expired_appliances.count() + expiring_appliances.count(),
+    }
+
 def home(request):
     """Home page showing overview of all data."""
 
     # Expiring warranties (next 90 days) ignoring appliances without a warranty date
-    expiring_warranties = Appliance.objects.filter(
-        warranty_expires__lte=timezone.now().date() + timedelta(days=90)
-    ).exclude(
-        warranty_expires__isnull=True
-    ).count()
+    warranty_data = _get_warranty_data()
 
     # Rooms with no circuits or outlets mapped
     unmapped_rooms = Room.objects.filter(
@@ -66,12 +82,12 @@ def home(request):
         'location_count': PurchaseLocation.objects.count(),
         'paint_color_count': PaintColor.objects.count(),
         'circuit_count': Circuit.objects.count(),
-        'expiring_warranties_count': expiring_warranties,
         'unmapped_rooms_count': unmapped_rooms,
         'recent_items_count': recent_count,
         'missing_docs_count': missing_docs,
         'recent_items': recent_items,
         'svg_content': svg_content,
+        **warranty_data,
     }
     return render(request, 'tracker/home.html', context)
 
@@ -79,29 +95,21 @@ def home(request):
 def missing_docs_list(request):
     """Show appliances missing documentation."""
     appliances = Appliance.objects.filter(owners_manual='').order_by('name')
-    context = {'appliances': appliances}
+    context = {
+        'appliances': appliances,
+        'show_create_button': False
+    }
     return render(request, 'tracker/alert_cards/missing_docs_list.html', context)
 
 def expiring_warranties_list(request):
     """Show appliances with expiring or expired warranties."""
-    today = timezone.now().date()
-
-    expired_appliances = Appliance.objects.filter(
-        warranty_expires__lt=today,
-        warranty_expires__isnull=False
-    ).order_by('warranty_expires')
-
-    expiring_appliances = Appliance.objects.filter(
-        warranty_expires__gte=timezone.now().date(),
-        warranty_expires__lte=today + timedelta(days=90)
-    ).order_by('warranty_expires')
-
+    warranty_data = _get_warranty_data()
+    warranty_data['show_create_button'] = False
+    print(f"DEBUG: warranty_data = {warranty_data}")  # Add this line
     context = {
-        'expired_appliances': expired_appliances,
-        'expiring_appliances': expiring_appliances,
-        'total_count': expired_appliances.count() + expiring_appliances.count(),
+        **warranty_data,
     }
-    return render(request, 'tracker/alert_cards/expiring_warranties_list.html', context)
+    return render(request, 'tracker/alert_cards/warranty_expiration_list.html', context)
 
 
 def unmapped_rooms_list(request):
@@ -110,7 +118,10 @@ def unmapped_rooms_list(request):
         Q(circuits__isnull=True) & Q(outlets__isnull=True)
     ).distinct().order_by('name')
 
-    context = {'rooms': rooms}
+    context = {
+        'rooms': rooms,
+        'show_create_button': False
+    }
     return render(request, 'tracker/alert_cards/unmapped_rooms_list.html', context)
 
 def recent_additions_list(request):
@@ -135,5 +146,6 @@ def recent_additions_list(request):
 
     context = {
         'recent_items': recent_items,
+        'show_create_button': False,
     }
     return render(request, 'tracker/alert_cards/recent_additions_list.html', context)

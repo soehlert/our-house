@@ -106,39 +106,55 @@
     <div class="mb-8">
         <h2 class="text-lg font-medium text-gray-900 mb-4">System Alerts</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Expiring Warranties -->
-            <a href="{% url 'tracker:expiring_warranties_list' %}" class="block hover:shadow-lg transition-shadow duration-200">
-                <div class="bg-white overflow-hidden shadow rounded-lg">
-                    <div class="p-5">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <svg class="h-6 w-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                                </svg>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-sm font-medium text-gray-500 truncate">Expiring Warranties</dt>
-                                    <dd class="text-lg font-medium text-gray-900">{{ expiring_warranties_count }}</dd>
-                                </dl>
-                            </div>
+        <!-- Expiring Warranties -->
+        <a href="{% url 'tracker:expiring_warranties_list' %}" class="block hover:shadow-lg transition-shadow duration-200">
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Warranty Expiration</dt>
+                                <dd class="text-lg font-medium text-gray-900">{{ total_count|default:0 }}</dd>
+                            </dl>
                         </div>
                     </div>
-                    {% if expiring_warranties_count > 0 %}
-                    <div class="bg-yellow-50 px-5 py-3">
-                        <div class="text-sm">
-                            <span class="font-medium text-yellow-800">{{ expiring_warranties_count }} expiring soon</span>
+                </div>
+                {% if total_count > 0 %}
+                    {% if expiring_appliances %}
+                        <div class="bg-yellow-50 px-5 py-3">
+                            <div class="text-sm">
+                                <span class="font-medium text-yellow-800">
+                                    {{ expiring_appliances|length }} expiring soon
+                                    {% if expired_appliances %}
+                                        • {{ expired_appliances|length }} expired
+                                    {% endif %}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                    {% else %}
+                    {% elif expired_appliances %}
+                        <div class="bg-red-50 px-5 py-3">
+                            <div class="text-sm">
+                                <span class="font-medium text-red-800">
+                                    {{ expired_appliances|length }} expired
+                                </span>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <!-- No warranty issues -->
                     <div class="bg-green-50 px-5 py-3">
                         <div class="text-sm">
                             <span class="font-medium text-green-800">All warranties current</span>
                         </div>
                     </div>
-                    {% endif %}
-                </div>
-            </a>
+                {% endif %}
+            </div>
+        </a>
             <!-- Missing Documentation -->
             <a href="{% url 'tracker:missing_docs_list' %}" class="block hover:shadow-lg transition-shadow duration-200">
                 <div class="bg-white overflow-hidden shadow rounded-lg">
