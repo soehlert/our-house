@@ -48,7 +48,7 @@ class PaintColorForm(forms.ModelForm):
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
                 'data-group': 'details'
             }),
-            'finish_type': forms.TextInput(attrs={
+            'finish_type': forms.Select(attrs={
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
                 'data-group': 'details'
             }),
@@ -103,7 +103,6 @@ class OutletForm(forms.ModelForm):
             'circuit': 'Select the circuit this outlet is connected to',
             'location_description': 'Describe the location of the outlet',
         }
-
 
 
 class PurchaseLocationForm(forms.ModelForm):
