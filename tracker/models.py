@@ -91,7 +91,7 @@ class Appliance(models.Model):
     name = models.CharField(max_length=100)
     brand = models.CharField(max_length=100, blank=True)
     model_number = models.CharField(max_length=100, blank=True)
-    serial_number = models.CharField(max_length=100, unique=True)
+    serial_number = models.CharField(max_length=100, blank=True, unique=True)
     appliance_type = models.CharField(
         max_length=10,
         choices=ApplianceType.choices,
