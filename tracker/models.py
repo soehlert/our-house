@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class Room(models.Model):
     """Represents a room in the house."""
     name = models.CharField(max_length=100, unique=True)
-    location_description = models.TextField(max_length=500)
+    location_description = models.TextField(max_length=500, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -99,11 +99,11 @@ class Appliance(models.Model):
     )
 
     # Documentation
-    receipt = models.FileField(upload_to="receipts/", blank=True)
-    owners_manual = models.FileField(upload_to="owners_manuals/", blank=True)
-    specs = models.FileField(upload_to="specs/", blank=True)
-    install_docs = models.FileField(upload_to="install_docs/", blank=True)
-    image = models.ImageField(upload_to="appliance_images/", blank=True)
+    receipt = models.FileField(upload_to="receipts/", blank=True, null=True)
+    owners_manual = models.FileField(upload_to="owners_manuals/", blank=True, null=True)
+    specs = models.FileField(upload_to="specs/", blank=True, null=True)
+    install_docs = models.FileField(upload_to="install_docs/", blank=True, null=True)
+    image = models.ImageField(upload_to="appliance_images/", blank=True, null=True)
 
     # Purchase info
     purchase_location = models.ForeignKey(
@@ -121,9 +121,10 @@ class Appliance(models.Model):
     warranty_expires = models.DateField(null=True, blank=True)
 
     # Technical
-    power_demands = models.CharField(max_length=5, null=True, blank=True, choices=BreakerSize.choices)
-    pole_type = models.CharField(max_length=10, null=True, blank=True, choices=PoleType.choices)
-    voltage = models.CharField(max_length=10, null=True, blank=True, choices=Volts.choices)
+    power_demands = models.CharField(max_length=5, blank=True, null=True,
+                                     choices=BreakerSize.choices)
+    pole_type = models.CharField(max_length=10, blank=True, null=True, choices=PoleType.choices)
+    voltage = models.CharField(max_length=10, blank=True, null=True, choices=Volts.choices)
     room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True, blank=True)
 
     # Notes
@@ -156,7 +157,7 @@ class PaintColor(models.Model):
         blank=True,
         related_name='paint_colors'
     )
-    notes = models.TextField(blank=True)
+    notes = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
