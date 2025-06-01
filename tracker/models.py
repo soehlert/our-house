@@ -103,6 +103,7 @@ class Appliance(models.Model):
     owners_manual = models.FileField(upload_to="owners_manuals/", blank=True, null=True)
     specs = models.FileField(upload_to="specs/", blank=True, null=True)
     install_docs = models.FileField(upload_to="install_docs/", blank=True, null=True)
+    service_manual = models.FileField(upload_to="service_manual/", blank=True, null=True)
     image = models.ImageField(upload_to="appliance_images/", blank=True, null=True)
 
     # Purchase info
