@@ -12,6 +12,13 @@
     {% if circuit_diagram %}{% url 'tracker:circuit_diagram_detail' pk=circuit_diagram.pk %}{% else %}{% url 'tracker:circuit_diagram_list' %}{% endif %}
 {% endblock %}
 
+{% block extra_buttons %}
+    <button type="submit" name="save_and_add_another"
+            class="px-4 py-2 text-sm font-medium text-white bg-green-500 border border-transparent rounded-md hover:bg-green-600 focus:outline-none">
+        Save & Add Another
+    </button>
+{% endblock %}
+
 {% block submit_text %}
     {% if circuit_diagram %}Update Diagram{% else %}Create Diagram{% endif %}
 {% endblock %}

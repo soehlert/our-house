@@ -12,6 +12,13 @@
     {% if circuit %}{% url 'tracker:circuit_detail' pk=circuit.pk %}{% else %}{% url 'tracker:circuit_list' %}{% endif %}
 {% endblock %}
 
+{% block extra_buttons %}
+    <button type="submit" name="save_and_add_another"
+            class="px-4 py-2 text-sm font-medium text-white bg-green-500 border border-transparent rounded-md hover:bg-green-600 focus:outline-none">
+        Save & Add Another
+    </button>
+{% endblock %}
+
 {% block submit_text %}
     {% if circuit %}Update Circuit{% else %}Create Circuit{% endif %}
 {% endblock %}
