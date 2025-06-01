@@ -92,9 +92,6 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <div class="text-sm font-medium text-gray-900">{{ room.name }}</div>
-                                {% if room.location_description %}
-                                    <div class="text-xs text-gray-600 mt-1">{{ room.location_description }}</div>
-                                {% endif %}
                             </div>
                             <a href="{% url 'tracker:room_detail' room.pk %}"
                                class="text-blue-600 hover:text-blue-800 text-sm font-medium">

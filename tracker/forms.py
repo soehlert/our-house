@@ -232,7 +232,7 @@ class ApplianceForm(forms.ModelForm):
             'name', 'brand', 'model_number', 'serial_number', 'appliance_type',
             'room', 'purchase_location', 'purchase_date', 'purchase_price',
             'registered', 'warranty_expires', 'power_demands', 'pole_type', 'voltage',
-            'receipt', 'owners_manual', 'specs', 'install_docs', 'image',
+            'receipt', 'owners_manual', 'specs', 'install_docs', 'service_manual', 'image',
             'notes'
         ]
         widgets = {
@@ -313,6 +313,10 @@ class ApplianceForm(forms.ModelForm):
                 'data-group': 'files'
             }),
             'install_docs': forms.FileInput(attrs={
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
+                'data-group': 'files'
+            }),
+            'service_manual': forms.FileInput(attrs={
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
                 'data-group': 'files'
             }),

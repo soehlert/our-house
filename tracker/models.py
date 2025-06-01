@@ -145,12 +145,12 @@ class Appliance(models.Model):
 class PaintColor(models.Model):
     """Tracks paint colors used in different rooms."""
     class Finish(models.TextChoices):
-        FLAT = "FLAT", "Flat"
-        MATTE = "MATTE", "Matte"
-        SATIN ="SATIN", "Satin"
-        EGGSHELL = "EGGSHELL", "Eggshell"
-        SEMIGLOSS = "SEMIGLOSS", "Semigloss"
-        GLOSS = "GLOSS", "Gloss"
+        FLAT = "Flat", "Flat"
+        MATTE = "Matte", "Matte"
+        SATIN ="Satin", "Satin"
+        EGGSHELL = "Eggshell", "Eggshell"
+        SEMIGLOSS = "Semigloss", "Semigloss"
+        GLOSS = "Gloss", "Gloss"
 
     rooms = models.ManyToManyField(Room, related_name='paint_colors')
     paint_code = models.CharField(max_length=100)

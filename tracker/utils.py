@@ -280,7 +280,7 @@ class ElectricalPanelGenerator:
         })
 
         if circuit:
-            description = circuit.description[:25] + "..." if len(circuit.description) > 25 else circuit.description
+            description = circuit.description[:45] + "..." if len(circuit.description) > 45 else circuit.description
 
             # Position text differently for single vs double-pole
             if is_double_pole:
