@@ -17,6 +17,10 @@
             class="px-4 py-2 text-sm font-medium text-white bg-green-500 border border-transparent rounded-md hover:bg-green-600 focus:outline-none">
         Save & Add Another
     </button>
+    <a href="{% url 'tracker:circuit_diagram_delete' circuit_diagram %}"
+       class="px-4 py-2 text-sm font-medium text-white bg-red-500 border border-transparent rounded-md hover:bg-red-600 focus:outline-none">
+        Delete Circuit Diagram
+    </a>
 {% endblock %}
 
 {% block submit_text %}

@@ -6,12 +6,11 @@ app_name = 'tracker'
 urlpatterns = [
     path('', home_views.home, name='home'),
 
-    # Room URLs
-    path('rooms/', room_views.room_list, name='room_list'),
-    path('rooms/<int:pk>/', room_views.room_detail, name='room_detail'),
-    path('rooms/create/', room_views.room_create, name='room_create'),
-    path('rooms/<int:pk>/update/', room_views.room_update, name='room_update'),
-    path('rooms/<int:pk>/delete/', room_views.room_delete, name='room_delete'),
+    # Alert card URLs
+    path('alerts/missing-docs/', home_views.missing_docs_list, name='missing_docs_list'),
+    path('alerts/expiring-warranties/', home_views.expiring_warranties_list, name='expiring_warranties_list'),
+    path('alerts/unmapped-rooms/', home_views.unmapped_rooms_list, name='unmapped_rooms_list'),
+    path('alerts/recent-additions/', home_views.recent_additions_list, name='recent_additions_list'),
 
     # Appliance URLs
     path('appliances/', appliance_views.appliance_list, name='appliance_list'),
@@ -19,20 +18,6 @@ urlpatterns = [
     path('appliances/create/', appliance_views.appliance_create, name='appliance_create'),
     path('appliances/<int:pk>/update/', appliance_views.appliance_update, name='appliance_update'),
     path('appliances/<int:pk>/delete/', appliance_views.appliance_delete, name='appliance_delete'),
-
-    # Purchase Location URLs
-    path('purchase-locations/', purchase_location_views.purchase_location_list, name='purchase_location_list'),
-    path('purchase-locations/<int:pk>/', purchase_location_views.purchase_location_detail, name='purchase_location_detail'),
-    path('purchase-locations/create/', purchase_location_views.purchase_location_create, name='purchase_location_create'),
-    path('purchase-locations/<int:pk>/update/', purchase_location_views.purchase_location_update, name='purchase_location_update'),
-    path('purchase-locations/<int:pk>/delete/', purchase_location_views.purchase_location_delete, name='purchase_location_delete'),
-
-    # Paint Color URLs
-    path('paint-colors/', paint_color_views.paint_color_list, name='paint_color_list'),
-    path('paint-colors/<int:pk>/', paint_color_views.paint_color_detail, name='paint_color_detail'),
-    path('paint-colors/create/', paint_color_views.paint_color_create, name='paint_color_create'),
-    path('paint-colors/<int:pk>/update/', paint_color_views.paint_color_update, name='paint_color_update'),
-    path('paint-colors/<int:pk>/delete/', paint_color_views.paint_color_delete, name='paint_color_delete'),
 
     # Circuit URLs
     path('circuits/', circuit_views.circuit_list, name='circuit_list'),
@@ -55,9 +40,24 @@ urlpatterns = [
     path('outlets/<int:pk>/edit/', outlet_views.outlet_update, name='outlet_update'),
     path('outlets/<int:pk>/delete/', outlet_views.outlet_delete, name='outlet_delete'),
 
-    # Alert card URLs
-    path('alerts/missing-docs/', home_views.missing_docs_list, name='missing_docs_list'),
-    path('alerts/expiring-warranties/', home_views.expiring_warranties_list, name='expiring_warranties_list'),
-    path('alerts/unmapped-rooms/', home_views.unmapped_rooms_list, name='unmapped_rooms_list'),
-    path('alerts/recent-additions/', home_views.recent_additions_list, name='recent_additions_list'),
+    # Paint Color URLs
+    path('paint-colors/', paint_color_views.paint_color_list, name='paint_color_list'),
+    path('paint-colors/<int:pk>/', paint_color_views.paint_color_detail, name='paint_color_detail'),
+    path('paint-colors/create/', paint_color_views.paint_color_create, name='paint_color_create'),
+    path('paint-colors/<int:pk>/update/', paint_color_views.paint_color_update, name='paint_color_update'),
+    path('paint-colors/<int:pk>/delete/', paint_color_views.paint_color_delete, name='paint_color_delete'),
+
+    # Purchase Location URLs
+    path('purchase-locations/', purchase_location_views.purchase_location_list, name='purchase_location_list'),
+    path('purchase-locations/<int:pk>/', purchase_location_views.purchase_location_detail, name='purchase_location_detail'),
+    path('purchase-locations/create/', purchase_location_views.purchase_location_create, name='purchase_location_create'),
+    path('purchase-locations/<int:pk>/update/', purchase_location_views.purchase_location_update, name='purchase_location_update'),
+    path('purchase-locations/<int:pk>/delete/', purchase_location_views.purchase_location_delete, name='purchase_location_delete'),
+
+    # Room URLs
+    path('rooms/', room_views.room_list, name='room_list'),
+    path('rooms/<int:pk>/', room_views.room_detail, name='room_detail'),
+    path('rooms/create/', room_views.room_create, name='room_create'),
+    path('rooms/<int:pk>/update/', room_views.room_update, name='room_update'),
+    path('rooms/<int:pk>/delete/', room_views.room_delete, name='room_delete'),
 ]

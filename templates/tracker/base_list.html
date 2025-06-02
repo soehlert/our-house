@@ -52,13 +52,10 @@
                             <h3 class="text-lg font-medium text-gray-900 mb-2 capitalize">
                                 {% block card_title %}{{ item }}{% endblock %}
                             </h3>
-
                             <!-- Optional badge -->
                             {% block card_badge %}{% endblock %}
-
                             <!-- Card content -->
                             {% block card_content %}{% endblock %}
-
                             <!-- Action buttons -->
                             <div class="flex space-x-2 mt-3">
                                 <a href="{% block item_detail_url %}#{% endblock %}"
