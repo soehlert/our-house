@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.db.models import Q
+
 from tracker.models import PaintColor, Room
 from tracker.forms import PaintColorForm
 
@@ -7,6 +9,17 @@ from tracker.forms import PaintColorForm
 def paint_color_list(request):
     """List all paint colors."""
     paint_colors = PaintColor.objects.prefetch_related('rooms').all()
+
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        paint_colors = paint_colors.filter(
+            Q(paint_color__icontains=search_query) |
+            Q(paint_code__icontains=search_query) |
+            Q(paint_brand__icontains=search_query) |
+            Q(rooms__name__icontains=search_query) |
+            Q(purchase_location__name__icontains=search_query)
+        ).distinct()
+
     return render(request, 'tracker/paint_colors/list.html', {'object_list': paint_colors})
 
 

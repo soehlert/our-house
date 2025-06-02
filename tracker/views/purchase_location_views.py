@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.db.models import Q
+
 from tracker.models import PurchaseLocation
 from tracker.forms import PurchaseLocationForm
 
@@ -7,6 +9,11 @@ from tracker.forms import PurchaseLocationForm
 def purchase_location_list(request):
     """List all purchase locations."""
     locations = PurchaseLocation.objects.all()
+
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        locations = locations.filter(name__icontains=search_query).distinct()
+
     return render(request, 'tracker/purchase_locations/list.html', {'object_list': locations})
 
 
@@ -55,7 +62,7 @@ def purchase_location_update(request, pk):
 
     return render(request, 'tracker/purchase_locations/form.html', {
         'form': form,
-        'purchase_location': purchase_location
+        'location': purchase_location
     })
 
 

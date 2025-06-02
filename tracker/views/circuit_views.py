@@ -1,12 +1,23 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.db.models import Q
 from tracker.models import Circuit, Room, CircuitDiagram
 from tracker.forms import CircuitForm
 
 
 def circuit_list(request):
     """List all circuits."""
+    # Handle search
     circuits = Circuit.objects.prefetch_related('rooms', 'diagrams').all()
+
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        circuits = circuits.filter(
+            Q(description__icontains=search_query) |
+            Q(circuit_number__icontains=search_query) |
+            Q(rooms__name__icontains=search_query)
+        ).distinct()
+
     return render(request, 'tracker/circuits/list.html', {'object_list': circuits})
 
 

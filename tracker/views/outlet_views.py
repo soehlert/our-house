@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
+
+from django.db.models import Q
 import logging
 
 from tracker.models import Outlet, Room
@@ -13,6 +15,17 @@ logger = logging.getLogger(__name__)
 def outlet_list(request):
     """List all outlets with search and filtering."""
     outlets = Outlet.objects.select_related('room').all()
+
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        outlets = outlets.filter(
+            Q(device_type__icontains=search_query) |
+            Q(room__name__icontains=search_query) |
+            Q(circuit__description__icontains=search_query) |
+            Q(circuit__circuit_number__icontains=search_query) |
+            Q(location_description__icontains=search_query)
+        ).distinct()
+
     return render(request, 'tracker/outlets/list.html', {"object_list": outlets})
 
 

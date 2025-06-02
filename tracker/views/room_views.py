@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.urls import reverse
+from django.db.models import Q
+
 from tracker.models import Room
 from tracker.forms import RoomForm
 
@@ -8,6 +10,13 @@ from tracker.forms import RoomForm
 def room_list(request):
     """List all rooms."""
     rooms = Room.objects.all()
+
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        rooms = rooms.filter(
+            Q(name__icontains=search_query)
+        ).distinct()
+
     return render(request, 'tracker/rooms/list.html', {'object_list': rooms})
 
 

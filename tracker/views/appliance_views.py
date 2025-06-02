@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.db.models import Q
+
 from tracker.models import Appliance, Room, PurchaseLocation
 from tracker.forms import ApplianceForm
 
@@ -7,6 +9,18 @@ from tracker.forms import ApplianceForm
 def appliance_list(request):
     """List all appliances."""
     appliances = Appliance.objects.select_related('room', 'purchase_location').all()
+
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        appliances = appliances.filter(
+            Q(name__icontains=search_query) |
+            Q(brand__icontains=search_query) |
+            Q(model_number__icontains=search_query) |
+            Q(serial_number__icontains=search_query) |
+            Q(room__name__icontains=search_query) |
+            Q(purchase_location__name__icontains=search_query)
+        ).distinct()
+
     return render(request, 'tracker/appliances/list.html', {'object_list': appliances})
 
 

@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.db.models import Q
+
 from tracker.models import CircuitDiagram
 from tracker.forms import CircuitDiagramForm
 
@@ -7,6 +9,13 @@ from tracker.forms import CircuitDiagramForm
 def circuit_diagram_list(request):
     """List all circuit diagrams."""
     diagrams = CircuitDiagram.objects.all()
+
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        diagrams = diagrams.filter(
+            Q(description__icontains=search_query)
+        ).distinct()
+
     return render(request, 'tracker/circuit_diagrams/list.html', {'object_list': diagrams})
 
 
