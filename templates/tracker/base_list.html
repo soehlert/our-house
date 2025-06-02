@@ -23,17 +23,29 @@
     <!-- Search/Filter Bar -->
     {% block search_bar %}
     <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-        <div class="flex items-center space-x-4">
+        <form method="get" class="flex items-center space-x-4">
             <div class="flex-1">
                 <label>
-                    <input type="text" placeholder="Search"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-transparent bg-white">
+                    <input type="text"
+                           name="search"
+                           value="{{ request.GET.search }}"
+                           placeholder="{% block search_placeholder %}Search{% endblock %}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 bg-white">
                 </label>
             </div>
-            <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
-                Filter
-            </button>
-        </div>
+            <div class="flex space-x-2">
+                <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-50">
+                    Search
+                </button>
+                {% if request.GET %}
+                <a href="{% block clear_filters_url %}#{% endblock %}"
+                   class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                    Clear
+                </a>
+                {% endif %}
+            </div>
+        </form>
     </div>
     {% endblock %}
     <!-- Content -->
@@ -45,7 +57,6 @@
                     <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
                         <!-- Optional image section -->
                         {% block card_image %}{% endblock %}
-
                         <!-- Content section -->
                         <div class="p-4">
                             <!-- Title -->
@@ -59,11 +70,11 @@
                             <!-- Action buttons -->
                             <div class="flex space-x-2 mt-3">
                                 <a href="{% block item_detail_url %}#{% endblock %}"
-                                   class="px-3 py-1.5 text-xs font-medium bg-green-500 text-white text-sm px-3 py-1 rounded rounded-md hover:bg-green-700">
+                                   class="px-3 py-1 text-sm font-medium text-green-600 bg-white border border-green-600 rounded hover:bg-green-50">
                                     View
                                 </a>
                                 <a href="{% block item_edit_url %}#{% endblock %}"
-                                   class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                                    class="px-3 py-1 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded hover:bg-blue-50">
                                     Edit
                                 </a>
                             </div>

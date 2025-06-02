@@ -29,47 +29,47 @@
                 <div class="flex space-x-2">
                     {% if item.model_name == 'Appliance' %}
                         <a href="{% url 'tracker:appliance_detail' item.id %}"
-                           class="px-3 py-1.5 text-xs font-medium bg-green-500 text-white rounded-md hover:bg-green-700">
+                           class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-600 bg-white border border-green-600 rounded-md hover:bg-green-50 focus:outline-none">
                             View
                         </a>
                         <a href="{% url 'tracker:appliance_update' item.id %}"
-                           class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                           class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none">
                             Edit
                         </a>
                     {% elif item.model_name == 'Room' %}
                         <a href="{% url 'tracker:room_detail' item.id %}"
-                           class="px-3 py-1.5 text-xs font-medium bg-green-500 text-white rounded-md hover:bg-green-700">
+                           class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-600 bg-white border border-green-600 rounded-md hover:bg-green-50 focus:outline-none">
                             View
                         </a>
                         <a href="{% url 'tracker:room_update' item.id %}"
-                           class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                           class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none">
                             Edit
                         </a>
                     {% elif item.model_name == 'Circuit' %}
                         <a href="{% url 'tracker:circuit_detail' item.id %}"
-                           class="px-3 py-1.5 text-xs font-medium bg-green-500 text-white rounded-md hover:bg-green-700">
+                           class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-600 bg-white border border-green-600 rounded-md hover:bg-green-50 focus:outline-none">
                             View
                         </a>
                         <a href="{% url 'tracker:circuit_update' item.id %}"
-                           class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                           class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none">
                             Edit
                         </a>
                     {% elif item.model_name == 'Outlet' %}
                         <a href="{% url 'tracker:outlet_detail' item.id %}"
-                           class="px-3 py-1.5 text-xs font-medium bg-green-500 text-white rounded-md hover:bg-green-700">
+                           class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-600 bg-white border border-green-600 rounded-md hover:bg-green-50 focus:outline-none">
                             View
                         </a>
                         <a href="{% url 'tracker:outlet_update' item.id %}"
-                           class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                           class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none">
                             Edit
                         </a>
                     {% elif item.model_name == 'PaintColor' %}
                         <a href="{% url 'tracker:paint_color_detail' item.id %}"
-                           class="px-3 py-1.5 text-xs font-medium bg-green-500 text-white rounded-md hover:bg-green-700">
+                           class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-600 bg-white border border-green-600 rounded-md hover:bg-green-50 focus:outline-none">
                             View
                         </a>
                         <a href="{% url 'tracker:paint_color_update' item.id %}"
-                           class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
+                           class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none">
                             Edit
                         </a>
                     {% endif %}

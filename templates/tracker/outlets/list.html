@@ -4,6 +4,8 @@
 {% block list_description %}Manage electrical outlets, switches, and lights in your house{% endblock %}
 {% block create_url %}{% url 'tracker:outlet_create' %}{% endblock %}
 {% block create_button_text %}Add Outlet{% endblock %}
+{% block search_placeholder %}Search outlets, rooms, circuits{% endblock %}
+{% block clear_filters_url %}{% url 'tracker:outlet_list' %}{% endblock %}
 
 {% block card_title %}{{ item.get_device_type_display }}{% endblock %}
 

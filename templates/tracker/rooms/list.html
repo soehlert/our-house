@@ -4,6 +4,8 @@
 {% block list_description %}Manage rooms in your house{% endblock %}
 {% block create_url %}{% url 'tracker:room_create' %}{% endblock %}
 {% block create_button_text %}Add Room{% endblock %}
+{% block search_placeholder %}Search rooms{% endblock %}
+{% block clear_filters_url %}{% url 'tracker:room_list' %}{% endblock %}
 
 {% block card_title %}
     {{ item.name }}{% if item.location_description and item.location_description != item.name %} - {{ item.location_description }}{% endif %}

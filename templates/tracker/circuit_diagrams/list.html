@@ -4,6 +4,8 @@
 {% block list_description %}Manage electrical circuit diagrams{% endblock %}
 {% block create_url %}{% url 'tracker:circuit_diagram_create' %}{% endblock %}
 {% block create_button_text %}Add Diagram{% endblock %}
+{% block search_placeholder %}Search diagram descriptions{% endblock %}
+{% block clear_filters_url %}{% url 'tracker:circuit_diagram_list' %}{% endblock %}
 
 {% block card_image %}
 <div class="h-32 bg-gray-100 flex items-center justify-center">

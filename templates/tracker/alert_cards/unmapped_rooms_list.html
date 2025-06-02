@@ -26,16 +26,16 @@
             </div>
             <div class="space-y-2">
                 <a href="{% url 'tracker:room_update' room.pk %}"
-                   class="block w-full text-center bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-600 transition-colors">
+                   class="block w-full text-center inline-flex items-center justify-center px-3 py-1 text-sm font-medium text-gray-600 bg-white border border-gray-600 rounded-md hover:bg-gray-50 focus:outline-none">
                     Edit Room
                 </a>
                 <div class="grid grid-cols-2 gap-2">
                     <a href="{% url 'tracker:circuit_create' %}?room={{ room.id }}"
-                       class="text-center bg-green-500 text-white text-sm px-3 py-1 rounded hover:bg-green-600 transition-colors">
+                       class="text-center inline-flex items-center justify-center px-3 py-1 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none">
                         Add Circuit
                     </a>
                     <a href="{% url 'tracker:outlet_create' %}?room={{ room.id }}"
-                       class="text-center bg-green-500 text-white text-sm px-3 py-1 rounded hover:bg-green-600 transition-colors">
+                       class="text-center inline-flex items-center justify-center px-3 py-1 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none">
                         Add Outlet
                     </a>
                 </div>

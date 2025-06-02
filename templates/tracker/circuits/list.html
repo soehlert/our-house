@@ -4,6 +4,8 @@
 {% block list_description %}Manage electrical circuits in your house{% endblock %}
 {% block create_url %}{% url 'tracker:circuit_create' %}{% endblock %}
 {% block create_button_text %}Add Circuit{% endblock %}
+{% block search_placeholder %}Search circuits, descriptions, rooms{% endblock %}
+{% block clear_filters_url %}{% url 'tracker:circuit_list' %}{% endblock %}
 
 {% block card_title %}{{ item.description }} - Circuit {{ item.circuit_number }}{% endblock %}
 
