@@ -1,5 +1,5 @@
 from django import forms
-from tracker.models import Appliance, Circuit, CircuitDiagram, Outlet, PaintColor, PurchaseLocation, Room
+from tracker.models import Appliance, Circuit, CircuitDiagram, ElectricalPanel, Outlet, PaintColor, PurchaseLocation, Room
 
 
 class RoomForm(forms.ModelForm):
@@ -132,6 +132,52 @@ class PurchaseLocationForm(forms.ModelForm):
             'website': 'Optional website URL for this location',
             'notes': 'Any additional information about this purchase location'
         }
+
+
+class ElectricalPanelForm(forms.ModelForm):
+    class Meta:
+        model = ElectricalPanel
+        fields = [
+            'kind', 'brand', 'model', 'description', 'breaker_type'
+        ]
+        widgets = {
+            'kind': forms.Select(attrs={
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
+                'data-group': 'details'
+            }),
+            'brand': forms.TextInput(attrs={
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
+                'placeholder': 'e.g., Square D, Siemens, GE',
+                'data-group': 'details'
+            }),
+            'model': forms.TextInput(attrs={
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
+                'placeholder': 'Enter model number',
+                'data-group': 'details'
+            }),
+            'description': forms.TextInput(attrs={
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
+                'placeholder': 'e.g., Main electrical panel, Garage subpanel',
+                'data-group': 'details'
+            }),
+            'breaker_type': forms.TextInput(attrs={
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
+                'placeholder': 'e.g., QO, Homeline',
+                'data-group': 'technical'
+            }),
+        }
+        help_texts = {
+            'kind': 'Select the type of electrical panel',
+            'brand': 'Enter the manufacturer brand name',
+            'model': 'Enter the specific model number of the panel',
+            'description': 'Enter a descriptive name for this panel',
+            'breaker_type': 'Enter the type of breakers this panel uses'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Add empty option for kind selection
+        self.fields['kind'].empty_label = "Select panel type"
 
 
 class CircuitForm(forms.ModelForm):

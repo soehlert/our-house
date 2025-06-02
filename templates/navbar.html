@@ -8,7 +8,6 @@
                 </svg>
                 Our House
             </a>
-
             <!-- Desktop Menu -->
             <div class="hidden md:flex space-x-8">
                 <!-- Appliances -->
@@ -24,7 +23,6 @@
                         <a href="{% url 'tracker:appliance_create' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Add Appliance</a>
                     </div>
                 </div>
-
                 <!-- Electrical -->
                 <div class="relative group">
                     <button class="text-gray-300 hover:text-white flex items-center">
@@ -40,14 +38,18 @@
                         </div>
                         <a href="{% url 'tracker:circuit_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View All Circuits</a>
                         <a href="{% url 'tracker:circuit_create' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Add Circuit</a>
-
                         <!-- Diagrams -->
                         <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-t border-gray-100 mt-2">
                             Diagrams
                         </div>
                         <a href="{% url 'tracker:circuit_diagram_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View All Diagrams</a>
                         <a href="{% url 'tracker:circuit_diagram_create' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Add Diagram</a>
-
+                        <!-- Electrical Panels -->
+                        <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-t border-gray-100 mt-2">
+                            Electrical Panels
+                        </div>
+                        <a href="{% url 'tracker:electrical_panel_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View All Panels</a>
+                        <a href="{% url 'tracker:electrical_panel_create' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Add Panel</a>
                         <!-- Outlets -->
                         <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-t border-gray-100 mt-2">
                             Outlets
@@ -56,7 +58,6 @@
                         <a href="{% url 'tracker:outlet_create' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Add Outlet</a>
                     </div>
                 </div>
-
                 <!-- Locations -->
                 <div class="relative group">
                     <button class="text-gray-300 hover:text-white flex items-center">
@@ -72,7 +73,6 @@
                         </div>
                         <a href="{% url 'tracker:room_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View All Rooms</a>
                         <a href="{% url 'tracker:room_create' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Add Room</a>
-
                         <!-- Purchase Locations -->
                         <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-t border-gray-100 mt-2">
                             Purchase Locations
@@ -81,7 +81,6 @@
                         <a href="{% url 'tracker:purchase_location_create' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Add Purchase Location</a>
                     </div>
                 </div>
-
                 <!-- Paint Colors -->
                 <div class="relative group">
                     <button class="text-gray-300 hover:text-white flex items-center">
@@ -96,7 +95,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Mobile menu button -->
             <button class="md:hidden text-gray-300 hover:text-white" onclick="toggleMenu()">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,7 +102,6 @@
                 </svg>
             </button>
         </div>
-
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="md:hidden hidden bg-gray-800 pb-4">
             <div class="space-y-1">
@@ -119,7 +116,6 @@
                     <a href="{% url 'tracker:appliance_list' %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">View All Appliances</a>
                     <a href="{% url 'tracker:appliance_create' %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">Add Appliance</a>
                 </div>
-
                 <!-- Electrical -->
                 <button onclick="toggleSubmenu('electrical')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center justify-between mt-4">
                     Electrical
@@ -132,10 +128,11 @@
                     <a href="{% url 'tracker:circuit_create' %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">Add Circuit</a>
                     <a href="{% url 'tracker:circuit_diagram_list' %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">View All Diagrams</a>
                     <a href="{% url 'tracker:circuit_diagram_create' %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">Add Diagram</a>
+                    <a href="{% url 'tracker:electrical_panel_list' %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">View All Panels</a>
+                    <a href="{% url 'tracker:electrical_panel_create' %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">Add Panel</a>
                     <a href="{% url 'tracker:outlet_list' %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">View All Outlets</a>
                     <a href="{% url 'tracker:outlet_create' %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">Add Outlet</a>
                 </div>
-
                 <!-- Locations -->
                 <button onclick="toggleSubmenu('locations')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center justify-between mt-4">
                     Locations
@@ -149,7 +146,6 @@
                     <a href="{% url 'tracker:purchase_location_list' %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">View All Purchase Locations</a>
                     <a href="{% url 'tracker:purchase_location_create' %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">Add Purchase Location</a>
                 </div>
-
                 <!-- Paint Colors -->
                 <button onclick="toggleSubmenu('paint')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center justify-between mt-4">
                     Paint Colors

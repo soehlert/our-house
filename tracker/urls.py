@@ -1,5 +1,5 @@
 from django.urls import path
-from tracker.views import home_views, appliance_views, circuit_diagram_views, circuit_views, outlet_views, paint_color_views, purchase_location_views, room_views
+from tracker.views import home_views, appliance_views, circuit_diagram_views, circuit_views, electrical_panel_views, outlet_views, paint_color_views, purchase_location_views, room_views
 
 app_name = 'tracker'
 
@@ -32,6 +32,13 @@ urlpatterns = [
     path('circuit-diagrams/create/', circuit_diagram_views.circuit_diagram_create, name='circuit_diagram_create'),
     path('circuit-diagrams/<int:pk>/update/', circuit_diagram_views.circuit_diagram_update, name='circuit_diagram_update'),
     path('circuit-diagrams/<int:pk>/delete/', circuit_diagram_views.circuit_diagram_delete, name='circuit_diagram_delete'),
+
+    # Electrical Panel URLs
+    path('electrical-panels/', electrical_panel_views.electrical_panel_list, name='electrical_panel_list'),
+    path('electrical-panels/<int:pk>/', electrical_panel_views.electrical_panel_detail, name='electrical_panel_detail'),
+    path('electrical-panels/create/', electrical_panel_views.electrical_panel_create, name='electrical_panel_create'),
+    path('electrical-panels/<int:pk>/update/', electrical_panel_views.electrical_panel_update, name='electrical_panel_update'),
+    path('electrical-panels/<int:pk>/delete/', electrical_panel_views.electrical_panel_delete, name='electrical_panel_delete'),
 
     # Outlet URLs
     path('outlets/', outlet_views.outlet_list, name='outlet_list'),

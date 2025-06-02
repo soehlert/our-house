@@ -243,28 +243,6 @@
             </div>
         </a>
     </div>
-    <!-- Electrical Panel -->
-    <div class="mb-8">
-        <h2 class="text-lg font-medium text-gray-900 mb-4">Electrical Panel Layout</h2>
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-6">
-                <div class="flex justify-center">
-                    {{ svg_content|safe }}
-                </div>
-            </div>
-            <div class="bg-gray-50 px-6 py-3">
-                <div class="text-sm text-gray-600">
-                    <span class="font-medium">{{ circuit_count }}</span> circuits configured
-                    <span class="mx-2">•</span>
-                    <a href="{% url 'tracker:circuit_list' %}"
-                       class="inline-block px-3 py-1 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded hover:bg-blue-50">
-                        Manage circuits
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Recent Activity -->
     {% if recent_items %}
     <div class="mb-8">

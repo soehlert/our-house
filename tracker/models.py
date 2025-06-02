@@ -7,6 +7,23 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class BreakerSize(models.TextChoices):
+    FIFTEEN_AMP = "15A", "15A"
+    TWENTY_AMP = "20A", "20A"
+    THIRTY_AMP = "30A", "30A"
+    FORTY_AMP = "40A", "40A"
+    FIFTY_AMP = "50A", "50A"
+    SIXTY_AMP = "60A", "60A"
+
+class Volts(models.TextChoices):
+    ONETWENTY = "120V", "120V"
+    TWOFORTY = "240V", "240V"
+
+class PoleType(models.TextChoices):
+    SINGLE = "single", "Single Pole"
+    DOUBLE = "double", "Double Pole"
+
+
 class Room(models.Model):
     """Represents a room in the house."""
     name = models.CharField(max_length=100, unique=True)
@@ -63,6 +80,24 @@ class PurchaseLocation(models.Model):
         return self.name
 
 
+class ElectricalPanel(models.Model):
+    """Define electrical panels."""
+    class PanelType(models.TextChoices):
+        MAIN = "Main Panel", "Main Panel"
+        SUBPANEL = "Subpanel", "Subpanel"
+        Disconnect = "Disconnect", "Disconnect"
+
+    brand = models.CharField(max_length=25)
+    model = models.CharField(max_length=25, blank=True)
+    description = models.TextField(blank=True)
+    breaker_type = models.CharField(max_length=25, blank=True)
+    kind = models.CharField(max_length=25, choices=PanelType)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"{self.brand} - {self.model}: {self.kind}"
+
+
 class Appliance(models.Model):
     """Tracks appliances and their documentation."""
 
@@ -71,22 +106,6 @@ class Appliance(models.Model):
         ELECTRIC = "electric", "Electric"
         INDUCTION = "induction", "Induction"
         OTHER = "other", "Other"
-
-    class BreakerSize(models.TextChoices):
-        FIFTEEN_AMP = "15A", "15A"
-        TWENTY_AMP = "20A", "20A"
-        THIRTY_AMP = "30A", "30A"
-        FORTY_AMP = "40A", "40A"
-        FIFTY_AMP = "50A", "50A"
-        SIXTY_AMP = "60A", "60A"
-
-    class Volts(models.TextChoices):
-        ONETWENTY = "120V", "120V"
-        TWOFORTY = "240V", "240V"
-
-    class PoleType(models.TextChoices):
-        SINGLE = "single", "Single Pole"
-        DOUBLE = "double", "Double Pole"
 
     name = models.CharField(max_length=100)
     brand = models.CharField(max_length=100, blank=True)
@@ -192,27 +211,11 @@ class CircuitDiagram(models.Model):
 
 class Circuit(models.Model):
     """Electrical circuits in the house."""
-
-    class BreakerSize(models.TextChoices):
-        FIFTEEN_AMP = "15A", "15A"
-        TWENTY_AMP = "20A", "20A"
-        THIRTY_AMP = "30A", "30A"
-        FORTY_AMP = "40A", "40A"
-        FIFTY_AMP = "50A", "50A"
-        SIXTY_AMP = "60A", "60A"
-
-    class Volts(models.TextChoices):
-        ONETWENTY = "120V", "120V"
-        TWOFORTY = "240V", "240V"
-
-    class PoleType(models.TextChoices):
-        SINGLE = "single", "Single Pole"
-        DOUBLE = "double", "Double Pole"
-
     rooms = models.ManyToManyField(Room, related_name='circuits')
     circuit_number = models.IntegerField()
     description = models.CharField(max_length=255)
 
+    panel = models.ForeignKey(ElectricalPanel, on_delete=models.CASCADE, related_name='circuits')
     breaker_size = models.CharField(max_length=10, choices=BreakerSize.choices)
     gfci = models.BooleanField(default=False, verbose_name="GFCI Protected")
     afci = models.BooleanField(default=False, verbose_name="AFCI Protected")

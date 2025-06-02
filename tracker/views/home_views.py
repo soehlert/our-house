@@ -6,7 +6,6 @@ from django.apps import apps
 from django.http import HttpResponse
 
 from tracker.models import Room, Appliance, PurchaseLocation, PaintColor, Circuit, Outlet
-from tracker.utils import generate_electrical_panel_image
 
 
 def _get_warranty_data():
@@ -72,10 +71,6 @@ def home(request):
     # Sort by creation date and limit
     recent_items = sorted(recent_items, key=lambda x: x['created_at'], reverse=True)[:10]
 
-    # Generate SVG content for electrical panel
-    svg_file = generate_electrical_panel_image()
-    svg_content = svg_file.read().decode('utf-8')
-
     context = {
         'room_count': Room.objects.count(),
         'appliance_count': Appliance.objects.count(),
@@ -86,7 +81,6 @@ def home(request):
         'recent_items_count': recent_count,
         'missing_docs_count': missing_docs,
         'recent_items': recent_items,
-        'svg_content': svg_content,
         **warranty_data,
     }
     return render(request, 'tracker/home.html', context)

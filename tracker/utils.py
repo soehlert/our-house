@@ -37,15 +37,33 @@ class ElectricalPanelGenerator:
         self.legend_height = 100
 
     def generate_panel_image(self) -> ContentFile:
-        """Ccoordinate the actual SVG generation process."""
+        """Coordinate the actual SVG generation process for all circuits."""
         circuits = self._get_circuit_data()
         dimensions = self._calculate_dimensions(circuits)
 
         # Create the basic SVG structure
         svg = self._create_svg_root(dimensions)
         self._add_styles(svg)
-        self._add_title(svg)
-        layout = self._calculate_layout(dimensions)
+        self._add_title(svg, "Electrical Panel")
+        layout = self._calculate_layout()
+        self._draw_panel_structure(svg, layout, dimensions)
+        double_pole_info = self._analyze_double_pole_breakers(circuits)
+        self._draw_all_circuits(svg, circuits, layout, dimensions, double_pole_info)
+        self._draw_legend(svg, dimensions)
+
+        return self._convert_to_file(svg)
+
+    def generate_panel_image_for_panel(self, panel_id: int) -> ContentFile:
+        """Generate SVG for a specific electrical panel."""
+        circuits = self._get_circuit_data_for_panel(panel_id)
+        panel_title = self._get_panel_title(panel_id)
+        dimensions = self._calculate_dimensions(circuits)
+
+        # Create the basic SVG structure
+        svg = self._create_svg_root(dimensions)
+        self._add_styles(svg)
+        self._add_title(svg, panel_title)
+        layout = self._calculate_layout()
         self._draw_panel_structure(svg, layout, dimensions)
         double_pole_info = self._analyze_double_pole_breakers(circuits)
         self._draw_all_circuits(svg, circuits, layout, dimensions, double_pole_info)
@@ -58,6 +76,30 @@ class ElectricalPanelGenerator:
         """Fetch all circuits from database and organizes them by circuit number."""
         circuits = Circuit.objects.all()
         return {circuit.circuit_number: circuit for circuit in circuits}
+
+    @staticmethod
+    def _get_circuit_data_for_panel(panel_id: int) -> Dict[int, Circuit]:
+        """Fetch circuits for a specific panel."""
+        from tracker.models import ElectricalPanel
+        try:
+            panel = ElectricalPanel.objects.get(id=panel_id)
+            circuits = panel.circuits.all()
+            return {circuit.circuit_number: circuit for circuit in circuits}
+        except ElectricalPanel.DoesNotExist:
+            return {}
+
+    @staticmethod
+    def _get_panel_title(panel_id: int) -> str:
+        """Get the title for a specific panel."""
+        from tracker.models import ElectricalPanel
+        try:
+            panel = ElectricalPanel.objects.get(id=panel_id)
+            if panel.description:
+                return panel.description
+            else:
+                return f"{panel.kind} - {panel.brand}"
+        except ElectricalPanel.DoesNotExist:
+            return "Electrical Panel"
 
     def _calculate_dimensions(self, circuits: Dict[int, Circuit]) -> Dict[str, int]:
         """Figure out how big the SVG needs to be based on the highest circuit number."""
@@ -117,17 +159,17 @@ class ElectricalPanelGenerator:
             @media (max-width: 768px) { svg { max-width: 100%; height: auto; } }
         """
 
-    def _add_title(self, svg: ET.Element) -> None:
-        """Add the "Electrical Panel" title at the top center of the diagram."""
+    def _add_title(self, svg: ET.Element, title_text: str) -> None:
+        """Add title at the top center of the diagram."""
         title = ET.SubElement(svg, 'text', {
             'x': str(self.width // 2),
             'y': '30',
             'class': 'panel-title',
             'fill': '#000000'
         })
-        title.text = 'Electrical Panel'
+        title.text = title_text
 
-    def _calculate_layout(self, dimensions: Dict[str, int]) -> Dict[str, int]:
+    def _calculate_layout(self) -> Dict[str, int]:
         """
         Calculates the X and Y positions for all the different elements.
         This creates the layout: Numbers | Labels | Breakers | Center | Breakers | Labels | Numbers
@@ -305,7 +347,6 @@ class ElectricalPanelGenerator:
                 'fill': '#000000'
             }).text = circuit.breaker_size
 
-
     def _draw_legend(self, svg: ET.Element, dimensions: Dict[str, int]) -> None:
         """Draw the color legend at the bottom of the panel."""
         legend_y = 60 + dimensions['panel_height'] + 30
@@ -365,8 +406,7 @@ class ElectricalPanelGenerator:
         return ContentFile(svg_content.encode('utf-8'), name='electrical_panel.svg')
 
 
-# Public function for backward compatibility
-def generate_electrical_panel_image() -> ContentFile:
-    """Exists as the public callable to run through these utils."""
+def generate_electrical_panel_image_for_panel(panel_id: int) -> ContentFile:
+    """Generate SVG for a specific electrical panel."""
     generator = ElectricalPanelGenerator()
-    return generator.generate_panel_image()
+    return generator.generate_panel_image_for_panel(panel_id)
