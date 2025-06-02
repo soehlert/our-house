@@ -63,6 +63,24 @@ class PurchaseLocation(models.Model):
         return self.name
 
 
+class ElectricPanel(models.Model):
+    """Define Electric panels."""
+    class PanelType(models.TextChoices):
+        MAIN = "Main Panel", "Main Panel"
+        SUBPANEL = "Subpanel", "Subpanel"
+        Disconnect = "Disconnect", "Disconnect"
+
+    brand = models.CharField(max_length=25)
+    model = models.CharField(max_length=25, blank=True)
+    description = models.TextField(blank=True)
+    breaker_type = models.CharField(max_length=25, blank=True)
+    kind = models.CharField(max_length=25, choices=PanelType)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"{self.brand} - {self.model}: {self.kind}"
+
+
 class Appliance(models.Model):
     """Tracks appliances and their documentation."""
 
@@ -213,6 +231,7 @@ class Circuit(models.Model):
     circuit_number = models.IntegerField()
     description = models.CharField(max_length=255)
 
+    panel = models.ForeignKey(ElectricPanel, on_delete=models.CASCADE, related_name='circuits')
     breaker_size = models.CharField(max_length=10, choices=BreakerSize.choices)
     gfci = models.BooleanField(default=False, verbose_name="GFCI Protected")
     afci = models.BooleanField(default=False, verbose_name="AFCI Protected")

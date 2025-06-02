@@ -1,0 +1,146 @@
+{% extends 'tracker/base_detail.html' %}
+
+{% block detail_title %}{{ panel.description }}{% endblock %}
+{% block detail_subtitle %}{{ panel.get_kind_display }} - {{ panel.brand }} {{ panel.model }}{% endblock %}
+
+{% block edit_url %}{% url 'tracker:electric_panel_update' panel.pk %}{% endblock %}
+{% block delete_url %}{% url 'tracker:electric_panel_delete' panel.pk %}{% endblock %}
+
+{% block detail_content %}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Panel Details -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Panel Details</h3>
+            <div class="space-y-3">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Panel Type</dt>
+                    <dd class="text-sm text-gray-900">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                            {% if panel.kind == 'Main Panel' %}bg-primary-100 text-primary-800
+                            {% elif panel.kind == 'Subpanel' %}bg-success-100 text-success-800
+                            {% elif panel.kind == 'Disconnect' %}bg-warning-100 text-warning-800
+                            {% else %}bg-neutral-100 text-neutral-800
+                            {% endif %}">
+                            {{ panel.get_kind_display }}
+                        </span>
+                    </dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Brand</dt>
+                    <dd class="text-sm text-gray-900">{{ panel.brand }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Model</dt>
+                    <dd class="text-sm text-gray-900">{{ panel.model }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Breaker Type</dt>
+                    <dd class="text-sm text-gray-900">{{ panel.breaker_type }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Total Circuits</dt>
+                    <dd class="text-sm text-gray-900">{{ circuits.count }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Created</dt>
+                    <dd class="text-sm text-gray-900">{{ panel.created_at|date:"M d, Y" }}</dd>
+                </div>
+            </div>
+        </div>
+        <!-- Circuit Summary -->
+        {% if circuits.exists %}
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Circuit Summary</h3>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-500">15A Circuits:</span>
+                    <span class="text-sm text-gray-900">{{ circuits|dictsort:"breaker_size"|dictsortreversed:"breaker_size"|slice:":999"|length }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-500">20A Circuits:</span>
+                    <span class="text-sm text-gray-900">{{ circuits|dictsort:"breaker_size"|dictsortreversed:"breaker_size"|slice:":999"|length }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-500">GFCI Protected:</span>
+                    <span class="text-sm text-gray-900">{{ circuits|dictsort:"gfci"|dictsortreversed:"gfci"|slice:":999"|length }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-500">AFCI Protected:</span>
+                    <span class="text-sm text-gray-900">{{ circuits|dictsort:"afci"|dictsortreversed:"afci"|slice:":999"|length }}</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <!-- Circuits List -->
+        {% if circuits.exists %}
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 lg:col-span-2">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Circuits ({{ circuits.count }})</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {% for circuit in circuits %}
+                    <div class="border border-gray-200 rounded p-3 bg-white">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <div class="text-sm font-medium text-gray-900">
+                                        Circuit {{ circuit.circuit_number }}
+                                    </div>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+                                        {{ circuit.breaker_size }}
+                                    </span>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                        {% if circuit.pole_type == 'single' %}bg-neutral-100 text-neutral-800
+                                        {% else %}bg-warning-100 text-warning-800
+                                        {% endif %}">
+                                        {{ circuit.get_pole_type_display }}
+                                    </span>
+                                </div>
+                                <div class="text-xs text-gray-600 mt-1">{{ circuit.description }}</div>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    {% if circuit.gfci %}
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-success-100 text-success-800">GFCI</span>
+                                    {% endif %}
+                                    {% if circuit.afci %}
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-success-100 text-success-800">AFCI</span>
+                                    {% endif %}
+                                    {% if circuit.cafi %}
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-success-100 text-success-800">CAFI</span>
+                                    {% endif %}
+                                </div>
+                                {% if circuit.rooms.exists %}
+                                    <div class="text-xs text-gray-500 mt-1">
+                                        Serves: {% for room in circuit.rooms.all %}{{ room.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <a href="{% url 'tracker:circuit_detail' circuit.pk %}"
+                               class="text-primary-600 hover:text-primary-800 text-sm font-medium ml-3">
+                                View
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 lg:col-span-2">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Circuits</h3>
+            <div class="text-center py-6">
+                <div class="text-gray-500 text-sm">No circuits assigned to this panel yet.</div>
+                <a href="{% url 'tracker:circuit_create' %}"
+                   class="mt-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    Add First Circuit
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        <!-- Description/Notes -->
+        {% if panel.description %}
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 lg:col-span-2">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Description</h3>
+            <div class="prose prose-sm max-w-none">
+                <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ panel.description }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
