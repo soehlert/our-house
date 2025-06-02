@@ -1,6 +1,6 @@
 {% extends 'tracker/base_confirm_delete.html' %}
 
-{% block delete_title %}Delete Electric Panel{% endblock %}
+{% block delete_title %}Delete Electrical Panel{% endblock %}
 
 {% block delete_message %}
     Are you sure you want to delete the <strong>{{ panel.get_kind_display }}</strong> - <strong>{{ panel.description }}</strong>?
@@ -17,7 +17,7 @@
             <div class="ml-3">
                 <h3 class="text-sm font-medium text-yellow-800">Warning</h3>
                 <div class="mt-2 text-sm text-yellow-700">
-                    <p>This action will permanently delete this electric panel and <strong>all {{ panel.circuits.count }} associated circuits</strong>. This cannot be undone.</p>
+                    <p>This action will permanently delete this electrical panel and <strong>all {{ panel.circuits.count }} associated circuits</strong>. This cannot be undone.</p>
                     {% if panel.circuits.exists %}
                         <p class="mt-1">The following circuits will also be deleted:</p>
                         <ul class="mt-1 list-disc list-inside">
@@ -35,5 +35,5 @@
     </div>
 {% endblock %}
 
-{% block cancel_url %}{% url 'tracker:electric_panel_detail' panel.pk %}{% endblock %}
-{% block delete_url %}{% url 'tracker:electric_panel_delete' panel.pk %}{% endblock %}
+{% block cancel_url %}{% url 'tracker:electrical_panel_detail' panel.pk %}{% endblock %}
+{% block delete_url %}{% url 'tracker:electrical_panel_delete' panel.pk %}{% endblock %}

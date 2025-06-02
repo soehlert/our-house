@@ -52,7 +52,8 @@
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Room</dt>
                             <dd class="text-sm text-gray-900">
-                                <a href="{% url 'tracker:room_detail' appliance.room.pk %}" class="text-blue-600 hover:text-blue-800">
+                                <a href="{% url 'tracker:room_detail' appliance.room.pk %}"
+                                   class="inline-flex items-center px-3 py-1.5 border border-green-300 shadow-sm text-xs font-medium rounded-md text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                                     {{ appliance.room.name }}
                                 </a>
                             </dd>
@@ -104,7 +105,8 @@
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Purchase Location</dt>
                                 <dd class="text-sm text-gray-900">
-                                    <a href="{% url 'tracker:purchase_location_detail' appliance.purchase_location.pk %}" class="text-blue-600 hover:text-blue-800">
+                                    <a href="{% url 'tracker:purchase_location_detail' appliance.purchase_location.pk %}"
+                                       class="inline-flex items-center px-3 py-1.5 border border-green-300 shadow-sm text-xs font-medium rounded-md text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                                         {{ appliance.purchase_location.name }}
                                     </a>
                                 </dd>
@@ -123,8 +125,8 @@
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Status</h3>
                 <div class="space-y-3">
-                    <div class="flex items-center">
-                        <span class="text-sm font-medium text-gray-500 w-24">Registered:</span>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm font-medium text-gray-500">Registered:</span>
                         {% if appliance.registered %}
                             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Yes</span>
                         {% else %}

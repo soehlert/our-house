@@ -63,8 +63,8 @@ class PurchaseLocation(models.Model):
         return self.name
 
 
-class ElectricPanel(models.Model):
-    """Define Electric panels."""
+class ElectricalPanel(models.Model):
+    """Define electrical panels."""
     class PanelType(models.TextChoices):
         MAIN = "Main Panel", "Main Panel"
         SUBPANEL = "Subpanel", "Subpanel"
@@ -231,7 +231,7 @@ class Circuit(models.Model):
     circuit_number = models.IntegerField()
     description = models.CharField(max_length=255)
 
-    panel = models.ForeignKey(ElectricPanel, on_delete=models.CASCADE, related_name='circuits')
+    panel = models.ForeignKey(ElectricalPanel, on_delete=models.CASCADE, related_name='circuits')
     breaker_size = models.CharField(max_length=10, choices=BreakerSize.choices)
     gfci = models.BooleanField(default=False, verbose_name="GFCI Protected")
     afci = models.BooleanField(default=False, verbose_name="AFCI Protected")

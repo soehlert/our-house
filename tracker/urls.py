@@ -1,5 +1,5 @@
 from django.urls import path
-from tracker.views import home_views, appliance_views, circuit_diagram_views, circuit_views, electric_panel_views, outlet_views, paint_color_views, purchase_location_views, room_views
+from tracker.views import home_views, appliance_views, circuit_diagram_views, circuit_views, electrical_panel_views, outlet_views, paint_color_views, purchase_location_views, room_views
 
 app_name = 'tracker'
 
@@ -33,12 +33,12 @@ urlpatterns = [
     path('circuit-diagrams/<int:pk>/update/', circuit_diagram_views.circuit_diagram_update, name='circuit_diagram_update'),
     path('circuit-diagrams/<int:pk>/delete/', circuit_diagram_views.circuit_diagram_delete, name='circuit_diagram_delete'),
 
-    # Electric Panel URLs
-    path('electric-panels/', electric_panel_views.electric_panel_list, name='electric_panel_list'),
-    path('electric-panels/<int:pk>/', electric_panel_views.electric_panel_detail, name='electric_panel_detail'),
-    path('electric-panels/create/', electric_panel_views.electric_panel_create, name='electric_panel_create'),
-    path('electric-panels/<int:pk>/update/', electric_panel_views.electric_panel_update, name='electric_panel_update'),
-    path('electric-panels/<int:pk>/delete/', electric_panel_views.electric_panel_delete, name='electric_panel_delete'),
+    # Electrical Panel URLs
+    path('electrical-panels/', electrical_panel_views.electrical_panel_list, name='electrical_panel_list'),
+    path('electrical-panels/<int:pk>/', electrical_panel_views.electrical_panel_detail, name='electrical_panel_detail'),
+    path('electrical-panels/create/', electrical_panel_views.electrical_panel_create, name='electrical_panel_create'),
+    path('electrical-panels/<int:pk>/update/', electrical_panel_views.electrical_panel_update, name='electrical_panel_update'),
+    path('electrical-panels/<int:pk>/delete/', electrical_panel_views.electrical_panel_delete, name='electrical_panel_delete'),
 
     # Outlet URLs
     path('outlets/', outlet_views.outlet_list, name='outlet_list'),

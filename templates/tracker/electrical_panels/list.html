@@ -1,12 +1,12 @@
 {% extends 'tracker/base_list.html' %}
 
-{% block list_title %}Electric Panels{% endblock %}
-{% block create_url %}{% url 'tracker:electric_panel_create' %}{% endblock %}
+{% block list_title %}Electrical Panels{% endblock %}
+{% block create_url %}{% url 'tracker:electrical_panel_create' %}{% endblock %}
 {% block create_button_text %}Add Panel{% endblock %}
 {% block search_placeholder %}Search panels, brands, models{% endblock %}
-{% block clear_filters_url %}{% url 'tracker:electric_panel_list' %}{% endblock %}
+{% block clear_filters_url %}{% url 'tracker:electrical_panel_list' %}{% endblock %}
 
-{% block card_title %}{{ item.description|default:"Electric Panel" }}{% endblock %}
+{% block card_title %}{{ item.description|default:"Electrical Panel" }}{% endblock %}
 
 {% block card_badge %}
 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
@@ -43,8 +43,8 @@
 </div>
 {% endblock %}
 
-{% block item_detail_url %}{% url 'tracker:electric_panel_detail' item.pk %}{% endblock %}
-{% block item_edit_url %}{% url 'tracker:electric_panel_update' item.pk %}{% endblock %}
+{% block item_detail_url %}{% url 'tracker:electrical_panel_detail' item.pk %}{% endblock %}
+{% block item_edit_url %}{% url 'tracker:electrical_panel_update' item.pk %}{% endblock %}
 
-{% block empty_title %}No electric panels{% endblock %}
-{% block empty_description %}Get started by adding your first electric panel.{% endblock %}
+{% block empty_title %}No electrical panels{% endblock %}
+{% block empty_description %}Get started by adding your first electrical panel.{% endblock %}

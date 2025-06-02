@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Appliance, Circuit, CircuitDiagram, ElectricPanel, Outlet, PaintColor, PurchaseLocation, Room
+from .models import Appliance, Circuit, CircuitDiagram, ElectricalPanel, Outlet, PaintColor, PurchaseLocation, Room
 
 
 @admin.register(Appliance)
@@ -24,8 +24,8 @@ class CircuitDiagramAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at']
 
 
-@admin.register(ElectricPanel)
-class ElectricPanelAdmin(admin.ModelAdmin):
+@admin.register(ElectricalPanel)
+class ElectricalPanelAdmin(admin.ModelAdmin):
     list_display = ["brand", "model", "kind", "breaker_type", "description"]
     list_filter = ["kind", "breaker_type"]
     search_fields = ["brand", "model", "kind", "breaker_type"]

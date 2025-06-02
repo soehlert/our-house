@@ -23,3 +23,7 @@ from .circuit_diagram_views import (
 from .outlet_views import (
     outlet_list, outlet_detail, outlet_create, outlet_delete, outlet_update
 )
+
+from .electrical_panel_views import (
+    electrical_panel_list, electrical_panel_detail, electrical_panel_create, electrical_panel_delete, electrical_panel_update
+)

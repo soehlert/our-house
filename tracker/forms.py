@@ -1,5 +1,5 @@
 from django import forms
-from tracker.models import Appliance, Circuit, CircuitDiagram, ElectricPanel, Outlet, PaintColor, PurchaseLocation, Room
+from tracker.models import Appliance, Circuit, CircuitDiagram, ElectricalPanel, Outlet, PaintColor, PurchaseLocation, Room
 
 
 class RoomForm(forms.ModelForm):
@@ -134,9 +134,9 @@ class PurchaseLocationForm(forms.ModelForm):
         }
 
 
-class ElectricPanelForm(forms.ModelForm):
+class ElectricalPanelForm(forms.ModelForm):
     class Meta:
-        model = ElectricPanel
+        model = ElectricalPanel
         fields = [
             'kind', 'brand', 'model', 'description', 'breaker_type'
         ]

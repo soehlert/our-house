@@ -3,10 +3,20 @@
 {% block detail_title %}{{ panel.description }}{% endblock %}
 {% block detail_subtitle %}{{ panel.get_kind_display }} - {{ panel.brand }} {{ panel.model }}{% endblock %}
 
-{% block edit_url %}{% url 'tracker:electric_panel_update' panel.pk %}{% endblock %}
-{% block delete_url %}{% url 'tracker:electric_panel_delete' panel.pk %}{% endblock %}
+{% block edit_url %}{% url 'tracker:electrical_panel_update' panel.pk %}{% endblock %}
+{% block delete_url %}{% url 'tracker:electrical_panel_delete' panel.pk %}{% endblock %}
 
 {% block detail_content %}
+    <div class="mb-8">
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Panel Diagram</h3>
+                <div class="flex justify-center">
+                    {{ svg_content|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Panel Details -->
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
@@ -16,10 +26,10 @@
                     <dt class="text-sm font-medium text-gray-500">Panel Type</dt>
                     <dd class="text-sm text-gray-900">
                         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-                            {% if panel.kind == 'Main Panel' %}bg-primary-100 text-primary-800
-                            {% elif panel.kind == 'Subpanel' %}bg-success-100 text-success-800
-                            {% elif panel.kind == 'Disconnect' %}bg-warning-100 text-warning-800
-                            {% else %}bg-neutral-100 text-neutral-800
+                            {% if panel.kind == 'Main Panel' %}bg-blue-100 text-blue-800
+                            {% elif panel.kind == 'Subpanel' %}bg-green-100 text-green-800
+                            {% elif panel.kind == 'Disconnect' %}bg-yellow-100 text-yellow-800
+                            {% else %}bg-gray-100 text-gray-800
                             {% endif %}">
                             {{ panel.get_kind_display }}
                         </span>
@@ -49,27 +59,42 @@
         </div>
         <!-- Circuit Summary -->
         {% if circuits.exists %}
-        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Circuit Summary</h3>
-            <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium text-gray-500">15A Circuits:</span>
-                    <span class="text-sm text-gray-900">{{ circuits|dictsort:"breaker_size"|dictsortreversed:"breaker_size"|slice:":999"|length }}</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium text-gray-500">20A Circuits:</span>
-                    <span class="text-sm text-gray-900">{{ circuits|dictsort:"breaker_size"|dictsortreversed:"breaker_size"|slice:":999"|length }}</span>
-                </div>
-                <div class="flex items-center justify-between">
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Circuit Summary</h3>
+                <div class="grid gap-3" style="grid-template-columns: max-content auto;">
+                    <!-- Breaker Sizes -->
+                    {% for breaker_size, count in breaker_counts.items %}
+                    <span class="text-sm font-medium text-gray-500">{{ breaker_size }} Circuits:</span>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 justify-self-start">
+                        {{ count }}
+                    </span>
+                    {% endfor %}
+                    <!-- Protection Types -->
+                    {% if gfci_count > 0 %}
                     <span class="text-sm font-medium text-gray-500">GFCI Protected:</span>
-                    <span class="text-sm text-gray-900">{{ circuits|dictsort:"gfci"|dictsortreversed:"gfci"|slice:":999"|length }}</span>
-                </div>
-                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 justify-self-start">
+                        {{ gfci_count }}
+                    </span>
+                    {% endif %}
+                    {% if afci_count > 0 %}
                     <span class="text-sm font-medium text-gray-500">AFCI Protected:</span>
-                    <span class="text-sm text-gray-900">{{ circuits|dictsort:"afci"|dictsortreversed:"afci"|slice:":999"|length }}</span>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 justify-self-start">
+                        {{ afci_count }}
+                    </span>
+                    {% endif %}
+                    {% if cafi_count > 0 %}
+                    <span class="text-sm font-medium text-gray-500">CAFI Protected:</span>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 justify-self-start">
+                        {{ cafi_count }}
+                    </span>
+                    {% endif %}
+                    <!-- Total -->
+                    <span class="text-sm font-medium text-gray-900 pt-2 border-t border-gray-200">Total Circuits:</span>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 justify-self-start pt-2 border-t border-gray-200">
+                        {{ circuits.count }}
+                    </span>
                 </div>
             </div>
-        </div>
         {% endif %}
         <!-- Circuits List -->
         {% if circuits.exists %}
@@ -84,12 +109,12 @@
                                     <div class="text-sm font-medium text-gray-900">
                                         Circuit {{ circuit.circuit_number }}
                                     </div>
-                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                         {{ circuit.breaker_size }}
                                     </span>
                                     <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-                                        {% if circuit.pole_type == 'single' %}bg-neutral-100 text-neutral-800
-                                        {% else %}bg-warning-100 text-warning-800
+                                        {% if circuit.pole_type == 'single' %}bg-gray-100 text-gray-800
+                                        {% else %}bg-yellow-100 text-yellow-800
                                         {% endif %}">
                                         {{ circuit.get_pole_type_display }}
                                     </span>
@@ -97,13 +122,13 @@
                                 <div class="text-xs text-gray-600 mt-1">{{ circuit.description }}</div>
                                 <div class="flex items-center space-x-2 mt-1">
                                     {% if circuit.gfci %}
-                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-success-100 text-success-800">GFCI</span>
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">GFCI</span>
                                     {% endif %}
                                     {% if circuit.afci %}
-                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-success-100 text-success-800">AFCI</span>
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">AFCI</span>
                                     {% endif %}
                                     {% if circuit.cafi %}
-                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-success-100 text-success-800">CAFI</span>
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">CAFI</span>
                                     {% endif %}
                                 </div>
                                 {% if circuit.rooms.exists %}
@@ -113,7 +138,7 @@
                                 {% endif %}
                             </div>
                             <a href="{% url 'tracker:circuit_detail' circuit.pk %}"
-                               class="text-primary-600 hover:text-primary-800 text-sm font-medium ml-3">
+                               class="inline-flex items-center px-3 py-1.5 border border-green-300 shadow-sm text-xs font-medium rounded-md text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                                 View
                             </a>
                         </div>
@@ -130,15 +155,6 @@
                    class="mt-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                     Add First Circuit
                 </a>
-            </div>
-        </div>
-        {% endif %}
-        <!-- Description/Notes -->
-        {% if panel.description %}
-        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 lg:col-span-2">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Description</h3>
-            <div class="prose prose-sm max-w-none">
-                <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ panel.description }}</p>
             </div>
         </div>
         {% endif %}

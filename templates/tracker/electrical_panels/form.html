@@ -1,15 +1,15 @@
 {% extends 'tracker/base_form.html' %}
 
 {% block form_title %}
-    {% if panel %}Edit Electric Panel{% else %}Add New Electric Panel{% endif %}
+    {% if panel %}Edit Electrical Panel{% else %}Add New Electrical Panel{% endif %}
 {% endblock %}
 
 {% block form_description %}
-    {% if panel %}Update electric panel information{% else %}Enter electric panel details{% endif %}
+    {% if panel %}Update electrical panel information{% else %}Enter electrical panel details{% endif %}
 {% endblock %}
 
 {% block cancel_url %}
-    {% if panel %}{% url 'tracker:electric_panel_detail' pk=panel.pk %}{% else %}{% url 'tracker:electric_panel_list' %}{% endif %}
+    {% if panel %}{% url 'tracker:electrical_panel_detail' pk=panel.pk %}{% else %}{% url 'tracker:electrical_panel_list' %}{% endif %}
 {% endblock %}
 
 {% block extra_buttons %}
@@ -24,7 +24,7 @@
         </button>
     {% else %}
         <!-- Show "Delete" only on edit forms -->
-        <a href="{% url 'tracker:electric_panel_delete' panel.pk %}"
+        <a href="{% url 'tracker:electrical_panel_delete' panel.pk %}"
            class="inline-flex items-center px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-600 rounded-md hover:bg-red-50 focus:outline-none">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
