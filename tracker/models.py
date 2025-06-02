@@ -7,6 +7,23 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class BreakerSize(models.TextChoices):
+    FIFTEEN_AMP = "15A", "15A"
+    TWENTY_AMP = "20A", "20A"
+    THIRTY_AMP = "30A", "30A"
+    FORTY_AMP = "40A", "40A"
+    FIFTY_AMP = "50A", "50A"
+    SIXTY_AMP = "60A", "60A"
+
+class Volts(models.TextChoices):
+    ONETWENTY = "120V", "120V"
+    TWOFORTY = "240V", "240V"
+
+class PoleType(models.TextChoices):
+    SINGLE = "single", "Single Pole"
+    DOUBLE = "double", "Double Pole"
+
+
 class Room(models.Model):
     """Represents a room in the house."""
     name = models.CharField(max_length=100, unique=True)
@@ -89,22 +106,6 @@ class Appliance(models.Model):
         ELECTRIC = "electric", "Electric"
         INDUCTION = "induction", "Induction"
         OTHER = "other", "Other"
-
-    class BreakerSize(models.TextChoices):
-        FIFTEEN_AMP = "15A", "15A"
-        TWENTY_AMP = "20A", "20A"
-        THIRTY_AMP = "30A", "30A"
-        FORTY_AMP = "40A", "40A"
-        FIFTY_AMP = "50A", "50A"
-        SIXTY_AMP = "60A", "60A"
-
-    class Volts(models.TextChoices):
-        ONETWENTY = "120V", "120V"
-        TWOFORTY = "240V", "240V"
-
-    class PoleType(models.TextChoices):
-        SINGLE = "single", "Single Pole"
-        DOUBLE = "double", "Double Pole"
 
     name = models.CharField(max_length=100)
     brand = models.CharField(max_length=100, blank=True)
@@ -210,23 +211,6 @@ class CircuitDiagram(models.Model):
 
 class Circuit(models.Model):
     """Electrical circuits in the house."""
-
-    class BreakerSize(models.TextChoices):
-        FIFTEEN_AMP = "15A", "15A"
-        TWENTY_AMP = "20A", "20A"
-        THIRTY_AMP = "30A", "30A"
-        FORTY_AMP = "40A", "40A"
-        FIFTY_AMP = "50A", "50A"
-        SIXTY_AMP = "60A", "60A"
-
-    class Volts(models.TextChoices):
-        ONETWENTY = "120V", "120V"
-        TWOFORTY = "240V", "240V"
-
-    class PoleType(models.TextChoices):
-        SINGLE = "single", "Single Pole"
-        DOUBLE = "double", "Double Pole"
-
     rooms = models.ManyToManyField(Room, related_name='circuits')
     circuit_number = models.IntegerField()
     description = models.CharField(max_length=255)
