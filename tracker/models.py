@@ -117,6 +117,10 @@ class Appliance(models.Model):
         default=ApplianceType.OTHER
     )
 
+    # Dismissable alerts
+    warranty_alert_dismissed = models.BooleanField(default=False)
+    warranty_alert_dismissed_at = models.DateTimeField(null=True, blank=True)
+
     # Documentation
     receipt = models.FileField(upload_to="receipts/", blank=True, null=True)
     owners_manual = models.FileField(upload_to="owners_manuals/", blank=True, null=True)

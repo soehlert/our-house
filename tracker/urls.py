@@ -11,6 +11,8 @@ urlpatterns = [
     path('alerts/expiring-warranties/', home_views.expiring_warranties_list, name='expiring_warranties_list'),
     path('alerts/unmapped-rooms/', home_views.unmapped_rooms_list, name='unmapped_rooms_list'),
     path('alerts/recent-additions/', home_views.recent_additions_list, name='recent_additions_list'),
+    path('dismiss-warranty/<int:appliance_id>/', home_views.dismiss_warranty_alert, name='dismiss_warranty_alert'),
+    path('undismiss-warranty/<int:appliance_id>/', home_views.undismiss_warranty_alert, name='undismiss_warranty_alert'),
 
     # Appliance URLs
     path('appliances/', appliance_views.appliance_list, name='appliance_list'),

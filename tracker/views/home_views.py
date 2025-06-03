@@ -1,7 +1,9 @@
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Q
-from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.http import require_POST
+from django.shortcuts import render, get_object_or_404
 from django.apps import apps
 from django.http import HttpResponse
 
@@ -14,12 +16,14 @@ def _get_warranty_data():
 
     expired_appliances = Appliance.objects.filter(
         warranty_expires__lt=today,
-        warranty_expires__isnull=False
+        warranty_expires__isnull=False,
+        warranty_alert_dismissed=False
     ).order_by('warranty_expires')
 
     expiring_appliances = Appliance.objects.filter(
         warranty_expires__gte=today,
-        warranty_expires__lte=today + timedelta(days=90)
+        warranty_expires__lte=today + timedelta(days=90),
+        warranty_alert_dismissed=False
     ).order_by('warranty_expires')
 
     return {
@@ -27,6 +31,35 @@ def _get_warranty_data():
         'expiring_appliances': expiring_appliances,
         'total_count': expired_appliances.count() + expiring_appliances.count(),
     }
+
+
+@require_POST
+def dismiss_warranty_alert(request, appliance_id):
+    """Dismiss a warranty alert for a specific appliance."""
+    appliance = get_object_or_404(Appliance, id=appliance_id)
+    appliance.warranty_alert_dismissed = True
+    appliance.warranty_alert_dismissed_at = timezone.now()
+    appliance.save(update_fields=['warranty_alert_dismissed', 'warranty_alert_dismissed_at'])
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': True})
+
+    return redirect('tracker:expiring_warranties_list')
+
+
+@require_POST
+def undismiss_warranty_alert(request, appliance_id):
+    """Un-dismiss a warranty alert for a specific appliance."""
+    appliance = get_object_or_404(Appliance, id=appliance_id)
+    appliance.warranty_alert_dismissed = False
+    appliance.warranty_alert_dismissed_at = None
+    appliance.save(update_fields=['warranty_alert_dismissed', 'warranty_alert_dismissed_at'])
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': True})
+
+    return redirect('tracker:expiring_warranties_list')
+
 
 def home(request):
     """Home page showing overview of all data."""
@@ -97,9 +130,35 @@ def missing_docs_list(request):
 
 def expiring_warranties_list(request):
     """Show appliances with expiring or expired warranties."""
+    today = timezone.now().date()
+
     warranty_data = _get_warranty_data()
     warranty_data['show_create_button'] = False
-    print(f"DEBUG: warranty_data = {warranty_data}")  # Add this line
+
+    dismissed_count = Appliance.objects.filter(
+        warranty_alert_dismissed=True,
+        warranty_expires__isnull=False
+    ).count()
+
+    # Get dismissed appliances to show when requested
+    dismissed_expired = Appliance.objects.filter(
+        warranty_expires__lt=today,
+        warranty_expires__isnull=False,
+        warranty_alert_dismissed=True
+    ).order_by('warranty_expires')
+
+    dismissed_expiring = Appliance.objects.filter(
+        warranty_expires__gte=today,
+        warranty_expires__lte=today + timedelta(days=90),
+        warranty_alert_dismissed=True
+    ).order_by('warranty_expires')
+
+    warranty_data.update({
+        'dismissed_expired': dismissed_expired,
+        'dismissed_expiring': dismissed_expiring,
+        'dismissed_count': dismissed_count,
+    })
+
     context = {
         **warranty_data,
     }
