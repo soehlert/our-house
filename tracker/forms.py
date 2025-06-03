@@ -76,7 +76,7 @@ class PaintColorForm(forms.ModelForm):
 class OutletForm(forms.ModelForm):
     class Meta:
         model = Outlet
-        fields = ['device_type', 'room', 'circuit', 'location_description']
+        fields = ['device_type', 'room', 'circuit', 'location_description', 'position_number']
         widgets = {
             'device_type': forms.Select(attrs={
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
@@ -96,12 +96,19 @@ class OutletForm(forms.ModelForm):
                 'placeholder': 'Where is the outlet located in the room',
                 'data-group': 'notes'
             }),
+            'position_number': forms.NumberInput(attrs={
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
+                'placeholder': 'Position in circuit',
+                'min': '1',
+                'data-group': 'details'
+            }),
         }
         help_texts = {
             'device_type': 'Select the type of electrical device',
             'room': 'Select the room where this outlet is located',
             'circuit': 'Select the circuit this outlet is connected to',
             'location_description': 'Describe the location of the outlet',
+            'position_number': 'eg 1 is the home run, 2 is the next outlet',
         }
 
 

@@ -254,12 +254,14 @@ class Outlet(models.Model):
 
     device_type = models.CharField(max_length=50, choices=DeviceType.choices)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='outlets')
-    circuit = models.ForeignKey(Circuit, on_delete=models.CASCADE, related_name='outlets')
+    circuit = models.ForeignKey(Circuit, on_delete=models.CASCADE, blank=True, null=True, related_name='outlets')
     location_description = models.TextField(blank=True)
+    position_number = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['room__name', 'device_type']
 
     def __str__(self) -> str:
-        return f"{self.get_device_type_display()} in {self.room.name} - Circuit {self.circuit.circuit_number}"
+        circuit_info = f"Circuit {self.circuit.circuit_number}" if self.circuit else "No Circuit"
+        return f"{self.get_device_type_display()} in {self.room.name} - {circuit_info}"

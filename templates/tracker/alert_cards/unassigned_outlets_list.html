@@ -1,0 +1,40 @@
+{% extends 'tracker/base_list.html' %}
+
+{% block list_title %}Unassigned Outlets{% endblock %}
+
+{% block create_url %}{% url 'tracker:outlet_create' %}{% endblock %}
+{% block create_button_text %}Add Outlet{% endblock %}
+
+{% block search_placeholder %}Search outlets...{% endblock %}
+{% block clear_filters_url %}{% url 'tracker:unassigned_outlets_list' %}{% endblock %}
+
+{% block card_title %}
+    {{ item.get_device_type_display }} in {{ item.room.name }}
+{% endblock %}
+
+{% block card_badge %}
+    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 mb-2">
+        No Circuit Assigned
+    </span>
+{% endblock %}
+
+{% block card_content %}
+    {% if item.location_description %}
+        <p class="text-sm text-gray-600 mb-2">{{ item.location_description|truncatewords:10 }}</p>
+    {% endif %}
+    {% if item.position_number %}
+        <p class="text-xs text-gray-500">Position: {{ item.position_number }}</p>
+    {% endif %}
+{% endblock %}
+
+{% block item_detail_url %}{% url 'tracker:outlet_detail' item.pk %}{% endblock %}
+{% block item_edit_url %}{% url 'tracker:outlet_update' item.pk %}{% endblock %}
+
+{% block empty_icon %}
+<svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+</svg>
+{% endblock %}
+
+{% block empty_title %}No unassigned outlets{% endblock %}
+{% block empty_description %}All outlets are assigned to circuits.{% endblock %}

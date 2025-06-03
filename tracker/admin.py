@@ -33,7 +33,7 @@ class ElectricalPanelAdmin(admin.ModelAdmin):
 
 @admin.register(Outlet)
 class OutletAdmin(admin.ModelAdmin):
-    list_display = ['device_type', 'room', 'circuit', 'location_description']
+    list_display = ['device_type', 'room', 'circuit', 'position_number', 'location_description']
     list_filter = ['device_type', 'room', 'circuit']
     search_fields = ['location_description', 'room__name', 'circuit__description']
 
