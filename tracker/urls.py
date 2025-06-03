@@ -1,5 +1,5 @@
 from django.urls import path
-from tracker.views import home_views, appliance_views, circuit_diagram_views, circuit_views, electrical_panel_views, outlet_views, paint_color_views, purchase_location_views, room_views
+from tracker.views import home_views, import_export_views, appliance_views, circuit_diagram_views, circuit_views, electrical_panel_views, outlet_views, paint_color_views, purchase_location_views, room_views
 
 app_name = 'tracker'
 
@@ -34,6 +34,10 @@ urlpatterns = [
     path('circuit-diagrams/create/', circuit_diagram_views.circuit_diagram_create, name='circuit_diagram_create'),
     path('circuit-diagrams/<int:pk>/update/', circuit_diagram_views.circuit_diagram_update, name='circuit_diagram_update'),
     path('circuit-diagrams/<int:pk>/delete/', circuit_diagram_views.circuit_diagram_delete, name='circuit_diagram_delete'),
+
+    # Data Management
+    path('export/', import_export_views.export_data, name='export_data'),
+    path('data-management/', import_export_views.import_data, name='import_export_data'),
 
     # Electrical Panel URLs
     path('electrical-panels/', electrical_panel_views.electrical_panel_list, name='electrical_panel_list'),
