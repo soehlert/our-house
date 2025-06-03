@@ -263,4 +263,5 @@ class Outlet(models.Model):
         ordering = ['room__name', 'device_type']
 
     def __str__(self) -> str:
-        return f"{self.get_device_type_display()} in {self.room.name} - Circuit {self.circuit.circuit_number}"
+        circuit_info = f"Circuit {self.circuit.circuit_number}" if self.circuit else "No Circuit"
+        return f"{self.get_device_type_display()} in {self.room.name} - {circuit_info}"

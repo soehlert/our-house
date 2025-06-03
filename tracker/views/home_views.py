@@ -63,6 +63,16 @@ def undismiss_warranty_alert(request, appliance_id):
 
     return redirect('tracker:expiring_warranties_list')
 
+def unassigned_outlets_list(request):
+    """Show outlets not assigned to any circuit."""
+    outlets = Outlet.objects.filter(circuit__isnull=True).order_by('room__name', 'device_type')
+
+    context = {
+        'object_list': outlets,
+        'show_create_button': False
+    }
+    return render(request, 'tracker/alert_cards/unassigned_outlets_list.html', context)
+
 
 def home(request):
     """Home page showing overview of all data."""
@@ -75,15 +85,8 @@ def home(request):
         Q(circuits__isnull=True) & Q(outlets__isnull=True)
     ).distinct().count()
 
-    # Recently added
-    week_ago = timezone.now() - timedelta(days=7)
-    recent_count = (
-        Appliance.objects.filter(created_at__gte=week_ago).count() +
-        Room.objects.filter(created_at__gte=week_ago).count() +
-        Circuit.objects.filter(created_at__gte=week_ago).count() +
-        Outlet.objects.filter(created_at__gte=week_ago).count() +
-        PaintColor.objects.filter(created_at__gte=week_ago).count()
-    )
+    # Outlets not assigned to any circuit
+    unassigned_outlets = Outlet.objects.filter(circuit__isnull=True).count()
 
     # Appliances without a manual
     missing_docs = Appliance.objects.filter(owners_manual='').count()
@@ -114,7 +117,7 @@ def home(request):
         'paint_color_count': PaintColor.objects.count(),
         'circuit_count': Circuit.objects.count(),
         'unmapped_rooms_count': unmapped_rooms,
-        'recent_items_count': recent_count,
+        'unassigned_outlets_count': unassigned_outlets,
         'missing_docs_count': missing_docs,
         'recent_items': recent_items,
         **warranty_data,

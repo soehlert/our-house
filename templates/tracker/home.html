@@ -217,29 +217,36 @@
                 {% endif %}
             </div>
         </a>
-        <!-- Recently Added -->
-        <a href="{% url 'tracker:recent_additions_list' %}" class="block hover:shadow-lg transition-shadow duration-200">
+        <a href="{% url 'tracker:unassigned_outlets_list' %}" class="block hover:shadow-lg transition-shadow duration-200">
             <div class="bg-white overflow-hidden shadow rounded-lg">
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <svg class="h-6 w-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <svg class="h-6 w-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">Added This Week</dt>
-                                <dd class="text-lg font-medium text-gray-900">{{ recent_items_count }}</dd>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Unassigned Outlets</dt>
+                                <dd class="text-lg font-medium text-gray-900">{{ unassigned_outlets_count }}</dd>
                             </dl>
                         </div>
                     </div>
                 </div>
-                <div class="bg-blue-50 px-5 py-3">
+                {% if unassigned_outlets_count > 0 %}
+                <div class="bg-purple-50 px-5 py-3">
                     <div class="text-sm">
-                        <span class="font-medium text-blue-800">Last 7 days</span>
+                        <span class="font-medium text-purple-800">Need circuit assignment</span>
                     </div>
                 </div>
+                {% else %}
+                <div class="bg-green-50 px-5 py-3">
+                    <div class="text-sm">
+                        <span class="font-medium text-green-800">All outlets assigned</span>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </a>
     </div>
