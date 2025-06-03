@@ -2,7 +2,7 @@
 
 [![Build and Push Docker Image](https://github.com/soehlert/our-house/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/soehlert/our-house/actions/workflows/build-and-push.yml)
 
-A Django application for tracking and managing information about your house, including appliances, paint colors, electrical circuits, and more. 
+A Django application for tracking and managing information about your house; including appliances, paint colors, electrical circuits, and more. 
 Features an interactive electrical panel diagram generator that visualizes your home's electrical system.
 
 ![Dashboard](docs/images/Home%20Dashboard.png "Main Dashboard View")
@@ -14,9 +14,10 @@ Features an interactive electrical panel diagram generator that visualizes your 
 ![Appliance Detail](docs/images/Appliance%20Detail.png "Appliance detail")
 - **Electrical System Mapping**: Document circuits, breakers, and safety features
 ![Circuit List](docs/images/Circuit%20List.png "List of circuits")
-![Circuit Detail](docs/images/Room%20Detail.png "Detail view of a room")
+![Circuit Detail](docs/images/Circuit%20Detail.png "Detail view of a circuit")
 - **Room Management**: Organize your house by rooms and spaces
 ![Room List](docs/images/Room%20List.png "List of rooms")
+![Room Detail](docs/images/Room%20Detail.png "Detail view of a room")
 - **Paint Colors**: Track paint codes, brands, and which rooms they're used in
 ![Paint Detail](docs/images/Paint%20Detail.png "Detail view of paint color")
 
