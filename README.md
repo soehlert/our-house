@@ -29,6 +29,9 @@ Generate SVG diagrams of your electrical panel with:
 
 ![Electrical Panel](docs/images/Electrical%20Panel.png "Auto generated electrical panel")
 
+### Export and Import
+All of your data can be backed up to a json file and then imported if you ever need. All relationships are stored so you should be back up and running in no time.
+
 ## Components
 
 ### Technology Stack
