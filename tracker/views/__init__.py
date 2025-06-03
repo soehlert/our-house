@@ -27,3 +27,7 @@ from .outlet_views import (
 from .electrical_panel_views import (
     electrical_panel_list, electrical_panel_detail, electrical_panel_create, electrical_panel_delete, electrical_panel_update
 )
+
+from .import_export_views import (
+    import_data, export_data
+)

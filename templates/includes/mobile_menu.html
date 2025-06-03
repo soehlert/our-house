@@ -1,0 +1,36 @@
+{% for item in menu_items %}
+<button onclick="toggleSubmenu('{{ item.name|lower }}')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center justify-between{% if not forloop.first %} mt-4{% endif %}">
+    {{ item.name }}
+    <svg id="{{ item.name|lower }}-icon" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+</button>
+<div id="{{ item.name|lower }}-submenu" class="hidden">
+    {% if item.sections %}
+        {% for section in item.sections %}
+            {% for link in section.items %}
+                <a href="{% url link.url %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">{{ link.name }}</a>
+            {% endfor %}
+        {% endfor %}
+    {% else %}
+        {% for link in item.items %}
+            <a href="{% url link.url %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">{{ link.name }}</a>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endfor %}
+
+<!-- Settings -->
+<button onclick="toggleSubmenu('settings')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center justify-between mt-4">
+    Settings
+    <svg id="settings-icon" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+</button>
+<div id="settings-submenu" class="hidden">
+    {% for section in settings_items %}
+        {% for link in section.items %}
+            <a href="{% url link.url %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">{{ link.name }}</a>
+        {% endfor %}
+    {% endfor %}
+</div>
