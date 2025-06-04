@@ -52,6 +52,8 @@ urlpatterns = [
     path('outlets/create/', outlet_views.outlet_create, name='outlet_create'),
     path('outlets/<int:pk>/edit/', outlet_views.outlet_update, name='outlet_update'),
     path('outlets/<int:pk>/delete/', outlet_views.outlet_delete, name='outlet_delete'),
+    path('outlets/room/<int:room_id>/api/', outlet_views.outlet_list_by_room_api, name='outlet_list_by_room'),
+
 
     # Paint Color URLs
     path('paint-colors/', paint_color_views.paint_color_list, name='paint_color_list'),
