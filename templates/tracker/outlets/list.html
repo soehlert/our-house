@@ -1,4 +1,5 @@
 {% extends 'tracker/base_list.html' %}
+{% load static %}
 
 {% block list_title %}Outlets{% endblock %}
 {% block create_url %}{% url 'tracker:outlet_create' %}{% endblock %}
@@ -6,34 +7,181 @@
 {% block search_placeholder %}Search outlets, rooms, circuits{% endblock %}
 {% block clear_filters_url %}{% url 'tracker:outlet_list' %}{% endblock %}
 
-{% block card_title %}{{ item.get_device_type_display }}{% endblock %}
-
-{% block card_badge %}
-<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-    {% if item.device_type == 'RECEPTACLE' %}bg-blue-100 text-blue-800
-    {% elif item.device_type == 'SWITCH' %}bg-green-100 text-green-800
-    {% elif item.device_type == 'LIGHT' %}bg-yellow-100 text-yellow-800
-    {% endif %}">
-    {{ item.device_type }}
-</span>
-{% endblock %}
-
-{% block card_content %}
-<div class="flex items-center text-sm text-gray-600 mb-2">
-    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-    </svg>
-    <span class="font-medium">Room:</span>
-    <span class="ml-1">{{ item.room.name }}</span>
-</div>
-{% if item.notes %}
-    <p class="text-sm text-gray-600 line-clamp-2">{{ item.notes|truncatewords:15 }}</p>
+{% block list_content %}
+{% if search_mode %}
+    <!-- Search results - individual outlets -->
+    {% if object_list %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for item in object_list %}
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-200">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-medium text-gray-900">{{ item.room.name }} - {{ item.location_description }}</h3>
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                {% if item.device_type == 'RECEPTACLE' %}bg-blue-100 text-blue-800
+                                {% elif item.device_type == 'SWITCH' %}bg-green-100 text-green-800
+                                {% elif item.device_type == 'LIGHT' %}bg-yellow-100 text-yellow-800
+                                {% endif %}">
+                                {{ item.get_device_type_display }}
+                            </span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600 mb-2">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <span class="font-medium">Room:</span>
+                            <span class="ml-1">{{ item.room.name }}</span>
+                        </div>
+                        {% if item.circuit %}
+                            <div class="flex items-center text-sm text-gray-600 mb-2">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                <span class="font-medium">Circuit:</span>
+                                <span class="ml-1">{{ item.circuit.circuit_number }}</span>
+                            </div>
+                        {% else %}
+                            <div class="flex items-center text-sm text-red-600 mb-2">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                </svg>
+                                <span class="font-medium">No Circuit Assigned</span>
+                            </div>
+                        {% endif %}
+                        <div class="flex justify-end space-x-2 mt-4">
+                            <a href="{% url 'tracker:outlet_detail' item.pk %}" class="text-blue-600 hover:text-blue-800 text-sm">View</a>
+                            <a href="{% url 'tracker:outlet_update' item.pk %}" class="text-green-600 hover:text-green-800 text-sm">Edit</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-12">
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No outlets found</h3>
+            <p class="mt-1 text-sm text-gray-500">Try adjusting your search terms.</p>
+        </div>
+    {% endif %}
+{% else %}
+    <!-- Room cards view -->
+    {% if rooms_with_outlets %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for room in rooms_with_outlets %}
+                <button onclick="openRoomModal({{ room.id }}, '{{ room.name|escapejs }}')"
+                       title="Click to view all outlets in this room"
+                       class="block w-full text-left bg-gray-50 border border-gray-200 rounded-lg overflow-hidden hover:shadow-md hover:border-blue-300 transition-all duration-200 cursor-pointer focus:outline-none">
+                    <div class="p-4">
+                        <h3 class="text-lg font-medium text-gray-900 mb-2 capitalize">{{ room.name }}</h3>
+                        <div class="flex flex-wrap gap-1 mb-3">
+                            {% if room.receptacle_count > 0 %}
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    {{ room.receptacle_count }} receptacle{{ room.receptacle_count|pluralize }}
+                                </span>
+                            {% endif %}
+                            {% if room.switch_count > 0 %}
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    {{ room.switch_count }} switch{{ room.switch_count|pluralize:"es" }}
+                                </span>
+                            {% endif %}
+                            {% if room.light_count > 0 %}
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    {{ room.light_count }} light{{ room.light_count|pluralize }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="space-y-2 mb-3">
+                            {% for outlet in room.outlets.all|slice:":3" %}
+                                <div class="flex items-center justify-between text-sm">
+                                    <div class="flex items-center">
+                                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium mr-2
+                                            {% if outlet.device_type == 'RECEPTACLE' %}bg-blue-100 text-blue-700
+                                            {% elif outlet.device_type == 'SWITCH' %}bg-green-100 text-green-700
+                                            {% elif outlet.device_type == 'LIGHT' %}bg-yellow-100 text-yellow-700
+                                            {% endif %}">
+                                            {{ outlet.get_device_type_display|upper }}
+                                        </span>
+                                        <span class="text-gray-600">
+                                            {% if outlet.location_description %}
+                                                {{ outlet.location_description|truncatewords:3 }}
+                                            {% else %}
+                                                {{ outlet.get_device_type_display }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    {% if outlet.circuit %}
+                                        <span class="text-gray-500 text-xs">Circuit {{ outlet.circuit.circuit_number }}</span>
+                                    {% else %}
+                                        <span class="text-red-500 text-xs">No Circuit</span>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            {% if room.outlet_count > 3 %}
+                                <div class="text-xs text-gray-500">
+                                    +{{ room.outlet_count|add:"-3" }} more outlet{{ room.outlet_count|add:"-3"|pluralize }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </button>
+            {% endfor %}
+        </div>
+        <!-- Modal -->
+        <div id="roomModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50" onclick="closeRoomModal()">
+            <div class="pt-16 px-4 pb-4 min-h-screen">
+                <div class="bg-white rounded-lg shadow-xl max-w-6xl mx-auto max-h-[calc(100vh-8rem)] overflow-hidden" onclick="event.stopPropagation()">
+                    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 id="modalRoomName" class="text-2xl font-bold text-gray-900"></h2>
+                                <p id="modalOutletCount" class="text-sm text-gray-600"></p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <a id="modalAddOutletBtn" href="#" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Add Outlet
+                                </a>
+                                <button onclick="closeRoomModal()" class="text-gray-400 hover:text-gray-600">
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 overflow-y-auto max-h-[calc(100vh-12rem)]">
+                        <div id="modalOutletGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                        <div id="modalLoading" class="text-center py-8 hidden">
+                            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                            <p class="mt-2 text-gray-600">Loading outlets...</p>
+                        </div>
+                        <div id="modalError" class="text-center py-8 hidden">
+                            <p class="text-red-600">Error loading outlets. Please try again.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            window.outletCreateUrl = "{% url 'tracker:outlet_create' %}";
+            window.outletRoomApiUrl = "{% url 'tracker:outlet_list_by_room' 0 %}";
+            window.outletDetailUrl = "{% url 'tracker:outlet_detail' 0 %}".replace('0', '');
+            window.outletUpdateUrl = "{% url 'tracker:outlet_update' 0 %}".replace('0', '');
+        </script>
+        <script src="{% static 'js/outlet_modal.js' %}"></script>
+    {% else %}
+        <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No outlets</h3>
+            <p class="mt-1 text-sm text-gray-500">Get started by adding a new outlet.</p>
+        </div>
+    {% endif %}
 {% endif %}
 {% endblock %}
-
-{% block item_detail_url %}{% url 'tracker:outlet_detail' item.pk %}{% endblock %}
-{% block item_edit_url %}{% url 'tracker:outlet_update' item.pk %}{% endblock %}
 
 {% block empty_title %}No outlets{% endblock %}
 {% block empty_description %}Get started by adding a new outlet.{% endblock %}
