@@ -7,6 +7,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class ProtectionType(models.TextChoices):
+    """Electrical protection types for circuits and outlets."""
+    GFCI = "GFCI", "GFCI (Ground Fault Circuit Interrupter)"
+    AFCI = "AFCI", "AFCI (Arc Fault Circuit Interrupter)"
+    CAFI = "CAFI", "CAFI (Combination Arc Fault Interrupter)"
+
 class BreakerSize(models.TextChoices):
     FIFTEEN_AMP = "15A", "15A"
     TWENTY_AMP = "20A", "20A"
@@ -258,9 +264,23 @@ class Outlet(models.Model):
     location_description = models.TextField(blank=True)
     position_number = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    gfci = models.BooleanField(default=False, verbose_name="GFCI Protected")
+    afci = models.BooleanField(default=False, verbose_name="AFCI Protected")
+    cafi = models.BooleanField(default=False, verbose_name="CAFI Protected")
 
     class Meta:
         ordering = ['room__name', 'device_type']
+
+    def get_total_protection(self) -> list[str]:
+        """Get all protection types (outlet + circuit combined)."""
+        protection = []
+        if self.gfci or (self.circuit and self.circuit.gfci):
+            protection.append("GFCI")
+        if self.afci or (self.circuit and self.circuit.afci):
+            protection.append("AFCI")
+        if self.cafi or (self.circuit and self.circuit.cafi):
+            protection.append("CAFI")
+        return protection
 
     def __str__(self) -> str:
         circuit_info = f"Circuit {self.circuit.circuit_number}" if self.circuit else "No Circuit"

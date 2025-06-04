@@ -76,7 +76,7 @@ class PaintColorForm(forms.ModelForm):
 class OutletForm(forms.ModelForm):
     class Meta:
         model = Outlet
-        fields = ['device_type', 'room', 'circuit', 'location_description', 'position_number']
+        fields = ['device_type', 'room', 'circuit', 'location_description', 'position_number', 'gfci', 'afci', 'cafi']
         widgets = {
             'device_type': forms.Select(attrs={
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
@@ -102,6 +102,18 @@ class OutletForm(forms.ModelForm):
                 'min': '1',
                 'data-group': 'details'
             }),
+            'gfci': forms.CheckboxInput(attrs={
+                'class': 'h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded',
+                'data-group': 'protection'
+            }),
+            'afci': forms.CheckboxInput(attrs={
+                'class': 'h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded',
+                'data-group': 'protection'
+            }),
+            'cafi': forms.CheckboxInput(attrs={
+                'class': 'h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded',
+                'data-group': 'protection'
+            }),
         }
         help_texts = {
             'device_type': 'Select the type of electrical device',
@@ -109,7 +121,11 @@ class OutletForm(forms.ModelForm):
             'circuit': 'Select the circuit this outlet is connected to',
             'location_description': 'Describe the location of the outlet',
             'position_number': 'eg 1 is the home run, 2 is the next outlet',
+            'gfci': 'This outlet has GFCI protection',
+            'afci': 'This outlet has AFCI protection',
+            'cafi': 'This outlet has CAFI protection',
         }
+
 
 
 class PurchaseLocationForm(forms.ModelForm):

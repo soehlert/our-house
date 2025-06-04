@@ -18,15 +18,14 @@ class ElectricalPanelGenerator:
     def __init__(self):
         # Color scheme for different protection types
         self.colors = {
-            'empty': '#DCDCDC',              # Light gray - empty slot
-            'no_protection': '#E6F3FF',      # Very light blue - circuit with no protection
-            'gfci': '#96C8FF',               # Light blue - GFCI
-            'afci': '#FFC896',               # Light orange - AFCI
-            'cafi': '#C8FF96',               # Light green - CAFI
-            'gfci_afci': '#C896FF',          # Light purple - GFCI + AFCI
-            'gfci_cafi': '#96FFC8',          # Light teal - GFCI + CAFI
-            'afci_cafi': '#FFFF96',          # Light yellow - AFCI + CAFI
-            'all_three': '#FFB4B4',          # Light pink - All three
+            'empty': '#D1D5DB',              # Gray-300 - empty slot
+            'no_protection': '#FEF3C7',      # Yellow-100 - circuit with no protection
+            'gfci': '#3B82F6',               # Blue-500 - GFCI (darker blue)
+            'afci': '#10B981',               # Emerald-500 - AFCI (green)
+            'cafi': '#8B5CF6',               # Violet-500 - CAFI (purple)
+            'gfci_afci': '#F97316',          # Orange-500 - GFCI + AFCI (orange)
+            'gfci_cafi': '#06B6D4',          # Cyan-500 - GFCI + CAFI (cyan/teal)
+            'afci_cafi': '#EC4899',          # Pink-500 - AFCI + CAFI (pink)
         }
 
         # Layout constants - these define the physical dimensions of the panel inside the SVG
@@ -369,7 +368,6 @@ class ElectricalPanelGenerator:
             ("GFCI + AFCI", self.colors['gfci_afci']),
             ("GFCI + CAFI", self.colors['gfci_cafi']),
             ("AFCI + CAFI", self.colors['afci_cafi']),
-            ("All Three", self.colors['all_three']),
         ]
 
         # Draw legend
