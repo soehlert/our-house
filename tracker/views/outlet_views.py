@@ -69,9 +69,6 @@ def outlet_list_by_room_api(request, room_id):
             circuit_data = {
                 'circuit_number': outlet.circuit.circuit_number,
                 'pole_type_display': outlet.circuit.get_pole_type_display(),
-                'gfci': outlet.circuit.gfci,
-                'afci': outlet.circuit.afci,
-                'cafi': outlet.circuit.cafi,
             }
 
         outlet_data.append({
@@ -80,6 +77,7 @@ def outlet_list_by_room_api(request, room_id):
             'device_type_display': outlet.get_device_type_display(),
             'location_description': outlet.location_description,
             'position_number': outlet.position_number,
+            'protection_type': outlet.protection_type,
             'circuit': circuit_data,
         })
 

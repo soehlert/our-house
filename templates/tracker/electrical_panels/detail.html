@@ -70,22 +70,22 @@
                     </span>
                     {% endfor %}
                     <!-- Protection Types -->
-                    {% if gfci_count > 0 %}
+                    {% if protection_counts.gfci > 0 %}
                     <span class="text-sm font-medium text-gray-500">GFCI Protected:</span>
                     <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 justify-self-start">
-                        {{ gfci_count }}
+                        {{ protection_counts.gfci }}
                     </span>
                     {% endif %}
-                    {% if afci_count > 0 %}
+                    {% if protection_counts.afci > 0 %}
                     <span class="text-sm font-medium text-gray-500">AFCI Protected:</span>
                     <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 justify-self-start">
-                        {{ afci_count }}
+                        {{ protection_counts.afci }}
                     </span>
                     {% endif %}
-                    {% if cafi_count > 0 %}
-                    <span class="text-sm font-medium text-gray-500">CAFI Protected:</span>
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 justify-self-start">
-                        {{ cafi_count }}
+                    {% if protection_counts.dual_function > 0 %}
+                    <span class="text-sm font-medium text-gray-500">Dual Function:</span>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 justify-self-start">
+                        {{ protection_counts.dual_function }}
                     </span>
                     {% endif %}
                     <!-- Total -->
@@ -121,14 +121,14 @@
                                 </div>
                                 <div class="text-xs text-gray-600 mt-1">{{ circuit.description }}</div>
                                 <div class="flex items-center space-x-2 mt-1">
-                                    {% if circuit.gfci %}
+                                    {% if circuit.protection_type == 'gfci' %}
                                         <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">GFCI</span>
                                     {% endif %}
-                                    {% if circuit.afci %}
+                                    {% if circuit.protection_type == 'afci' %}
                                         <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">AFCI</span>
                                     {% endif %}
-                                    {% if circuit.cafi %}
-                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">CAFI</span>
+                                    {% if circuit.protection_type == 'dual_function' %}
+                                        <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Dual Function</span>
                                     {% endif %}
                                 </div>
                                 {% if circuit.rooms.exists %}

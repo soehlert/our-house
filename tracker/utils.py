@@ -19,13 +19,10 @@ class ElectricalPanelGenerator:
         # Color scheme for different protection types
         self.colors = {
             'empty': '#D1D5DB',              # Gray-300 - empty slot
-            'no_protection': '#FEF3C7',      # Yellow-100 - circuit with no protection
-            'gfci': '#3B82F6',               # Blue-500 - GFCI (darker blue)
-            'afci': '#10B981',               # Emerald-500 - AFCI (green)
-            'cafi': '#8B5CF6',               # Violet-500 - CAFI (purple)
-            'gfci_afci': '#F97316',          # Orange-500 - GFCI + AFCI (orange)
-            'gfci_cafi': '#06B6D4',          # Cyan-500 - GFCI + CAFI (cyan/teal)
-            'afci_cafi': '#EC4899',          # Pink-500 - AFCI + CAFI (pink)
+            'none': '#FEF3C7',               # Yellow-100 - no protection
+            'gfci': '#3B82F6',               # Blue-500 - GFCI
+            'afci': '#10B981',               # Emerald-500 - AFCI
+            'dual_function': '#8B5CF6',      # Violet-500 - Dual Function
         }
 
         # Layout constants - these define the physical dimensions of the panel inside the SVG
@@ -209,27 +206,20 @@ class ElectricalPanelGenerator:
         })
 
     def _get_protection_color(self, circuit: Circuit | None) -> str:
-        """Determine what color a breaker should be based on its protection features."""
+        """Determine what color a breaker should be based on its protection type."""
         if not circuit:
             return self.colors['empty']
 
-        # Use the same logic as the original function
-        if circuit.gfci and circuit.afci and circuit.cafi:
-            return self.colors['all_three']
-        elif circuit.gfci and circuit.afci:
-            return self.colors['gfci_afci']
-        elif circuit.gfci and circuit.cafi:
-            return self.colors['gfci_cafi']
-        elif circuit.afci and circuit.cafi:
-            return self.colors['afci_cafi']
-        elif circuit.gfci:
-            return self.colors['gfci']
-        elif circuit.afci:
-            return self.colors['afci']
-        elif circuit.cafi:
-            return self.colors['cafi']
-        else:
-            return self.colors['no_protection']
+        # Map protection_type to colors
+        protection_map = {
+            'none': self.colors['none'],
+            'gfci': self.colors['gfci'],
+            'afci': self.colors['afci'],
+            'dual_function': self.colors['dual_function']
+        }
+
+        return protection_map.get(circuit.protection_type, self.colors['none'])
+
 
     @staticmethod
     def _analyze_double_pole_breakers(circuits: dict[int, Circuit]) -> tuple[Set[int], dict[int, Circuit]]:
@@ -358,22 +348,19 @@ class ElectricalPanelGenerator:
             'fill': '#000000'
         }).text = 'Protection Types:'
 
-        # Protection combinations
+        # Protection types (updated for new model)
         legend_items = [
             ("Empty Slot", self.colors['empty']),
-            ("No Protection", self.colors['no_protection']),
+            ("No Protection", self.colors['none']),
             ("GFCI", self.colors['gfci']),
             ("AFCI", self.colors['afci']),
-            ("CAFI", self.colors['cafi']),
-            ("GFCI + AFCI", self.colors['gfci_afci']),
-            ("GFCI + CAFI", self.colors['gfci_cafi']),
-            ("AFCI + CAFI", self.colors['afci_cafi']),
+            ("Dual Function", self.colors['dual_function']),
         ]
 
         # Draw legend
         for i, (label, color) in enumerate(legend_items):
-            col = i % 2
-            row = i // 2
+            col = i % 3
+            row = i // 3
             x = self.margin + col * 200
             y = legend_y + 20 + row * 20
 

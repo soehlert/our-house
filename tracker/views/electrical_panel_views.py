@@ -43,18 +43,19 @@ def electrical_panel_detail(request, pk):
     for circuit in circuits:
         breaker_counts[circuit.breaker_size] = breaker_counts.get(circuit.breaker_size, 0) + 1
 
-    gfci_count = circuits.filter(gfci=True).count()
-    afci_count = circuits.filter(afci=True).count()
-    cafi_count = circuits.filter(cafi=True).count()
+    protection_counts = {
+        'none': circuits.filter(protection_type='none').count(),
+        'gfci': circuits.filter(protection_type='gfci').count(),
+        'afci': circuits.filter(protection_type='afci').count(),
+        'dual_function': circuits.filter(protection_type='dual_function').count(),
+    }
 
     context = {
         'panel': panel,
         'circuits': circuits.order_by('circuit_number'),
         'svg_content': svg_content,
         'breaker_counts': breaker_counts,
-        'gfci_count': gfci_count,
-        'afci_count': afci_count,
-        'cafi_count': cafi_count,
+        'protection_counts': protection_counts,
     }
 
     return render(request, 'tracker/electrical_panels/detail.html', context)

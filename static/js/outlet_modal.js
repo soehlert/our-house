@@ -54,13 +54,19 @@ function closeRoomModal() {
 
 function createOutletCard(outlet) {
     const detailUrl = `${window.outletDetailUrl}${outlet.id}/`;
-    const editUrl = `${window.outletUpdateUrl}${outlet.id}/`;
+    const editUrl = window.outletUpdateUrl.replace('OUTLET_ID', outlet.id);
 
     return `
         <div class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
             <div class="p-4">
                 <h3 class="text-lg font-medium text-gray-900 mb-2 capitalize">${outlet.location_description || outlet.device_type_display}</h3>
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mb-3 ${getDeviceTypeBadgeClass(outlet.device_type)}">${outlet.device_type_display.toUpperCase()}</span>
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getDeviceTypeBadgeClass(outlet.device_type)}">${outlet.device_type_display.toUpperCase()}</span>
+                    ${outlet.circuit && outlet.circuit.protection_type && outlet.circuit.protection_type !== 'none' ? 
+                      `<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getProtectionColor(outlet.circuit.protection_type)}">${getProtectionLabel(outlet.circuit.protection_type)}</span>` : 
+                      ''
+                    }
+                </div>
                 ${outlet.circuit ? createCircuitInfo(outlet.circuit) : createNoCircuitInfo()}
                 ${outlet.position_number ? `<p class="text-xs text-gray-500 mb-3">Position: ${outlet.position_number}</p>` : ''}
                 <div class="flex space-x-2 mt-3">
@@ -82,12 +88,25 @@ function createCircuitInfo(circuit) {
             </svg>
             <span>Circuit ${circuit.circuit_number}</span>
         </div>
-        <div class="flex flex-wrap gap-1 mb-3">
-            ${circuit.gfci ? '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-700">GFCI</span>' : ''}
-            ${circuit.afci ? '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700">AFCI</span>' : ''}
-            ${circuit.cafi ? '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-700">CAFI</span>' : ''}
-        </div>
     `;
+}
+
+function getProtectionColor(protectionType) {
+    const colors = {
+        'gfci': 'bg-blue-100 text-blue-700',
+        'afci': 'bg-green-100 text-green-700',
+        'dual_function': 'bg-purple-100 text-purple-700'
+    };
+    return colors[protectionType] || 'bg-gray-100 text-gray-700';
+}
+
+function getProtectionLabel(protectionType) {
+    const labels = {
+        'gfci': 'GFCI',
+        'afci': 'AFCI',
+        'dual_function': 'Dual Function'
+    };
+    return labels[protectionType] || 'Unknown';
 }
 
 function createNoCircuitInfo() {
