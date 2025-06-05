@@ -1,7 +1,7 @@
 {% extends 'tracker/base_list.html' %}
 
 {% block list_title %}Unmapped Rooms{% endblock %}
-{% block list_description %}Rooms that don't have any circuits or outlets mapped{% endblock %}
+{% block list_description %}Rooms that don't have any circuits or devices mapped{% endblock %}
 
 {% block search_bar %}
 <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
@@ -22,7 +22,7 @@
             <h3 class="font-semibold text-gray-900 mb-2">{{ room.name }}</h3>
             <div class="flex flex-wrap gap-1 mb-10">
                 <span class="inline-block bg-red-500 text-white text-xs px-2 py-1 rounded">No Circuits</span>
-                <span class="inline-block bg-red-500 text-white text-xs px-2 py-1 rounded">No Outlets</span>
+                <span class="inline-block bg-red-500 text-white text-xs px-2 py-1 rounded">No Devices</span>
             </div>
             <div class="space-y-2">
                 <a href="{% url 'tracker:room_update' room.pk %}"
@@ -34,9 +34,9 @@
                        class="text-center inline-flex items-center justify-center px-3 py-1 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none">
                         Add Circuit
                     </a>
-                    <a href="{% url 'tracker:outlet_create' %}?room={{ room.id }}"
+                    <a href="{% url 'tracker:device_create' %}?room={{ room.id }}"
                        class="text-center inline-flex items-center justify-center px-3 py-1 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none">
-                        Add Outlet
+                        Add Device
                     </a>
                 </div>
             </div>
@@ -51,7 +51,7 @@
           </svg>
         </div>
         <h3 class="text-lg font-medium text-gray-900 mb-2">All rooms mapped!</h3>
-        <p class="text-gray-600">Every room has circuits or outlets assigned.</p>
+        <p class="text-gray-600">Every room has circuits or devices assigned.</p>
     </div>
 {% endif %}
 {% endblock %}

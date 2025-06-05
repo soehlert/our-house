@@ -24,7 +24,7 @@ class PoleType(models.TextChoices):
     DOUBLE = "double", "Double Pole"
 
 class ProtectionType(models.TextChoices):
-    """Electrical protection types for circuits and outlets."""
+    """Electrical protection types for circuits and devices."""
     NONE = "none", "No Protection"
     GFCI = "gfci", "GFCI (Ground Fault Circuit Interrupter)"
     AFCI = "afci", "AFCI (Arc Fault Circuit Interrupter)"
@@ -168,6 +168,11 @@ class Appliance(models.Model):
     class Meta:
         ordering = ['name']
 
+    @property
+    def connected_device(self):
+        """Get the device this appliance is connected to."""
+        return self.devices.first()
+
     def __str__(self) -> str:
         return f"{self.name} ({self.model_number})" if self.model_number else self.name
 
@@ -246,33 +251,30 @@ class Circuit(models.Model):
         return f"Circuit {self.circuit_number} - {self.description}"
 
 
-class Outlet(models.Model):
-    """Define outlets.
-
-    Note: Outlet is the electrician term for any device in the circuit where power goes out. I realize that sounds real
-    'akshually' but it's the best description I got here.
-    """
+class Device(models.Model):
+    """Define electrical devices."""
     class DeviceType(models.TextChoices):
         RECEPTACLE = "Receptacle", "Receptacle"
         SWITCH = "Switch", "Switch"
         LIGHT = "Light", "Light"
 
     device_type = models.CharField(max_length=50, choices=DeviceType.choices)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='outlets')
-    circuit = models.ForeignKey(Circuit, on_delete=models.CASCADE, blank=True, null=True, related_name='outlets')
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='devices')
+    circuit = models.ForeignKey(Circuit, on_delete=models.CASCADE, blank=True, null=True, related_name='devices')
     location_description = models.TextField(blank=True)
     position_number = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     protection_type = models.CharField(max_length=15, choices=ProtectionType.choices, default=ProtectionType.NONE)
+    attached_appliance = models.ForeignKey(Appliance, on_delete=models.CASCADE, null=True, blank=True, related_name='devices')
 
     class Meta:
         ordering = ['room__name', 'device_type']
 
     def get_total_protection(self):
-        """Get protection features for this outlet."""
+        """Get protection features for this device."""
         protection_features = []
 
-        # Only check outlet-level protection
+        # Only check device-level protection
         if self.protection_type and self.protection_type != ProtectionType.NONE:
             if self.protection_type == ProtectionType.GFCI:
                 protection_features.append('GFCI')
@@ -287,4 +289,4 @@ class Outlet(models.Model):
 
     def __str__(self) -> str:
         circuit_info = f"Circuit {self.circuit.circuit_number}" if self.circuit else "No Circuit"
-        return f"{self.get_device_type_display()} in {self.room.name} - {circuit_info}"
+        return f"{self.room.name} - {self.location_description}"

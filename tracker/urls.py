@@ -1,5 +1,5 @@
 from django.urls import path
-from tracker.views import home_views, import_export_views, appliance_views, circuit_diagram_views, circuit_views, electrical_panel_views, outlet_views, paint_color_views, purchase_location_views, room_views
+from tracker.views import home_views, import_export_views, appliance_views, circuit_diagram_views, circuit_views, electrical_panel_views, device_views, paint_color_views, purchase_location_views, room_views
 
 app_name = 'tracker'
 
@@ -10,7 +10,7 @@ urlpatterns = [
     path('alerts/missing-docs/', home_views.missing_docs_list, name='missing_docs_list'),
     path('alerts/expiring-warranties/', home_views.expiring_warranties_list, name='expiring_warranties_list'),
     path('alerts/unmapped-rooms/', home_views.unmapped_rooms_list, name='unmapped_rooms_list'),
-    path('alerts/unassigned-outlets/', home_views.unassigned_outlets_list, name='unassigned_outlets_list'),
+    path('alerts/unassigned-devices/', home_views.unassigned_devices_list, name='unassigned_devices_list'),
     path('dismiss-warranty/<int:appliance_id>/', home_views.dismiss_warranty_alert, name='dismiss_warranty_alert'),
     path('undismiss-warranty/<int:appliance_id>/', home_views.undismiss_warranty_alert, name='undismiss_warranty_alert'),
 
@@ -39,21 +39,20 @@ urlpatterns = [
     path('export/', import_export_views.export_data, name='export_data'),
     path('data-management/', import_export_views.import_data, name='import_export_data'),
 
+    # Device URLs
+    path('devices/', device_views.device_list, name='device_list'),
+    path('devices/<int:pk>/', device_views.device_detail, name='device_detail'),
+    path('devices/create/', device_views.device_create, name='device_create'),
+    path('devices/<int:pk>/edit/', device_views.device_update, name='device_update'),
+    path('devices/<int:pk>/delete/', device_views.device_delete, name='device_delete'),
+    path('devices/room/<int:room_id>/api/', device_views.device_list_by_room_api, name='device_list_by_room'),
+
     # Electrical Panel URLs
     path('electrical-panels/', electrical_panel_views.electrical_panel_list, name='electrical_panel_list'),
     path('electrical-panels/<int:pk>/', electrical_panel_views.electrical_panel_detail, name='electrical_panel_detail'),
     path('electrical-panels/create/', electrical_panel_views.electrical_panel_create, name='electrical_panel_create'),
     path('electrical-panels/<int:pk>/update/', electrical_panel_views.electrical_panel_update, name='electrical_panel_update'),
     path('electrical-panels/<int:pk>/delete/', electrical_panel_views.electrical_panel_delete, name='electrical_panel_delete'),
-
-    # Outlet URLs
-    path('outlets/', outlet_views.outlet_list, name='outlet_list'),
-    path('outlets/<int:pk>/', outlet_views.outlet_detail, name='outlet_detail'),
-    path('outlets/create/', outlet_views.outlet_create, name='outlet_create'),
-    path('outlets/<int:pk>/edit/', outlet_views.outlet_update, name='outlet_update'),
-    path('outlets/<int:pk>/delete/', outlet_views.outlet_delete, name='outlet_delete'),
-    path('outlets/room/<int:room_id>/api/', outlet_views.outlet_list_by_room_api, name='outlet_list_by_room'),
-
 
     # Paint Color URLs
     path('paint-colors/', paint_color_views.paint_color_list, name='paint_color_list'),

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Appliance, Circuit, CircuitDiagram, ElectricalPanel, Outlet, PaintColor, PurchaseLocation, Room
+from .models import Appliance, Circuit, CircuitDiagram, Device, ElectricalPanel, PaintColor, PurchaseLocation, Room
 
 
 @admin.register(Appliance)
@@ -31,11 +31,14 @@ class ElectricalPanelAdmin(admin.ModelAdmin):
     search_fields = ["brand", "model", "kind", "breaker_type"]
 
 
-@admin.register(Outlet)
-class OutletAdmin(admin.ModelAdmin):
-    list_display = ['device_type', 'room', 'circuit', 'position_number', 'location_description', 'protection_type']
-    list_filter = ['device_type', 'room', 'circuit', 'protection_type']
-    search_fields = ['location_description', 'room__name', 'circuit__description']
+@admin.register(Device)
+class DeviceAdmin(admin.ModelAdmin):
+    list_display = ['location_description', 'device_type', 'room', 'circuit', 'attached_appliance', 'protection_type']
+    list_filter = ['device_type', 'protection_type', 'room', 'attached_appliance']
+    search_fields = ['location_description', 'room__name', 'circuit__description', 'attached_appliance__name']
+    readonly_fields = ['created_at']
+    raw_id_fields = ['attached_appliance']
+
 
 
 @admin.register(PaintColor)

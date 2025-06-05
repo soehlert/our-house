@@ -6,9 +6,9 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
 from django.utils import timezone
 from tracker.models import (
-    Room, PurchaseLocation, ElectricalPanel, Appliance,
-    PaintColor, CircuitDiagram, Circuit, Outlet
+    Appliance, Circuit, CircuitDiagram, Device, ElectricalPanel, PaintColor, PurchaseLocation, Room
 )
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -29,7 +29,7 @@ def import_data(request):
 
         # Clear existing data if requested
         if request.POST.get('clear_existing') == 'true':
-            Outlet.objects.all().delete()
+            Device.objects.all().delete()
             Circuit.objects.all().delete()
             CircuitDiagram.objects.all().delete()
             PaintColor.objects.all().delete()
@@ -114,15 +114,15 @@ def import_data(request):
             if rooms_data:
                 paint_color.rooms.set(rooms_data)
 
-        for outlet_data in json_data.get('outlets', []):
-            fields = outlet_data['fields'].copy()
+        for device_data in json_data.get('devices', []):
+            fields = device_data['fields'].copy()
             if fields.get('room'):
                 fields['room'] = Room.objects.get(pk=fields['room'])
             if fields.get('circuit'):
                 fields['circuit'] = Circuit.objects.get(pk=fields['circuit'])
 
-            Outlet.objects.get_or_create(
-                pk=outlet_data['pk'],
+            Device.objects.get_or_create(
+                pk=device_data['pk'],
                 defaults=fields
             )
 
@@ -145,7 +145,7 @@ def export_data(request):
         'paint_colors': json.loads(serialize('json', PaintColor.objects.all())),
         'circuit_diagrams': json.loads(serialize('json', CircuitDiagram.objects.all())),
         'circuits': json.loads(serialize('json', Circuit.objects.all())),
-        'outlets': json.loads(serialize('json', Outlet.objects.all())),
+        'devices': json.loads(serialize('json', Device.objects.all())),
     }
 
     response = HttpResponse(

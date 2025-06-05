@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from tracker.models import (
     Room, PurchaseLocation, ElectricalPanel, Appliance,
-    PaintColor, CircuitDiagram, Circuit, Outlet
+    PaintColor, CircuitDiagram, Circuit, device
 )
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ class Command(BaseCommand):
                 'paint_colors': PaintColor.objects.count(),
                 'circuit_diagrams': CircuitDiagram.objects.count(),
                 'circuits': Circuit.objects.count(),
-                'outlets': Outlet.objects.count(),
+                'devices': Device.objects.count(),
             }
 
             total_records = sum(counts.values())
@@ -75,7 +75,7 @@ class Command(BaseCommand):
                 deleted_appliances = Appliance.objects.all().delete()[0]
                 deleted_paint_colors = PaintColor.objects.all().delete()[0]
                 deleted_circuits = Circuit.objects.all().delete()[0]
-                deleted_outlets = Outlet.objects.all().delete()[0]
+                deleted_devices = Device.objects.all().delete()[0]
                 deleted_circuit_diagrams = CircuitDiagram.objects.all().delete()[0]
                 deleted_electrical_panels = ElectricalPanel.objects.all().delete()[0]
                 deleted_purchase_locations = PurchaseLocation.objects.all().delete()[0]
@@ -86,7 +86,7 @@ class Command(BaseCommand):
                 total_deleted = (
                     deleted_rooms + deleted_purchase_locations + deleted_electrical_panels +
                     deleted_appliances + deleted_paint_colors + deleted_circuit_diagrams +
-                    deleted_circuits + deleted_outlets
+                    deleted_circuits + deleted_devices
                 )
 
                 self.stdout.write(
@@ -104,7 +104,7 @@ class Command(BaseCommand):
                     self.stdout.write(f'  Paint Colors: {deleted_paint_colors}')
                     self.stdout.write(f'  Circuit Diagrams: {deleted_circuit_diagrams}')
                     self.stdout.write(f'  Circuits: {deleted_circuits}')
-                    self.stdout.write(f'  Outlets: {deleted_outlets}')
+                    self.stdout.write(f'  Devices: {deleted_devices}')
 
         except Exception as e:
             logger.exception('Error clearing database')

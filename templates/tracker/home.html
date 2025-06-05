@@ -205,7 +205,7 @@
                 {% if unmapped_rooms_count > 0 %}
                 <div class="bg-red-50 px-5 py-3">
                     <div class="text-sm">
-                        <span class="font-medium text-red-800">No circuits/outlets</span>
+                        <span class="font-medium text-red-800">No circuits or devices</span>
                     </div>
                 </div>
                 {% else %}
@@ -217,7 +217,7 @@
                 {% endif %}
             </div>
         </a>
-        <a href="{% url 'tracker:unassigned_outlets_list' %}" class="block hover:shadow-lg transition-shadow duration-200">
+        <a href="{% url 'tracker:unassigned_devices_list' %}" class="block hover:shadow-lg transition-shadow duration-200">
             <div class="bg-white overflow-hidden shadow rounded-lg">
                 <div class="p-5">
                     <div class="flex items-center">
@@ -228,13 +228,13 @@
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">Unassigned Outlets</dt>
-                                <dd class="text-lg font-medium text-gray-900">{{ unassigned_outlets_count }}</dd>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Unassigned Devices</dt>
+                                <dd class="text-lg font-medium text-gray-900">{{ unassigned_devices_count }}</dd>
                             </dl>
                         </div>
                     </div>
                 </div>
-                {% if unassigned_outlets_count > 0 %}
+                {% if unassigned_devices_count > 0 %}
                 <div class="bg-purple-50 px-5 py-3">
                     <div class="text-sm">
                         <span class="font-medium text-purple-800">Need circuit assignment</span>
@@ -243,7 +243,7 @@
                 {% else %}
                 <div class="bg-green-50 px-5 py-3">
                     <div class="text-sm">
-                        <span class="font-medium text-green-800">All outlets assigned</span>
+                        <span class="font-medium text-green-800">All devices assigned</span>
                     </div>
                 </div>
                 {% endif %}

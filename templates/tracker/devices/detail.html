@@ -1,50 +1,61 @@
 {% extends 'tracker/base_detail.html' %}
 
-{% block detail_title %}{{ outlet.location_description }}{% endblock %}
-{% block detail_subtitle %}{{ outlet.get_device_type_display }} in {{ outlet.room.name }}{% endblock %}
+{% block detail_title %}{{ device.location_description }}{% endblock %}
+{% block detail_subtitle %}{{ device.get_device_type_display }} in {{ device.room.name }}{% endblock %}
 
-{% block edit_url %}{% url 'tracker:outlet_update' outlet.pk %}{% endblock %}
-{% block delete_url %}{% url 'tracker:outlet_delete' outlet.pk %}{% endblock %}
+{% block edit_url %}{% url 'tracker:device_update' device.pk %}{% endblock %}
+{% block delete_url %}{% url 'tracker:device_delete' device.pk %}{% endblock %}
 
 {% block detail_content %}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Outlet Details -->
+        <!-- Device Details -->
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Outlet Details</h3>
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Device Details</h3>
             <div class="space-y-3">
                 <div>
                     <dt class="text-sm font-medium text-gray-500">Device Type</dt>
                     <dd class="text-sm text-gray-900">
                         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-                            {% if outlet.device_type == 'RECEPTACLE' %}bg-blue-100 text-blue-800
-                            {% elif outlet.device_type == 'SWITCH' %}bg-green-100 text-green-800
-                            {% elif outlet.device_type == 'LIGHT' %}bg-yellow-100 text-yellow-800
+                            {% if device.device_type == 'RECEPTACLE' %}bg-blue-100 text-blue-800
+                            {% elif device.device_type == 'SWITCH' %}bg-green-100 text-green-800
+                            {% elif device.device_type == 'LIGHT' %}bg-yellow-100 text-yellow-800
                             {% else %}bg-gray-100 text-gray-800
                             {% endif %}">
-                            {{ outlet.get_device_type_display }}
+                            {{ device.get_device_type_display }}
                         </span>
                     </dd>
                 </div>
                 <div>
                     <dt class="text-sm font-medium text-gray-500">Location</dt>
-                    <dd class="text-sm text-gray-900">{{ outlet.location_description }}</dd>
+                    <dd class="text-sm text-gray-900">{{ device.location_description }}</dd>
                 </div>
                 <div>
                     <dt class="text-sm font-medium text-gray-500">Room</dt>
                     <dd class="text-sm text-gray-900">
-                        <a href="{% url 'tracker:room_detail' outlet.room.pk %}"
+                        <a href="{% url 'tracker:room_detail' device.room.pk %}"
                            class="inline-flex items-center px-3 py-1.5 border border-green-300 shadow-sm text-xs font-medium rounded-md text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                            {{ outlet.room.name }}
+                            {{ device.room.name }}
                         </a>
                     </dd>
                 </div>
-                {% if outlet.circuit %}
+                {% if device.attached_appliance %}
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Connected Appliance</dt>
+                    <dd class="text-sm text-gray-900">
+                        <a href="{% url 'tracker:appliance_detail' device.attached_appliance.pk %}"
+                           class="inline-flex items-center px-3 py-1.5 border border-purple-300 shadow-sm text-xs font-medium rounded-md text-purple-700 bg-white hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                            {{ device.attached_appliance.name }}
+                        </a>
+                    </dd>
+                </div>
+                {% endif %}
+                {% if device.circuit %}
                 <div>
                     <dt class="text-sm font-medium text-gray-500">Circuit</dt>
                     <dd class="text-sm text-gray-900">
-                        <a href="{% url 'tracker:circuit_detail' outlet.circuit.pk %}"
+                        <a href="{% url 'tracker:circuit_detail' device.circuit.pk %}"
                            class="inline-flex items-center px-3 py-1.5 border border-green-300 shadow-sm text-xs font-medium rounded-md text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                            Circuit {{ outlet.circuit.circuit_number }} - {{ outlet.circuit.description }}
+                            Circuit {{ device.circuit.circuit_number }} - {{ device.circuit.description }}
                         </a>
                     </dd>
                 </div>
@@ -55,7 +66,7 @@
         <div class="bg-gray-50 border-gray-200 overflow-hidden shadow rounded-lg">
             <div class="px-4 py-5 sm:p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Protection Features</h3>
-                {% with protection=outlet.get_total_protection %}
+                {% with protection=device.get_total_protection %}
                     {% if protection %}
                         <div class="flex flex-wrap gap-2">
                             {% for prot in protection %}
@@ -74,30 +85,30 @@
                 {% endwith %}
             </div>
         </div>
-        <!-- Other Outlets in Same Room -->
-        {% with other_outlets=outlet.room.outlets.all %}
-            {% if other_outlets.count > 1 %}
+        <!-- Other Devices in Same Room -->
+        {% with other_devices=device.room.devices.all %}
+            {% if other_devices.count > 1 %}
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Other Outlets in {{ outlet.room.name }}</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Other Devices in {{ device.room.name }}</h3>
                 <div class="space-y-3">
-                    {% for other_outlet in other_outlets %}
-                        {% if other_outlet.pk != outlet.pk %}
+                    {% for other_device in other_devices %}
+                        {% if other_device.pk != device.pk %}
                             <div class="border border-gray-200 rounded p-3 bg-white">
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <div class="text-sm font-medium text-gray-900">
-                                            {{ other_outlet.location_description }}
+                                            {{ other_device.location_description }}
                                         </div>
                                         <div class="flex items-center space-x-2 mt-1">
                                             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-                                                {% if other_outlet.device_type == 'RECEPTACLE' %}bg-blue-100 text-blue-800
-                                                {% elif other_outlet.device_type == 'SWITCH' %}bg-green-100 text-green-800
-                                                {% elif other_outlet.device_type == 'LIGHT' %}bg-yellow-100 text-yellow-800
+                                                {% if other_device.device_type == 'RECEPTACLE' %}bg-blue-100 text-blue-800
+                                                {% elif other_device.device_type == 'SWITCH' %}bg-green-100 text-green-800
+                                                {% elif other_device.device_type == 'LIGHT' %}bg-yellow-100 text-yellow-800
                                                 {% else %}bg-gray-100 text-gray-800
                                                 {% endif %}">
-                                                {{ other_outlet.get_device_type_display }}
+                                                {{ other_device.get_device_type_display }}
                                             </span>
-                                            {% with protection=other_outlet.get_total_protection %}
+                                            {% with protection=other_device.get_total_protection %}
                                                 {% for prot in protection %}
                                                     <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium
                                                         {% if prot == 'GFCI' %}bg-blue-100 text-blue-700
@@ -110,10 +121,10 @@
                                             {% endwith %}
                                         </div>
                                     </div>
-                                    <a href="{% url 'tracker:outlet_detail' other_outlet.pk %}"
-                                       class="inline-flex items-center px-3 py-1.5 border border-green-300 shadow-sm text-xs font-medium rounded-md text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                        View
-                                    </a>
+                                <a href="{% url 'tracker:device_detail' other_device.pk %}"
+                                   class="inline-flex items-center px-3 py-1.5 border border-blue-300 shadow-sm text-xs font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    View
+                                </a>
                                 </div>
                             </div>
                         {% endif %}
@@ -123,11 +134,11 @@
             {% endif %}
         {% endwith %}
         <!-- Circuits Serving This Room -->
-        {% if outlet.room.circuits.exists %}
+        {% if device.room.circuits.exists %}
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Circuits Serving {{ outlet.room.name }}</h3>
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Circuits Serving {{ device.room.name }}</h3>
             <div class="space-y-3">
-                {% for circuit in outlet.room.circuits.all %}
+                {% for circuit in device.room.circuits.all %}
                     <div class="border border-gray-200 rounded p-3 bg-white">
                         <div class="flex items-center justify-between">
                             <div>
@@ -140,7 +151,7 @@
                                 </span>
                             </div>
                             <a href="{% url 'tracker:circuit_detail' circuit.pk %}"
-                               class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                               class="inline-flex items-center px-3 py-1.5 border border-blue-300 shadow-sm text-xs font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 View
                             </a>
                         </div>
@@ -150,11 +161,11 @@
         </div>
         {% endif %}
         <!-- Notes -->
-        {% if outlet.notes %}
+        {% if device.notes %}
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 lg:col-span-2">
             <h3 class="text-lg font-medium text-gray-900 mb-4">Notes</h3>
             <div class="prose prose-sm max-w-none">
-                <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ outlet.notes }}</p>
+                <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ device.notes }}</p>
             </div>
         </div>
         {% endif %}

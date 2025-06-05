@@ -7,8 +7,8 @@
                 <nav class="flex mb-2" aria-label="Breadcrumb">
                     <ol class="flex items-center space-x-2 text-sm">
                         <li>
-                            <a href="{% url 'tracker:outlet_list' %}" class="text-gray-500 hover:text-gray-700">
-                                Outlets
+                            <a href="{% url 'tracker:device_list' %}" class="text-gray-500 hover:text-gray-700">
+                                Devices
                             </a>
                         </li>
                         <li>
@@ -21,45 +21,45 @@
                         </li>
                     </ol>
                 </nav>
-                <h1 class="text-2xl font-bold text-gray-900">{{ room.name }} Outlets</h1>
+                <h1 class="text-2xl font-bold text-gray-900">{{ room.name }} Devices</h1>
             </div>
-            <a href="{% url 'tracker:outlet_create' %}?room={{ room.id }}"
+            <a href="{% url 'tracker:device_create' %}?room={{ room.id }}"
                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-colors">
                 <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
-                Add Outlet
+                Add Device
             </a>
         </div>
     </div>
     <div class="px-6 py-4 bg-white">
-        {% if outlets %}
+        {% if devices %}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {% for outlet in outlets %}
+                {% for device in devices %}
                     <div class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
                         <div class="p-4">
                             <h3 class="text-lg font-medium text-gray-900 mb-2 capitalize">
-                                {% if outlet.location_description %}
-                                    {{ outlet.location_description }}
+                                {% if device.location_description %}
+                                    {{ device.location_description }}
                                 {% else %}
-                                    {{ outlet.get_device_type_display }}
+                                    {{ device.get_device_type_display }}
                                 {% endif %}
                             </h3>
                             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mb-3
-                                {% if outlet.device_type == 'RECEPTACLE' %}bg-blue-100 text-blue-800
-                                {% elif outlet.device_type == 'SWITCH' %}bg-green-100 text-green-800
-                                {% elif outlet.device_type == 'LIGHT' %}bg-yellow-100 text-yellow-800
+                                {% if device.device_type == 'RECEPTACLE' %}bg-blue-100 text-blue-800
+                                {% elif device.device_type == 'SWITCH' %}bg-green-100 text-green-800
+                                {% elif device.device_type == 'LIGHT' %}bg-yellow-100 text-yellow-800
                                 {% endif %}">
-                                {{ outlet.get_device_type_display|upper }}
+                                {{ device.get_device_type_display|upper }}
                             </span>
-                            {% if outlet.circuit %}
-                                <p class="text-sm text-gray-600 mb-1">Type: {{ outlet.circuit.get_pole_type_display }}</p>
+                            {% if device.circuit %}
+                                <p class="text-sm text-gray-600 mb-1">Type: {{ device.circuit.get_pole_type_display }}</p>
                                 <div class="flex items-center text-sm text-gray-600 mb-2">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     </svg>
-                                    <span>Circuit {{ outlet.circuit.circuit_number }}</span>
+                                    <span>Circuit {{ device.circuit.circuit_number }}</span>
                                 </div>
                             {% else %}
                                 <div class="flex items-center text-sm text-red-600 mb-3">
@@ -69,15 +69,15 @@
                                     <span class="font-medium">No Circuit Assigned</span>
                                 </div>
                             {% endif %}
-                            {% if outlet.position_number %}
-                                <p class="text-xs text-gray-500 mb-3">Position: {{ outlet.position_number }}</p>
+                            {% if device.position_number %}
+                                <p class="text-xs text-gray-500 mb-3">Position: {{ device.position_number }}</p>
                             {% endif %}
                             <div class="flex space-x-2 mt-3">
-                                <a href="{% url 'tracker:outlet_detail' outlet.pk %}"
+                                <a href="{% url 'tracker:device_detail' device.pk %}"
                                    class="px-3 py-1 text-sm font-medium text-green-600 bg-white border border-green-600 rounded hover:bg-green-50">
                                     View
                                 </a>
-                                <a href="{% url 'tracker:outlet_update' outlet.pk %}"
+                                <a href="{% url 'tracker:device_update' device.pk %}"
                                     class="px-3 py-1 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded hover:bg-blue-50">
                                     Edit
                                 </a>
@@ -91,8 +91,8 @@
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                 </svg>
-                <h3 class="mt-2 text-sm font-medium text-gray-900">No outlets in {{ room.name }}</h3>
-                <p class="mt-1 text-sm text-gray-500">Get started by adding an outlet to this room.</p>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No devices in {{ room.name }}</h3>
+                <p class="mt-1 text-sm text-gray-500">Get started by adding an device to this room.</p>
             </div>
         {% endif %}
     </div>

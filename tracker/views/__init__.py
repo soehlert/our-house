@@ -20,8 +20,8 @@ from .circuit_diagram_views import (
     circuit_diagram_list, circuit_diagram_detail, circuit_diagram_create, circuit_diagram_update, circuit_diagram_delete
 )
 
-from .outlet_views import (
-    outlet_list, outlet_detail, outlet_create, outlet_delete, outlet_update
+from .device_views import (
+    device_list, device_detail, device_create, device_delete, device_update
 )
 
 from .electrical_panel_views import (

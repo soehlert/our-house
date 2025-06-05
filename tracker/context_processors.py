@@ -34,10 +34,10 @@ def menu_items(request):
                         ]
                     },
                     {
-                        'title': 'Outlets',
+                        'title': 'Devices',
                         'items': [
-                            {'name': 'View All Outlets', 'url': 'tracker:outlet_list'},
-                            {'name': 'Add Outlet', 'url': 'tracker:outlet_create'},
+                            {'name': 'View All Devices', 'url': 'tracker:device_list'},
+                            {'name': 'Add Device', 'url': 'tracker:device_create'},
                         ]
                     },
                 ]

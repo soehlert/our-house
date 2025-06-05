@@ -10,7 +10,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 import json
 from django.core.serializers import serialize
 
-from tracker.models import Room, Appliance, PurchaseLocation, PaintColor, Circuit, Outlet
+from tracker.models import Appliance, Circuit, Device, PaintColor, PurchaseLocation, Room
 
 
 def _get_warranty_data():
@@ -63,15 +63,15 @@ def undismiss_warranty_alert(request, appliance_id):
 
     return redirect('tracker:expiring_warranties_list')
 
-def unassigned_outlets_list(request):
-    """Show outlets not assigned to any circuit."""
-    outlets = Outlet.objects.filter(circuit__isnull=True).order_by('room__name', 'device_type')
+def unassigned_devices_list(request):
+    """Show devices not assigned to any circuit."""
+    devices = Device.objects.filter(circuit__isnull=True).order_by('room__name', 'device_type')
 
     context = {
-        'object_list': outlets,
+        'object_list': devices,
         'show_create_button': False
     }
-    return render(request, 'tracker/alert_cards/unassigned_outlets_list.html', context)
+    return render(request, 'tracker/alert_cards/unassigned_devices_list.html', context)
 
 
 def home(request):
@@ -80,20 +80,20 @@ def home(request):
     # Expiring warranties (next 90 days) ignoring appliances without a warranty date
     warranty_data = _get_warranty_data()
 
-    # Rooms with no circuits or outlets mapped
+    # Rooms with no circuits or devices mapped
     unmapped_rooms = Room.objects.filter(
-        Q(circuits__isnull=True) & Q(outlets__isnull=True)
+        Q(circuits__isnull=True) & Q(devices__isnull=True)
     ).distinct().count()
 
-    # Outlets not assigned to any circuit
-    unassigned_outlets = Outlet.objects.filter(circuit__isnull=True).count()
+    # Devices not assigned to any circuit
+    unassigned_devices = Device.objects.filter(circuit__isnull=True).count()
 
     # Appliances without a manual
     missing_docs = Appliance.objects.filter(owners_manual='').count()
 
     # Get recent items for activity feed
     recent_items = []
-    for model_name in ['Appliance', 'Room', 'Circuit', 'Outlet', 'PaintColor']:
+    for model_name in ['Appliance', 'Room', 'Circuit', 'Device', 'PaintColor']:
         try:
             model = apps.get_model('tracker', model_name)
             items = model.objects.order_by('-created_at')[:2]
@@ -117,7 +117,7 @@ def home(request):
         'paint_color_count': PaintColor.objects.count(),
         'circuit_count': Circuit.objects.count(),
         'unmapped_rooms_count': unmapped_rooms,
-        'unassigned_outlets_count': unassigned_outlets,
+        'unassigned_devices_count': unassigned_devices,
         'missing_docs_count': missing_docs,
         'recent_items': recent_items,
         **warranty_data,
@@ -172,9 +172,9 @@ def expiring_warranties_list(request):
 
 
 def unmapped_rooms_list(request):
-    """Show rooms with no circuits or outlets mapped."""
+    """Show rooms with no circuits or devices mapped."""
     rooms = Room.objects.filter(
-        Q(circuits__isnull=True) & Q(outlets__isnull=True)
+        Q(circuits__isnull=True) & Q(devices__isnull=True)
     ).distinct().order_by('name')
 
     context = {
@@ -196,7 +196,7 @@ def export_data(request):
         'paint_colors': json.loads(serialize('json', PaintColor.objects.all())),
         'circuit_diagrams': json.loads(serialize('json', CircuitDiagram.objects.all())),
         'circuits': json.loads(serialize('json', Circuit.objects.all())),
-        'outlets': json.loads(serialize('json', Outlet.objects.all())),
+        'devices': json.loads(serialize('json', Device.objects.all())),
     }
 
     response = HttpResponse(
@@ -220,7 +220,7 @@ def import_data(request):
 
         # Clear existing data if requested
         if request.POST.get('clear_existing') == 'true':
-            Outlet.objects.all().delete()
+            device.objects.all().delete()
             Circuit.objects.all().delete()
             CircuitDiagram.objects.all().delete()
             PaintColor.objects.all().delete()
@@ -305,15 +305,15 @@ def import_data(request):
             if rooms_data:
                 paint_color.rooms.set(rooms_data)
 
-        for outlet_data in json_data.get('outlets', []):
-            fields = outlet_data['fields'].copy()
+        for device_data in json_data.get('devices', []):
+            fields = device_data['fields'].copy()
             if fields.get('room'):
                 fields['room'] = Room.objects.get(pk=fields['room'])
             if fields.get('circuit'):
                 fields['circuit'] = Circuit.objects.get(pk=fields['circuit'])
 
-            Outlet.objects.get_or_create(
-                pk=outlet_data['pk'],
+            Device.objects.get_or_create(
+                pk=device_data['pk'],
                 defaults=fields
             )
 

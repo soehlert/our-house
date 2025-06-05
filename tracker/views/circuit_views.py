@@ -23,7 +23,7 @@ def circuit_list(request):
 
 def circuit_detail(request, pk):
     """Show circuit details."""
-    circuit = get_object_or_404(Circuit.objects.prefetch_related('rooms', 'diagrams', 'outlets'), pk=pk)
+    circuit = get_object_or_404(Circuit.objects.prefetch_related('rooms', 'diagrams', 'devices'), pk=pk)
     return render(request, 'tracker/circuits/detail.html', {'circuit': circuit})
 
 

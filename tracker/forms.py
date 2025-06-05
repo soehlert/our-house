@@ -1,5 +1,5 @@
 from django import forms
-from tracker.models import Appliance, Circuit, CircuitDiagram, ElectricalPanel, Outlet, PaintColor, PurchaseLocation, Room
+from tracker.models import Appliance, Circuit, CircuitDiagram, Device, ElectricalPanel, PaintColor, PurchaseLocation, Room
 
 
 class RoomForm(forms.ModelForm):
@@ -73,11 +73,15 @@ class PaintColorForm(forms.ModelForm):
         }
 
 
-class OutletForm(forms.ModelForm):
+class DeviceForm(forms.ModelForm):
     class Meta:
-        model = Outlet
-        fields = ['device_type', 'room', 'circuit', 'location_description', 'position_number', 'protection_type']
+        model = Device
+        fields = ['device_type', 'room', 'circuit', 'location_description', 'position_number', 'attached_appliance', 'protection_type']
         widgets = {
+            'attached_appliance': forms.Select(attrs={
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
+                'data-group': 'relationships'
+            }),
             'device_type': forms.Select(attrs={
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
                 'data-group': 'details'
@@ -93,7 +97,7 @@ class OutletForm(forms.ModelForm):
             'location_description': forms.Textarea(attrs={
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
                 'rows': 4,
-                'placeholder': 'Where is the outlet located in the room',
+                'placeholder': 'Where is the device located in the room',
                 'data-group': 'notes'
             }),
             'position_number': forms.NumberInput(attrs={
@@ -102,21 +106,22 @@ class OutletForm(forms.ModelForm):
                 'min': '1',
                 'data-group': 'details'
             }),
-            'protection_type': forms.Select(attrs={  # Added missing widget
+            'protection_type': forms.Select(attrs={
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
                 'data-group': 'technical'
             }),
         }
         help_texts = {
+            'attached_appliance': 'The name if theres an attached appliance',
             'device_type': 'Select the type of electrical device',
-            'room': 'Select the room where this outlet is located',
-            'circuit': 'Select the circuit this outlet is connected to',
-            'location_description': 'Describe the location of the outlet',
-            'position_number': 'eg 1 is the home run, 2 is the next outlet',
-            'protection_type': 'Select the type of electrical protection for this outlet',  # Added help text
+            'room': 'Select the room where this device is located',
+            'circuit': 'Select the circuit this device is connected to',
+            'location_description': 'Describe the location of the device',
+            'position_number': 'eg 1 is the home run, 2 is the next device',
+            'protection_type': 'Select the type of electrical protection for this device',
         }
 
-    def __init__(self, *args, **kwargs):  # Added __init__ method
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['protection_type'].empty_label = "Select protection type"
         self.fields['circuit'].empty_label = "Select circuit"
@@ -202,7 +207,7 @@ class CircuitForm(forms.ModelForm):
         model = Circuit
         fields = [
             'circuit_number', 'description', 'panel', 'breaker_size', 'voltage', 'pole_type',
-            'protection_type', 'rooms', 'diagrams', 'notes'  # Added 'panel', replaced protection booleans
+            'protection_type', 'rooms', 'diagrams', 'notes'
         ]
         widgets = {
             'circuit_number': forms.NumberInput(attrs={
@@ -215,7 +220,7 @@ class CircuitForm(forms.ModelForm):
                 'placeholder': 'e.g., Kitchen outlets, Master bedroom lights',
                 'data-group': 'details'
             }),
-            'panel': forms.Select(attrs={  # Added panel field
+            'panel': forms.Select(attrs={
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
                 'data-group': 'relationships'
             }),
@@ -231,7 +236,7 @@ class CircuitForm(forms.ModelForm):
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
                 'data-group': 'technical'
             }),
-            'protection_type': forms.Select(attrs={  # Replaced the 3 checkboxes with 1 dropdown
+            'protection_type': forms.Select(attrs={
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
                 'data-group': 'technical'
             }),
@@ -273,7 +278,7 @@ class CircuitDiagramForm(forms.ModelForm):
         widgets = {
             'description': forms.TextInput(attrs={
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
-                'placeholder': 'e.g., Main panel layout, Kitchen circuit diagram',
+                'placeholder': 'e.g., family room lighting circuit, kitchen circuit',
                 'data-group': 'details'
             }),
             'image': forms.FileInput(attrs={
@@ -289,6 +294,17 @@ class CircuitDiagramForm(forms.ModelForm):
 
 
 class ApplianceForm(forms.ModelForm):
+    connected_device = forms.ModelChoiceField(
+        queryset=Device.objects.filter(device_type='Receptacle'),
+        required=False,
+        empty_label="Select a receptacle",
+        help_text="Which receptacle is this appliance plugged into?",
+        widget=forms.Select(attrs={
+            'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
+            'data-group': 'relationships'
+        }),
+    )
+
     class Meta:
         model = Appliance
         fields = [
@@ -296,7 +312,7 @@ class ApplianceForm(forms.ModelForm):
             'room', 'purchase_location', 'purchase_date', 'purchase_price',
             'registered', 'warranty_expires', 'power_demands', 'pole_type', 'voltage',
             'receipt', 'owners_manual', 'specs', 'install_docs', 'service_manual', 'image',
-            'notes'
+            'notes', 'connected_device'
         ]
         widgets = {
             'name': forms.TextInput(attrs={
@@ -401,3 +417,21 @@ class ApplianceForm(forms.ModelForm):
         self.fields['room'].empty_label = "Select a room"
         self.fields['purchase_location'].empty_label = "Select purchase location"
         self.fields['power_demands'].empty_label = "Select power requirement"
+
+        if self.instance.pk:
+            connected_device = self.instance.devices.first()
+            if connected_device:
+                self.fields['connected_device'].initial = connected_device
+
+    def save(self, commit=True):
+        appliance = super().save(commit=commit)
+
+        # Clear any existing connections to this appliance
+        appliance.devices.update(attached_appliance=None)
+
+        if self.cleaned_data.get('connected_device'):
+            device = self.cleaned_data['connected_device']
+            device.attached_appliance = appliance
+            device.save()
+
+        return appliance

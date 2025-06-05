@@ -18,11 +18,11 @@ class ElectricalPanelGenerator:
     def __init__(self):
         # Color scheme for different protection types
         self.colors = {
-            'empty': '#D1D5DB',              # Gray-300 - empty slot
-            'none': '#FEF3C7',               # Yellow-100 - no protection
-            'gfci': '#3B82F6',               # Blue-500 - GFCI
-            'afci': '#10B981',               # Emerald-500 - AFCI
-            'dual_function': '#8B5CF6',      # Violet-500 - Dual Function
+            'empty': '#D1D5DB',              # Gray-300
+            'none': '#FEF08A',               # Yellow-200
+            'gfci': '#60A5FA',               # Blue-400
+            'afci': '#34D399',               # Emerald-400
+            'dual_function': '#FB923C',      # Orange-300
         }
 
         # Layout constants - these define the physical dimensions of the panel inside the SVG

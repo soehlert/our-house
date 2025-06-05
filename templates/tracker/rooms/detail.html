@@ -42,9 +42,9 @@
                     </span>
                 </div>
                 <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium text-gray-500">Outlets:</span>
+                    <span class="text-sm font-medium text-gray-500">Devices:</span>
                     <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                        {{ room.outlets.count }}
+                        {{ room.devices.count }}
                     </span>
                 </div>
                 <div class="flex items-center justify-between">
@@ -124,35 +124,35 @@
             </div>
         </div>
         {% endif %}
-        <!-- Outlets in this Room -->
-        {% if room.outlets.exists %}
+        <!-- Devices in this Room -->
+        {% if room.devices.exists %}
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-medium text-gray-900">Outlets</h3>
-                <a href="{% url 'tracker:outlet_create' %}?room={{ room.pk }}"
+                <h3 class="text-lg font-medium text-gray-900">Devices</h3>
+                <a href="{% url 'tracker:device_create' %}?room={{ room.pk }}"
                    class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600">
                     <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
-                    Add Outlet
+                    Add Device
                 </a>
             </div>
             <div class="space-y-3">
-                {% for outlet in room.outlets.all %}
+                {% for device in room.devices.all %}
                     <div class="border border-gray-200 rounded p-3 bg-white">
                         <div class="flex items-center justify-between">
                             <div>
-                                <div class="text-sm font-medium text-gray-900">{{ outlet.location_description }}</div>
+                                <div class="text-sm font-medium text-gray-900">{{ device.location_description }}</div>
                                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-1
-                                    {% if outlet.device_type == 'RECEPTACLE' %}bg-blue-100 text-blue-800
-                                    {% elif outlet.device_type == 'SWITCH' %}bg-green-100 text-green-800
-                                    {% elif outlet.device_type == 'LIGHT' %}bg-yellow-100 text-yellow-800
+                                    {% if device.device_type == 'RECEPTACLE' %}bg-blue-100 text-blue-800
+                                    {% elif device.device_type == 'SWITCH' %}bg-green-100 text-green-800
+                                    {% elif device.device_type == 'LIGHT' %}bg-yellow-100 text-yellow-800
                                     {% else %}bg-gray-100 text-gray-800
                                     {% endif %}">
-                                    {{ outlet.get_device_type_display }}
+                                    {{ device.get_device_type_display }}
                                 </span>
                             </div>
-                            <a href="{% url 'tracker:outlet_detail' outlet.pk %}"
+                            <a href="{% url 'tracker:device_detail' device.pk %}"
                                class="inline-flex items-center px-3 py-1.5 border border-green-300 shadow-sm text-xs font-medium rounded-md text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                                 View
                             </a>
@@ -190,7 +190,7 @@
         </div>
         {% endif %}
         <!-- Empty State Messages -->
-        {% if not room.appliance_set.exists and not room.circuits.exists and not room.outlets.exists and not room.paint_colors.exists %}
+        {% if not room.appliance_set.exists and not room.circuits.exists and not room.devices.exists and not room.paint_colors.exists %}
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 lg:col-span-2">
             <div class="text-center py-6">
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

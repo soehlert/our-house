@@ -1,9 +1,9 @@
 {% extends 'tracker/base_confirm_delete.html' %}
 
-{% block delete_title %}Delete Outlet{% endblock %}
+{% block delete_title %}Delete Device{% endblock %}
 
 {% block delete_message %}
-    Are you sure you want to delete the <strong>{{ outlet.get_device_type_display }}</strong> in <strong>{{ outlet.room.name }}</strong>?
+    Are you sure you want to delete the <strong>{{ device.get_device_type_display }}</strong> in <strong>{{ device.room.name }}</strong>?
 {% endblock %}
 
 {% block delete_consequences %}
@@ -17,12 +17,12 @@
             <div class="ml-3">
                 <h3 class="text-sm font-medium text-yellow-800">Warning</h3>
                 <div class="mt-2 text-sm text-yellow-700">
-                    <p>This action will permanently delete this outlet and cannot be undone.</p>
+                    <p>This action will permanently delete this device and cannot be undone.</p>
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
 
-{% block cancel_url %}{% url 'tracker:outlet_detail' outlet.pk %}{% endblock %}
-{% block delete_url %}{% url 'tracker:outlet_delete' outlet.pk %}{% endblock %}
+{% block cancel_url %}{% url 'tracker:device_detail' device.pk %}{% endblock %}
+{% block delete_url %}{% url 'tracker:device_delete' device.pk %}{% endblock %}
