@@ -7,12 +7,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class ProtectionType(models.TextChoices):
-    """Electrical protection types for circuits and outlets."""
-    GFCI = "GFCI", "GFCI (Ground Fault Circuit Interrupter)"
-    AFCI = "AFCI", "AFCI (Arc Fault Circuit Interrupter)"
-    CAFI = "CAFI", "CAFI (Combination Arc Fault Interrupter)"
-
 class BreakerSize(models.TextChoices):
     FIFTEEN_AMP = "15A", "15A"
     TWENTY_AMP = "20A", "20A"
@@ -28,6 +22,13 @@ class Volts(models.TextChoices):
 class PoleType(models.TextChoices):
     SINGLE = "single", "Single Pole"
     DOUBLE = "double", "Double Pole"
+
+class ProtectionType(models.TextChoices):
+    """Electrical protection types for circuits and outlets."""
+    NONE = "none", "No Protection"
+    GFCI = "gfci", "GFCI (Ground Fault Circuit Interrupter)"
+    AFCI = "afci", "AFCI (Arc Fault Circuit Interrupter)"
+    DUAL_FUNCTION = "dual_function", "Dual Function (AFCI + GFCI)"
 
 
 class Room(models.Model):
@@ -227,11 +228,9 @@ class Circuit(models.Model):
 
     panel = models.ForeignKey(ElectricalPanel, on_delete=models.CASCADE, related_name='circuits')
     breaker_size = models.CharField(max_length=10, choices=BreakerSize.choices)
-    gfci = models.BooleanField(default=False, verbose_name="GFCI Protected")
-    afci = models.BooleanField(default=False, verbose_name="AFCI Protected")
-    cafi = models.BooleanField(default=False, verbose_name="CAFI Protected")
     pole_type = models.CharField(max_length=10, choices=PoleType.choices)
     voltage = models.CharField(max_length=10, choices=Volts.choices)
+    protection_type = models.CharField(max_length=15, choices=ProtectionType.choices, default=ProtectionType.NONE)
 
     diagrams = models.ManyToManyField(CircuitDiagram, blank=True, related_name='circuits')
     notes = models.TextField(blank=True)
@@ -254,9 +253,9 @@ class Outlet(models.Model):
     'akshually' but it's the best description I got here.
     """
     class DeviceType(models.TextChoices):
-        RECEPTACLE = "RECEPTACLE", "Receptacle"
-        SWITCH = "SWITCH", "Switch"
-        LIGHT = "LIGHT", "Light"
+        RECEPTACLE = "Receptacle", "Receptacle"
+        SWITCH = "Switch", "Switch"
+        LIGHT = "Light", "Light"
 
     device_type = models.CharField(max_length=50, choices=DeviceType.choices)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='outlets')
@@ -264,23 +263,27 @@ class Outlet(models.Model):
     location_description = models.TextField(blank=True)
     position_number = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    gfci = models.BooleanField(default=False, verbose_name="GFCI Protected")
-    afci = models.BooleanField(default=False, verbose_name="AFCI Protected")
-    cafi = models.BooleanField(default=False, verbose_name="CAFI Protected")
+    protection_type = models.CharField(max_length=15, choices=ProtectionType.choices, default=ProtectionType.NONE)
 
     class Meta:
         ordering = ['room__name', 'device_type']
 
-    def get_total_protection(self) -> list[str]:
-        """Get all protection types (outlet + circuit combined)."""
-        protection = []
-        if self.gfci or (self.circuit and self.circuit.gfci):
-            protection.append("GFCI")
-        if self.afci or (self.circuit and self.circuit.afci):
-            protection.append("AFCI")
-        if self.cafi or (self.circuit and self.circuit.cafi):
-            protection.append("CAFI")
-        return protection
+    def get_total_protection(self):
+        """Get protection features for this outlet."""
+        protection_features = []
+
+        # Only check outlet-level protection
+        if self.protection_type and self.protection_type != ProtectionType.NONE:
+            if self.protection_type == ProtectionType.GFCI:
+                protection_features.append('GFCI')
+            elif self.protection_type == ProtectionType.AFCI:
+                protection_features.append('AFCI')
+            elif self.protection_type == ProtectionType.DUAL_FUNCTION:
+                protection_features.append('GFCI')
+                protection_features.append('AFCI')
+
+        return protection_features
+
 
     def __str__(self) -> str:
         circuit_info = f"Circuit {self.circuit.circuit_number}" if self.circuit else "No Circuit"

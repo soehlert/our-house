@@ -12,8 +12,8 @@ class ApplianceAdmin(admin.ModelAdmin):
 
 @admin.register(Circuit)
 class CircuitAdmin(admin.ModelAdmin):
-    list_display = ['circuit_number', 'description', 'breaker_size', 'pole_type', 'gfci', 'afci', 'cafi']
-    list_filter = ['breaker_size', 'pole_type', 'gfci', 'afci', 'cafi']
+    list_display = ['circuit_number', 'description', 'breaker_size', 'pole_type', 'protection_type', 'panel']
+    list_filter = ['breaker_size', 'pole_type', 'protection_type', 'panel']
     search_fields = ['circuit_number', 'description']
     filter_horizontal = ['rooms', 'diagrams']
 
@@ -33,8 +33,8 @@ class ElectricalPanelAdmin(admin.ModelAdmin):
 
 @admin.register(Outlet)
 class OutletAdmin(admin.ModelAdmin):
-    list_display = ['device_type', 'room', 'circuit', 'position_number', 'location_description']
-    list_filter = ['device_type', 'room', 'circuit']
+    list_display = ['device_type', 'room', 'circuit', 'position_number', 'location_description', 'protection_type']
+    list_filter = ['device_type', 'room', 'circuit', 'protection_type']
     search_fields = ['location_description', 'room__name', 'circuit__description']
 
 

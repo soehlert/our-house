@@ -183,31 +183,6 @@ def unmapped_rooms_list(request):
     }
     return render(request, 'tracker/alert_cards/unmapped_rooms_list.html', context)
 
-def recent_additions_list(request):
-    """Show recently added items."""
-    recent_items = []
-    for model_name in ['Appliance', 'Circuit', 'Outlet', 'PaintColor', 'Purchase_Location', 'Room']:
-        try:
-            model = apps.get_model('tracker', model_name)
-            items = model.objects.filter(created_at__gte=timezone.now() - timedelta(days=7)).order_by('-created_at')
-            for item in items:
-                recent_items.append({
-                    'name': str(item),
-                    'model_name': model_name,
-                    'created_at': item.created_at,
-                    'id': item.id
-                })
-        except LookupError:
-            continue
-
-    # Sort by creation date
-    recent_items = sorted(recent_items, key=lambda x: x['created_at'], reverse=True)
-
-    context = {
-        'recent_items': recent_items,
-        'show_create_button': False,
-    }
-    return render(request, 'tracker/alert_cards/recent_additions_list.html', context)
 
 @staff_member_required
 def export_data(request):

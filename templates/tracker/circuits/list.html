@@ -22,7 +22,22 @@
 {% endblock %}
 
 {% block card_content %}
-<div class="space-y-2 mb-2">
+<div class="space-y-2 mt-2 mb-2">
+    {% if item.panel %}
+        <div class="flex items-center text-sm text-gray-600">
+            <span class="font-medium">Panel:</span>
+            <span class="ml-1">{{ item.panel.brand }} - {{ item.panel.kind }}</span>
+        </div>
+    {% endif %}
+    {% if item.protection_type != 'none' %}
+        {% if item.protection_type == 'gfci' %}
+            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">GFCI</span>
+        {% elif item.protection_type == 'afci' %}
+            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">AFCI</span>
+        {% elif item.protection_type == 'dual_function' %}
+            <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Dual Function</span>
+        {% endif %}
+    {% endif %}
     <div class="flex items-center text-sm text-gray-600">
         <span class="font-medium">Type:</span>
         <span class="ml-1">{{ item.get_pole_type_display }}</span>
@@ -35,13 +50,6 @@
             </svg>
             <span class="font-medium">Rooms:</span>
             <span class="ml-1">{{ item.rooms.all|join:", " }}</span>
-        </div>
-    {% endif %}
-    {% if item.gfci or item.afci or item.cafi %}
-        <div class="flex flex-wrap gap-1">
-            {% if item.gfci %}<span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">GFCI</span>{% endif %}
-            {% if item.afci %}<span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">AFCI</span>{% endif %}
-            {% if item.cafi %}<span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">CAFI</span>{% endif %}
         </div>
     {% endif %}
 </div>

@@ -76,7 +76,7 @@ class PaintColorForm(forms.ModelForm):
 class OutletForm(forms.ModelForm):
     class Meta:
         model = Outlet
-        fields = ['device_type', 'room', 'circuit', 'location_description', 'position_number', 'gfci', 'afci', 'cafi']
+        fields = ['device_type', 'room', 'circuit', 'location_description', 'position_number', 'protection_type']
         widgets = {
             'device_type': forms.Select(attrs={
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
@@ -102,17 +102,9 @@ class OutletForm(forms.ModelForm):
                 'min': '1',
                 'data-group': 'details'
             }),
-            'gfci': forms.CheckboxInput(attrs={
-                'class': 'h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded',
-                'data-group': 'protection'
-            }),
-            'afci': forms.CheckboxInput(attrs={
-                'class': 'h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded',
-                'data-group': 'protection'
-            }),
-            'cafi': forms.CheckboxInput(attrs={
-                'class': 'h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded',
-                'data-group': 'protection'
+            'protection_type': forms.Select(attrs={  # Added missing widget
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
+                'data-group': 'technical'
             }),
         }
         help_texts = {
@@ -121,11 +113,13 @@ class OutletForm(forms.ModelForm):
             'circuit': 'Select the circuit this outlet is connected to',
             'location_description': 'Describe the location of the outlet',
             'position_number': 'eg 1 is the home run, 2 is the next outlet',
-            'gfci': 'This outlet has GFCI protection',
-            'afci': 'This outlet has AFCI protection',
-            'cafi': 'This outlet has CAFI protection',
+            'protection_type': 'Select the type of electrical protection for this outlet',  # Added help text
         }
 
+    def __init__(self, *args, **kwargs):  # Added __init__ method
+        super().__init__(*args, **kwargs)
+        self.fields['protection_type'].empty_label = "Select protection type"
+        self.fields['circuit'].empty_label = "Select circuit"
 
 
 class PurchaseLocationForm(forms.ModelForm):
@@ -207,8 +201,8 @@ class CircuitForm(forms.ModelForm):
     class Meta:
         model = Circuit
         fields = [
-            'circuit_number', 'description', 'breaker_size', 'voltage', 'pole_type',
-            'gfci', 'afci', 'cafi', 'rooms', 'diagrams', 'notes'
+            'circuit_number', 'description', 'panel', 'breaker_size', 'voltage', 'pole_type',
+            'protection_type', 'rooms', 'diagrams', 'notes'  # Added 'panel', replaced protection booleans
         ]
         widgets = {
             'circuit_number': forms.NumberInput(attrs={
@@ -220,6 +214,10 @@ class CircuitForm(forms.ModelForm):
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
                 'placeholder': 'e.g., Kitchen outlets, Master bedroom lights',
                 'data-group': 'details'
+            }),
+            'panel': forms.Select(attrs={  # Added panel field
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
+                'data-group': 'relationships'
             }),
             'breaker_size': forms.Select(attrs={
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
@@ -233,16 +231,8 @@ class CircuitForm(forms.ModelForm):
                 'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
                 'data-group': 'technical'
             }),
-            'gfci': forms.CheckboxInput(attrs={
-                'class': 'h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded',
-                'data-group': 'technical'
-            }),
-            'afci': forms.CheckboxInput(attrs={
-                'class': 'h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded',
-                'data-group': 'technical'
-            }),
-            'cafi': forms.CheckboxInput(attrs={
-                'class': 'h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded',
+            'protection_type': forms.Select(attrs={  # Replaced the 3 checkboxes with 1 dropdown
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
                 'data-group': 'technical'
             }),
             'rooms': forms.CheckboxSelectMultiple(attrs={
@@ -263,6 +253,8 @@ class CircuitForm(forms.ModelForm):
         help_texts = {
             'circuit_number': 'Enter the circuit number from your electrical panel',
             'description': 'Brief description of what this circuit powers',
+            'panel': 'Select which electrical panel this circuit belongs to',
+            'protection_type': 'Select the type of electrical protection for this circuit',
             'rooms': 'Select all rooms this circuit serves',
             'diagrams': 'Select any relevant circuit diagrams'
         }
@@ -270,6 +262,8 @@ class CircuitForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['voltage'].empty_label = "Select voltage"
+        self.fields['panel'].empty_label = "Select panel"
+        self.fields['protection_type'].empty_label = "Select protection type"
 
 
 class CircuitDiagramForm(forms.ModelForm):
