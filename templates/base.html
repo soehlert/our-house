@@ -7,19 +7,6 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23374151'><path d='M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z'/><path d='m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z'/></svg>">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#3b82f6',
-                        secondary: '#64748b',
-                        accent: '#f59e0b',
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 <body class="bg-gray-100 h-full flex flex-col">
     {% include 'navbar.html' %}
@@ -27,17 +14,49 @@
     <main class="flex-1 py-6">
         <div class="mx-auto px-4 sm:px-6 lg:px-8">
             {% if messages %}
-                <div class="mb-6">
-                    {% for message in messages %}
-                        <div class="rounded-md p-4 mb-4 {% if message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200{% elif message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200{% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
+                <div class="flex justify-center mb-6">
+                    <div class="space-y-2">
+                        {% for message in messages %}
+                            <div class="message-item rounded-lg px-6 py-4 shadow-lg max-w-md {% if message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200{% elif message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200{% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}"
+                                 data-message-id="{{ forloop.counter }}">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium">{{ message }}</span>
+                                    <button type="button" class="ml-4 text-current opacity-70 hover:opacity-100 font-bold text-lg leading-none" onclick="dismissMessage(this)">
+                                        ×
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             {% endif %}
-
             {% block content %}{% endblock %}
         </div>
     </main>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const messages = document.querySelectorAll('.message-item');
+
+        messages.forEach(function(message) {
+            setTimeout(function() {
+                fadeOutMessage(message);
+            }, 4000);
+        });
+    });
+
+    function fadeOutMessage(element) {
+        element.style.transition = 'opacity 0.5s ease-out';
+        element.style.opacity = '0';
+
+        setTimeout(function() {
+            element.remove();
+        }, 500);
+    }
+
+    function dismissMessage(button) {
+        const message = button.closest('.message-item');
+        fadeOutMessage(message);
+    }
+</script>
 </body>
 </html>
