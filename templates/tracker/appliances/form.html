@@ -1,4 +1,5 @@
 {% extends 'tracker/base_form.html' %}
+{% load static %}
 
 {% block form_title %}
     {% if appliance %}Edit Appliance{% else %}Add New Appliance{% endif %}
@@ -32,50 +33,20 @@
             Delete Appliance
         </a>
     {% endif %}
-<script>
-// Embed device-room mapping in the template
-const deviceRoomMapping = {
-    {% for device in form.fields.connected_device.queryset %}
-        {{ device.id }}: {{ device.room.id|default:"null" }}{% if not forloop.last %},{% endif %}
-    {% endfor %}
-};
-
-document.addEventListener('DOMContentLoaded', function() {
-    const roomSelect = document.querySelector('select[name="room"]');
-    const deviceSelect = document.querySelector('select[name="connected_device"]');
-
-    if (!roomSelect || !deviceSelect) return;
-
-    // Store all device options
-    const allDeviceOptions = Array.from(deviceSelect.options).slice(1); // Skip empty option
-
-    function filterDevices() {
-        const selectedRoomId = roomSelect.value;
-
-        // Remove all options except the first (empty) one
-        while (deviceSelect.options.length > 1) {
-            deviceSelect.removeChild(deviceSelect.lastChild);
-        }
-
-        // Add back filtered options
-        allDeviceOptions.forEach(option => {
-            const deviceId = parseInt(option.value);
-            const deviceRoomId = deviceRoomMapping[deviceId];
-
-            if (!selectedRoomId || deviceRoomId == selectedRoomId) {
-                deviceSelect.appendChild(option.cloneNode(true));
-            }
-        });
-
-        // Reset selection
-        deviceSelect.value = '';
-    }
-
-    roomSelect.addEventListener('change', filterDevices);
-});
-</script>
 {% endblock %}
 
 {% block submit_text %}
     {% if appliance %}Save Appliance{% else %}Create Appliance{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Pass device-room mapping to JavaScript via data attribute
+    document.body.dataset.deviceRoomMapping = JSON.stringify({
+        {% for device in form.fields.connected_device.queryset %}
+            {{ device.id }}: {{ device.room.id|default:"null" }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    });
+</script>
+<script src="{% static 'js/appliance_form.js' %}"></script>
 {% endblock %}
