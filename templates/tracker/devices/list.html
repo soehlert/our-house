@@ -87,21 +87,18 @@
                             <h3 class="text-lg font-medium text-gray-900 mb-2 capitalize text-left">{{ room.name }}</h3>
                         </div>
                         <div class="flex flex-wrap gap-1 mb-3">
-                            {% if room.receptacle_count > 0 %}
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    {{ room.receptacle_count }} Receptacle{{ room.receptacle_count|pluralize }}
-                                </span>
-                            {% endif %}
-                            {% if room.switch_count > 0 %}
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    {{ room.switch_count }} Switch{{ room.switch_count|pluralize:"es" }}
-                                </span>
-                            {% endif %}
-                            {% if room.light_count > 0 %}
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                    {{ room.light_count }} Light{{ room.light_count|pluralize }}
-                                </span>
-                            {% endif %}
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                {% if room.receptacle_count > 0 %}bg-blue-100 text-blue-800{% else %}bg-gray-100 text-gray-600{% endif %}">
+                                {{ room.receptacle_count|default:0 }} Receptacle{{ room.receptacle_count|default:0|pluralize }}
+                            </span>
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                {% if room.switch_count > 0 %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-600{% endif %}">
+                                {{ room.switch_count|default:0 }} Switch{{ room.switch_count|default:0|pluralize:"es" }}
+                            </span>
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                {% if room.light_count > 0 %}bg-yellow-100 text-yellow-800{% else %}bg-gray-100 text-gray-600{% endif %}">
+                                {{ room.light_count|default:0 }} Light{{ room.light_count|default:0|pluralize }}
+                            </span>
                         </div>
                         <div class="w-full space-y-1 mb-3">
                             {% for device in room.devices.all|slice:":3" %}

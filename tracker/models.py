@@ -257,6 +257,9 @@ class Device(models.Model):
         RECEPTACLE = "Receptacle", "Receptacle"
         SWITCH = "Switch", "Switch"
         LIGHT = "Light", "Light"
+        DETECTOR = "Detector", "Detector"
+        CEILING_FAN = "Ceiling Fan", "Ceiling Fan"
+        FLOOR_HEATING = "Floor Heating", "Floor Heating"
 
     device_type = models.CharField(max_length=50, choices=DeviceType.choices)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='devices')
