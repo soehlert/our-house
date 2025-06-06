@@ -8,27 +8,6 @@
 
 {% block detail_content %}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Diagram Image -->
-        {% if circuit_diagram.image %}
-        <div class="lg:col-span-2">
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Diagram</h3>
-                <div class="text-center">
-                    <img src="{{ circuit_diagram.image.url }}" alt="{{ circuit_diagram.description }}"
-                         class="max-w-full h-auto rounded-lg shadow-sm mx-auto">
-                    <div class="mt-4">
-                    <a href="{{ circuit_diagram.image.url }}" target="_blank"
-                       class="inline-flex items-center px-3 py-2 border border-blue-300 shadow-sm text-sm font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                        </svg>
-                        View Full Size
-                    </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endif %}
         <!-- Basic Information -->
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <h3 class="text-lg font-medium text-gray-900 mb-4">Details</h3>
@@ -40,34 +19,65 @@
                 {% if circuit_diagram.image %}
                 <div>
                     <dt class="text-sm font-medium text-gray-500">File Name</dt>
-                    <dd class="text-sm text-gray-900">{{ circuit_diagram.image.name }}</dd>
+                    <dd class="text-sm text-gray-900 break-all">{{ circuit_diagram.image.name }}</dd>
                 </div>
                 {% endif %}
             </div>
         </div>
         <!-- Related Circuits -->
-        {% if circuit_diagram.circuits.exists %}
-            <div class="border border-gray-200 rounded p-3 bg-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="text-sm font-medium text-gray-900">Circuit {{ circuit.circuit_number }}</div>
-                        <p class="text-xs text-gray-500">{{ circuit.description }}</p>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            {{ circuit.breaker_size }}
-                        </span>
-                        <a href="{% url 'tracker:circuit_detail' circuit.pk %}"
-                           class="inline-flex items-center px-3 py-1.5 border border-green-300 shadow-sm text-xs font-medium rounded-md text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                            View
-                        </a>
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Related Circuits</h3>
+            {% if circuit_diagram.circuits.exists %}
+                <div class="space-y-3">
+                    {% for circuit in circuit_diagram.circuits.all %}
+                        <div class="border border-gray-200 rounded-lg p-4 bg-white">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        <span class="text-sm font-medium text-gray-900">Circuit {{ circuit.circuit_number }}</span>
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            {{ circuit.breaker_size }}
+                                        </span>
+                                    </div>
+                                    {% if circuit.rooms.exists %}
+                                        <div class="text-xs text-gray-500">
+                                            Serves: {{ circuit.rooms.all|join:", " }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <a href="{% url 'tracker:circuit_detail' pk=circuit.pk %}"
+                                   class="ml-4 inline-flex items-center px-3 py-1 border border-green-300 text-sm font-medium rounded-md text-green-700 bg-white hover:bg-gray-50">
+                                    View
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-6">
+                    <p class="text-sm text-gray-500">No circuits associated with this diagram.</p>
+                </div>
+            {% endif %}
+        </div>
+        <!-- Diagram Image -->
+        {% if circuit_diagram.image %}
+        <div class="lg:col-span-2">
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Diagram</h3>
+                <div class="text-center">
+                    <img src="{{ circuit_diagram.image.url }}" alt="{{ circuit_diagram.description }}"
+                         class="max-w-full h-auto rounded-lg shadow-sm mx-auto">
+                    <div class="mt-4">
+                    <a href="{{ circuit_diagram.image.url }}" target="_blank"
+                       class="ml-4 inline-flex items-center px-3 py-1 border border-green-300 text-sm font-medium rounded-md text-green-700 bg-white hover:bg-gray-50">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                        View Full Size
+                    </a>
                     </div>
                 </div>
             </div>
-        {% else %}
-        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Related Circuits</h3>
-            <p class="text-sm text-gray-500 italic">This diagram is not currently associated with any circuits.</p>
         </div>
         {% endif %}
     </div>
