@@ -1,129 +1,92 @@
 {% extends 'base.html' %}
-{% block title %}Data Management - House Tracker{% endblock %}
+{% load static %}
+
+{% block title %}Data Management - Our House{% endblock %}
+
 {% block content %}
-<div class="mb-8">
-    <h1 class="text-2xl font-bold text-gray-900 mb-2">Data Management</h1>
-    <p class="text-gray-600">Backup and restore your house tracking data</p>
-</div>
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Export Card -->
-    <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
-        <div class="bg-white px-6 py-4 border-b border-gray-200">
-            <h2 class="text-lg font-semibold text-gray-900">Export Data</h2>
-        </div>
-        <div class="p-6">
-            <p class="text-gray-600 mb-4">Download all your house data as a JSON file for backup.</p>
-            <a href="{% url 'tracker:export_data' %}"
-               class="inline-flex items-center px-4 py-2 bg-white border border-blue-600 text-blue-600 text-sm font-medium rounded-md hover:bg-blue-50 transition-colors">
-                Download Export
-            </a>
+<!-- Single large card container like other pages -->
+<div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <!-- Header section with title (like other pages) -->
+    <div class="bg-white px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Data Management</h1>
+                <p class="text-gray-600 mt-1">Backup and restore your house tracking data</p>
+            </div>
         </div>
     </div>
-    <!-- Import Card -->
-    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <div class="bg-white px-6 py-4 border-b border-gray-200">
-            <h2 class="text-lg font-semibold text-gray-900">Import Data</h2>
-        </div>
-        <div class="p-6 bg-gray-50">
-            <form id="importForm" method="post" enctype="multipart/form-data" class="space-y-4">
-                {% csrf_token %}
-                <!-- Warning Checkbox -->
-                <div class="flex items-start space-x-2">
-                    <input type="checkbox" name="clear_existing" value="true" id="clearExisting"
-                           class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded">
-                    <label for="clearExisting" class="text-sm text-gray-700">
-                        Clear existing data before import
-                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 ml-1">
-                            WARNING: This will delete all current data!
-                        </span>
-                    </label>
+
+    <!-- Content section -->
+    <div class="p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Export Card -->
+            <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+                <div class="bg-white px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Export Data</h2>
                 </div>
-                <!-- File Upload -->
-                <div>
-                    <label for="fileInput" class="block text-sm font-medium text-gray-700 mb-1">Option 1: Upload JSON File</label>
-                    <div class="relative">
-                        <input type="file" name="json_file" accept=".json" id="fileInput" class="sr-only">
-                        <label for="fileInput"
-                               class="inline-flex items-center px-4 py-2 bg-white border border-blue-600 text-blue-600 text-sm font-medium rounded-md hover:bg-blue-50 transition-colors cursor-pointer">
-                            Choose File
-                        </label>
-                        <span id="fileName" class="ml-3 text-sm text-gray-500">No file chosen</span>
-                    </div>
-                </div>
-                <!-- Text Area -->
-                <div>
-                    <label for="jsonText" class="block text-sm font-medium text-gray-700 mb-1">Option 2: Paste JSON Data</label>
-                    <textarea name="json_text" id="jsonText" rows="6"
-                              class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                              placeholder="Paste your JSON data here..."></textarea>
-                </div>
-                <button type="submit"
-                        class="w-full flex justify-center py-2 px-4 bg-white border border-green-600 text-green-600 rounded-md shadow-sm text-sm font-medium hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
-                    Import Data
-                </button>
-            </form>
-            <!-- Result Message -->
-            <div id="importResult" class="mt-4"></div>
-        </div>
-    </div>
-</div>
-<script>
-// Handle file input display
-document.getElementById('fileInput').addEventListener('change', function(e) {
-    document.getElementById('fileName').textContent = e.target.files[0]?.name || 'No file chosen';
-});
-document.getElementById('importForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    const resultDiv = document.getElementById('importResult');
-    const submitBtn = this.querySelector('button[type="submit"]');
-    // Show loading state
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Processing...';
-    resultDiv.innerHTML = '';
-    fetch('{% url "tracker:import_export_data" %}', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            resultDiv.innerHTML = `
-                <div class="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
-                    <div class="flex">
-                        <div class="text-green-800 text-sm">${data.message}</div>
-                    </div>
-                </div>
-            `;
-            this.reset();
-            document.getElementById('fileName').textContent = 'No file chosen';
-        } else {
-            resultDiv.innerHTML = `
-                <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
-                    <div class="flex">
-                        <div class="text-red-800 text-sm">Error: ${data.error}</div>
-                    </div>
-                </div>
-            `;
-        }
-    })
-    .catch(error => {
-        resultDiv.innerHTML = `
-            <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
-                <div class="flex">
-                    <div class="text-red-800 text-sm">Error: ${error.message}</div>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">Download all your house data as a JSON file for backup.</p>
+                    <a href="{% url 'tracker:export_data' %}"
+                       class="inline-flex items-center px-4 py-2 bg-white border border-blue-600 text-blue-600 text-sm font-medium rounded-md hover:bg-blue-50 transition-colors">
+                        Download Export
+                    </a>
                 </div>
             </div>
-        `;
-    })
-    .finally(() => {
-        // Reset button
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Import Data';
-    });
-});
+
+            <!-- Import Card -->
+            <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                <div class="bg-white px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Import Data</h2>
+                </div>
+                <div class="p-6 bg-gray-50">
+                    <form id="importForm" method="post" enctype="multipart/form-data" class="space-y-4">
+                        {% csrf_token %}
+                        <!-- Warning Checkbox -->
+                        <div class="flex items-start space-x-2">
+                            <input type="checkbox" name="clear_existing" value="true" id="clearExisting"
+                                   class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            <label for="clearExisting" class="text-sm text-gray-700">
+                                Clear existing data before import
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 ml-1">
+                                    WARNING: This will delete all current data!
+                                </span>
+                            </label>
+                        </div>
+                        <!-- File Upload -->
+                        <div>
+                            <label for="fileInput" class="block text-sm font-medium text-gray-700 mb-1">Option 1: Upload JSON File</label>
+                            <div class="relative">
+                                <input type="file" name="json_file" accept=".json" id="fileInput" class="sr-only">
+                                <label for="fileInput"
+                                       class="inline-flex items-center px-4 py-2 bg-white border border-blue-600 text-blue-600 text-sm font-medium rounded-md hover:bg-blue-50 transition-colors cursor-pointer">
+                                    Choose File
+                                </label>
+                                <span id="fileName" class="ml-3 text-sm text-gray-500">No file chosen</span>
+                            </div>
+                        </div>
+                        <!-- Text Area -->
+                        <div>
+                            <label for="jsonText" class="block text-sm font-medium text-gray-700 mb-1">Option 2: Paste JSON Data</label>
+                            <textarea name="json_text" id="jsonText" rows="6"
+                                      class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                      placeholder="Paste your JSON data here..."></textarea>
+                        </div>
+                        <button type="submit"
+                                class="w-full flex justify-center py-2 px-4 bg-white border border-green-600 text-green-600 rounded-md shadow-sm text-sm font-medium hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                            Import Data
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Pass Django URL to JavaScript
+    document.body.dataset.importUrl = "{% url 'tracker:import_export_data' %}";
 </script>
+<script src="{% static 'js/import_export.js' %}"></script>
 {% endblock %}

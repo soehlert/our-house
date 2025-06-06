@@ -174,14 +174,6 @@
                 </div>
             </div>
         </div>
-
-        <script>
-            window.deviceCreateUrl = "{% url 'tracker:device_create' %}";
-            window.deviceRoomApiUrl = "{% url 'tracker:device_list_by_room' 0 %}";
-            window.deviceDetailUrl = "{% url 'tracker:device_detail' 0 %}".replace('/0/', '/');
-            window.deviceUpdateUrl = "{% url 'tracker:device_update' 0 %}".replace('/0/', '/DEVICE_ID/');
-        </script>
-        <script src="{% static 'js/device_modal.js' %}"></script>
     {% else %}
         <div class="text-center py-12">
             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -196,3 +188,14 @@
 
 {% block empty_title %}No devices{% endblock %}
 {% block empty_description %}Get started by adding a new device.{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Pass Django URLs to JavaScript
+    window.deviceCreateUrl = "{% url 'tracker:device_create' %}";
+    window.deviceRoomApiUrl = "{% url 'tracker:device_list_by_room' 0 %}";
+    window.deviceDetailUrl = "{% url 'tracker:device_detail' 0 %}".replace('/0/', '/');
+    window.deviceUpdateUrl = "{% url 'tracker:device_update' 0 %}".replace('/0/', '/DEVICE_ID/');
+</script>
+<script src="{% static 'js/device_modal.js' %}"></script>
+{% endblock %}
