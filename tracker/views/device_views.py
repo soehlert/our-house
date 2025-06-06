@@ -22,9 +22,9 @@ def device_list(request):
         'devices__circuit'
     ).annotate(
         device_count=Count('devices'),
-        receptacle_count=Count('devices', filter=Q(devices__device_type='RECEPTACLE')),
-        switch_count=Count('devices', filter=Q(devices__device_type='SWITCH')),
-        light_count=Count('devices', filter=Q(devices__device_type='LIGHT'))
+        receptacle_count=Count('devices', filter=Q(devices__device_type='Receptacle')),
+        switch_count=Count('devices', filter=Q(devices__device_type='Switch')),
+        light_count=Count('devices', filter=Q(devices__device_type='Light'))
     ).filter(
         device_count__gt=0
     ).order_by('name')
@@ -54,7 +54,6 @@ def device_list(request):
         "rooms_with_devices": rooms_with_devices,
         "search_mode": False,
     })
-
 
 
 def device_list_by_room_api(request, room_id):
