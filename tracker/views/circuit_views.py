@@ -30,7 +30,7 @@ def circuit_detail(request, pk):
 def circuit_create(request):
     """Create a new circuit."""
     if request.method == 'POST':
-        form = CircuitForm(request.POST)
+        form = CircuitForm(request.POST, request.FILES)
         if form.is_valid():
             circuit = form.save()
             messages.success(request, f'Circuit "{circuit.description}" created successfully.')
@@ -52,7 +52,7 @@ def circuit_update(request, pk):
     circuit = get_object_or_404(Circuit, pk=pk)
 
     if request.method == 'POST':
-        form = CircuitForm(request.POST, instance=circuit)
+        form = CircuitForm(request.POST, request.FILES, instance=circuit)
         if form.is_valid():
             circuit = form.save()
             messages.success(request, f'Circuit {circuit.circuit_number} updated successfully.')
