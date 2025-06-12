@@ -11,8 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Store all device options
     const allDeviceOptions = Array.from(deviceSelect.options).slice(1); // Skip empty option
 
-    function filterDevices() {
-        const selectedRoomId = roomSelect.value;
+    function filterDevices(preserveSelection = false) {
+        const selectedRoomId = parseInt(roomSelect.value) || null;
+        const currentSelection = preserveSelection ? deviceSelect.value : '';
 
         // Remove all options except the first (empty) one
         while (deviceSelect.options.length > 1) {
@@ -24,14 +25,31 @@ document.addEventListener('DOMContentLoaded', function() {
             const deviceId = parseInt(option.value);
             const deviceRoomId = deviceRoomMapping[deviceId];
 
-            if (!selectedRoomId || deviceRoomId == selectedRoomId) {
-                deviceSelect.appendChild(option.cloneNode(true));
+            if (!selectedRoomId || deviceRoomId === selectedRoomId) {
+                const clonedOption = option.cloneNode(true);
+                deviceSelect.appendChild(clonedOption);
             }
         });
 
-        // Reset selection
-        deviceSelect.value = '';
+        // Force the select to refresh its display so javascript filters after django adds the room totally
+        deviceSelect.style.display = 'none';
+        deviceSelect.offsetHeight; // Trigger reflow
+        deviceSelect.style.display = '';
+        deviceSelect.dispatchEvent(new Event('change'));
+
+        // Restore selection if preserving
+        if (preserveSelection && currentSelection) {
+            deviceSelect.value = currentSelection;
+        } else if (!preserveSelection) {
+            deviceSelect.value = '';
+        }
     }
 
-    roomSelect.addEventListener('change', filterDevices);
+    // Initial filter preserving existing selection
+    filterDevices(true);
+
+    // Filter when room changes, don't preserve selection
+    roomSelect.addEventListener('change', () => {
+        filterDevices(false);
+    });
 });
