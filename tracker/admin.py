@@ -15,7 +15,7 @@ class CircuitAdmin(admin.ModelAdmin):
     list_display = ['circuit_number', 'description', 'breaker_size', 'pole_type', 'protection_type', 'panel']
     list_filter = ['breaker_size', 'pole_type', 'protection_type', 'panel']
     search_fields = ['circuit_number', 'description']
-    filter_horizontal = ['rooms', 'diagrams']
+    filter_horizontal = ['rooms']
 
 
 @admin.register(CircuitDiagram)

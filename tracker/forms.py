@@ -203,6 +203,27 @@ class ElectricalPanelForm(forms.ModelForm):
 
 
 class CircuitForm(forms.ModelForm):
+    new_diagram_image = forms.ImageField(
+        required=False,
+        help_text="Upload a new circuit diagram image",
+        widget=forms.FileInput(attrs={
+            'class': 'block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100',
+            'accept': 'image/*',
+            'data-group': 'relationships'
+        })
+    )
+
+    new_diagram_description = forms.CharField(
+        required=False,
+        max_length=255,
+        help_text="Description for the new diagram",
+        widget=forms.TextInput(attrs={
+            'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500',
+            'placeholder': 'e.g., Kitchen circuit layout',
+            'data-group': 'relationships'
+        })
+    )
+
     class Meta:
         model = Circuit
         fields = [
@@ -244,8 +265,8 @@ class CircuitForm(forms.ModelForm):
                 'class': 'space-y-2',
                 'data-group': 'relationships'
             }),
-            'diagrams': forms.CheckboxSelectMultiple(attrs={
-                'class': 'space-y-2',
+            'diagrams': forms.Select(attrs={
+                'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500',
                 'data-group': 'relationships'
             }),
             'notes': forms.Textarea(attrs={
@@ -269,9 +290,57 @@ class CircuitForm(forms.ModelForm):
         self.fields['voltage'].empty_label = "Select voltage"
         self.fields['panel'].empty_label = "Select panel"
         self.fields['protection_type'].empty_label = "Select protection type"
+        self.fields['diagrams'].empty_label = "Select existing diagram"
+        self.fields['diagrams'].queryset = CircuitDiagram.objects.all().order_by('description')
+
+    def clean(self):
+        cleaned_data = super().clean()
+        existing_diagram = cleaned_data.get('diagrams')
+        new_diagram_image = cleaned_data.get('new_diagram_image')
+
+        # Can't have both existing and new diagram
+        if existing_diagram and new_diagram_image:
+            raise forms.ValidationError(
+                "You cannot upload a diagram and choose a diagram from the list."
+            )
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        circuit = super().save(commit=commit)
+
+        if commit:
+            new_diagram_image = self.cleaned_data.get('new_diagram_image')
+            new_diagram_description = self.cleaned_data.get('new_diagram_description')
+
+            print(f"DEBUG: new_diagram_image = {new_diagram_image}")  # Add this
+            print(f"DEBUG: new_diagram_description = {new_diagram_description}")  # Add this
+
+            if new_diagram_image:
+                new_diagram = CircuitDiagram.objects.create(
+                    image=new_diagram_image,
+                    description=new_diagram_description or f"Diagram for Circuit {circuit.circuit_number}"
+                )
+                print(f"DEBUG: Created diagram with ID {new_diagram.id}")  # Add this
+                circuit.diagrams = new_diagram
+                circuit.save()
+                print(f"DEBUG: Circuit saved with diagram {circuit.diagrams}")  # Add this
+
+        return circuit
+
 
 
 class CircuitDiagramForm(forms.ModelForm):
+    related_circuit = forms.ModelChoiceField(
+        queryset=Circuit.objects.all().order_by('circuit_number'),
+        required=False,
+        empty_label="Select a circuit",
+        help_text="Which circuit does this diagram represent?",
+        widget=forms.Select(attrs={
+            'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'
+        }),
+    )
+
     class Meta:
         model = CircuitDiagram
         fields = ['description', 'image']
@@ -291,6 +360,31 @@ class CircuitDiagramForm(forms.ModelForm):
             'description': 'Enter a descriptive name for this circuit diagram',
             'image': 'Upload an image file of the circuit diagram'
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # If editing, set the current related circuit
+        if self.instance and self.instance.pk:
+            try:
+                current_circuit = Circuit.objects.get(diagrams=self.instance)
+                self.fields['related_circuit'].initial = current_circuit
+            except Circuit.DoesNotExist:
+                pass
+
+    def save(self, commit=True):
+        diagram = super().save(commit=commit)
+
+        if commit:
+            # Clear any existing circuit relationship
+            Circuit.objects.filter(diagrams=diagram).update(diagrams=None)
+
+            # Set new relationship if selected
+            related_circuit = self.cleaned_data.get('related_circuit')
+            if related_circuit:
+                related_circuit.diagrams = diagram
+                related_circuit.save()
+
+        return diagram
 
 
 class ApplianceForm(forms.ModelForm):

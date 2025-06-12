@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from .validators import PurchaseLocationValidator
 
 import logging
+import hashlib
 
 logger = logging.getLogger(__name__)
 
@@ -219,10 +220,25 @@ class CircuitDiagram(models.Model):
     """Electrical circuit diagrams."""
     image = models.ImageField(upload_to="circuit_diagrams/")
     description = models.CharField(max_length=255, blank=True)
+    file_hash = models.CharField(max_length=32, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return self.description or f"Circuit Diagram {self.id}"
+
+    def calculate_hash(self):
+        """Calculate and return the hash of the image file."""
+        if self.image:
+            self.image.seek(0)
+            content = self.image.read()
+            self.image.seek(0)
+            return hashlib.md5(content).hexdigest()
+        return ""
+
+    def save(self, *args, **kwargs):
+        """Recalculate the hash of the image."""
+        self.file_hash = self.calculate_hash()
+        super().save(*args, **kwargs)
 
 
 class Circuit(models.Model):
@@ -237,7 +253,7 @@ class Circuit(models.Model):
     voltage = models.CharField(max_length=10, choices=Volts.choices)
     protection_type = models.CharField(max_length=15, choices=ProtectionType.choices, default=ProtectionType.NONE)
 
-    diagrams = models.ManyToManyField(CircuitDiagram, blank=True, related_name='circuits')
+    diagrams = models.ForeignKey(CircuitDiagram, blank=True, null=True, related_name='circuits', on_delete=models.SET_NULL)
     notes = models.TextField(blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

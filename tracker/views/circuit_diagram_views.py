@@ -21,10 +21,10 @@ def circuit_diagram_list(request):
 
 def circuit_diagram_detail(request, pk):
     """Show circuit diagram details."""
-    diagram = get_object_or_404(CircuitDiagram, pk=pk)
-    circuits = diagram.circuits.all()
+    circuit_diagram = get_object_or_404(CircuitDiagram, pk=pk)
+    circuits = circuit_diagram.circuits.all()
     return render(request, 'tracker/circuit_diagrams/detail.html', {
-        'diagram': diagram,
+        'circuit_diagram': circuit_diagram,
         'circuits': circuits
     })
 
@@ -32,7 +32,7 @@ def circuit_diagram_detail(request, pk):
 def circuit_diagram_create(request):
     """Create a new circuit diagram."""
     if request.method == 'POST':
-        form = CircuitDiagramForm(request.POST)
+        form = CircuitDiagramForm(request.POST, request.FILES)
         if form.is_valid():
             circuit_diagram = form.save()
             messages.success(request, f'Circuit diagram "{circuit_diagram.description}" created successfully.')
@@ -70,11 +70,11 @@ def circuit_diagram_update(request, pk):
 
 def circuit_diagram_delete(request, pk):
     """Delete a circuit diagram."""
-    diagram = get_object_or_404(CircuitDiagram, pk=pk)
+    circuit_diagram = get_object_or_404(CircuitDiagram, pk=pk)
 
     if request.method == 'POST':
-        diagram.delete()
+        circuit_diagram.delete()
         messages.success(request, f'Circuit diagram deleted successfully.')
         return redirect('tracker:circuit_diagram_list')
 
-    return render(request, 'tracker/circuit_diagrams/confirm_delete.html', {'diagram': diagram})
+    return render(request, 'tracker/circuit_diagrams/confirm_delete.html', {'circuit_diagram': circuit_diagram})
