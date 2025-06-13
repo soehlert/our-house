@@ -267,10 +267,25 @@ class ElectricalPanelGenerator:
         y = layout['start_y'] + row * self.row_height
         circuit = circuits.get(circuit_num)
 
+        # Calculate the height for this circuit position
+        if circuit_num in double_pole_starts:
+            # This is a double-pole breaker
+            if side == Side.LEFT:
+                next_row_y = layout['start_y'] + ((circuit_num + 1) // 2) * self.row_height
+            else:
+                next_row_y = layout['start_y'] + (circuit_num // 2) * self.row_height
+            breaker_height = next_row_y + self.row_height - y
+        else:
+            # Single-pole breaker
+            breaker_height = self.row_height
+
+        # Position circuit number vertically centered with the breaker
         number_x = layout[f'{side.value}_number_x']
+        number_y = y + (breaker_height // 2) + 6  # Center vertically + slight offset for text baseline
+
         circuit_num_element = ET.SubElement(svg, 'text', {
             'x': str(number_x),
-            'y': str(y + 18),
+            'y': str(number_y),
             'class': 'circuit-number',
             'fill': '#000000'
         })
@@ -280,6 +295,7 @@ class ElectricalPanelGenerator:
             self._draw_breaker(svg, double_pole_starts[circuit_num], circuit_num, layout, y, side, is_double_pole=True)
         elif circuit_num not in used_positions:
             self._draw_breaker(svg, circuit, circuit_num, layout, y, side, is_double_pole=False)
+
 
     def _draw_breaker(self, svg: ET.Element, circuit: Circuit | None, circuit_num: int,
                       layout: Dict[str, int], y: int, side: Side, is_double_pole: bool = False) -> None:
@@ -298,8 +314,6 @@ class ElectricalPanelGenerator:
 
         # Get side-specific coordinates
         breaker_x = layout[f'{side.value}_breaker_x']
-        label_x = layout[f'{side.value}_label_x']
-        label_class = 'circuit-label'
 
         # Draw the breaker rectangle
         ET.SubElement(svg, 'rect', {
@@ -312,11 +326,20 @@ class ElectricalPanelGenerator:
         })
 
         if circuit:
-            # Calculate available width for text
+            # Calculate available width and positioning for text
             if side == Side.LEFT:
-                available_width = layout['left_breaker_x'] - layout['left_label_x'] - 10
+                text_start_x = layout['left_number_x'] + 20  # Number position + padding
+                text_end_x = layout['left_breaker_x'] - 20  # Breaker position - padding
+                available_width = text_end_x - text_start_x
+                label_x = text_start_x
+                label_class = 'circuit-label'  # Left-aligned
             else:
-                available_width = layout['right_number_x'] - layout['right_label_x'] - 30
+                # Right side: Breaker → 15px → Text → 15px → Number
+                text_start_x = layout['right_breaker_x'] + self.breaker_width + 20  # After breaker + padding
+                text_end_x = layout['right_number_x'] - 20   # Before number - padding
+                available_width = text_end_x - text_start_x
+                label_x = text_start_x
+                label_class = 'circuit-label'  # Left-aligned
 
             # Wrap text to fit available space
             wrapped_lines = self._wrap_text(circuit.description, available_width)
@@ -348,13 +371,14 @@ class ElectricalPanelGenerator:
                 'fill': '#000000'
             }).text = circuit.breaker_size
 
+
     def _wrap_text(self, text: str, max_width: int, max_lines: int = 3) -> List[str]:
         """Wrap text to fit within the specified pixel width."""
         if not text:
             return [""]
 
         # Came to these numbers by sheer brute force
-        chars_per_line = max(27, int(max_width / 4.5))
+        chars_per_line = max(25, int(max_width / 5.0))
 
         words = text.split()
         lines = []
