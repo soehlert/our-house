@@ -175,15 +175,16 @@ class ElectricalPanelGenerator:
         return {
             'start_y': 60,
             'center_x': center_x,
-            # Left side positions (moving from outside toward center)
-            'left_number_x': self.margin + 20,      # Circuit numbers (1, 3, 5)
-            'left_label_x': self.margin + 50,       # Circuit descriptions
-            'left_breaker_x': center_x - 90,        # Actual breaker rectangles
-            # Right side positions (moving from center toward outside)
-            'right_breaker_x': center_x + 10,       # Actual breaker rectangles
-            'right_label_x': self.width - self.margin - 50,  # Circuit descriptions
+            # Left side positions (moving from outside to center)
+            'left_number_x': self.margin + 20,           # Circuit numbers (1, 3, 5)
+            'left_label_x': self.margin + 50,            # Circuit descriptions start
+            'left_breaker_x': center_x - 90,             # Actual breaker rectangles
+            # Right side positions (moving from center to outside)
+            'right_breaker_x': center_x + 10,            # Actual breaker rectangles
+            'right_label_x': center_x + 110,             # Circuit descriptions start
             'right_number_x': self.width - self.margin - 20, # Circuit numbers (2, 4, 6)
         }
+
 
     def _draw_panel_structure(self, svg: ET.Element, layout: Dict[str, int], dimensions: Dict[str, int]) -> None:
         """Draw the basic panel structure: the outer border and the center dividing line."""
@@ -298,7 +299,7 @@ class ElectricalPanelGenerator:
         # Get side-specific coordinates
         breaker_x = layout[f'{side.value}_breaker_x']
         label_x = layout[f'{side.value}_label_x']
-        label_class = 'circuit-label' if side == Side.LEFT else 'circuit-label-right'
+        label_class = 'circuit-label'
 
         # Draw the breaker rectangle
         ET.SubElement(svg, 'rect', {
@@ -311,30 +312,72 @@ class ElectricalPanelGenerator:
         })
 
         if circuit:
-            description = circuit.description[:45] + "..." if len(circuit.description) > 45 else circuit.description
-
-            # Position text differently for single vs double-pole
-            if is_double_pole:
-                text_y = y + self.row_height  # Center vertically in double-height space
-                breaker_size_y = y + breaker_height // 2 + 5  # Center of breaker
+            # Calculate available width for text
+            if side == Side.LEFT:
+                available_width = layout['left_breaker_x'] - layout['left_label_x'] - 10
             else:
-                text_y = y + 18  # Standard single-pole position
-                breaker_size_y = y + 18  # Standard single-pole position
+                available_width = layout['right_number_x'] - layout['right_label_x'] - 30
 
-            ET.SubElement(svg, 'text', {
-                'x': str(label_x),
-                'y': str(text_y),
-                'class': label_class,
-                'fill': '#000000'
-            }).text = description
+            # Wrap text to fit available space
+            wrapped_lines = self._wrap_text(circuit.description, available_width)
+
+            # Calculate vertical centering
+            line_height = 10
+            total_text_height = len(wrapped_lines) * line_height
+
+            # Center the text block within the breaker height
+            text_start_y = y + (breaker_height - total_text_height) // 2 + 12
+
+            # Draw each line of wrapped text
+            for i, line in enumerate(wrapped_lines):
+                text_y = text_start_y + (i * line_height)
+
+                ET.SubElement(svg, 'text', {
+                    'x': str(label_x),
+                    'y': str(text_y),
+                    'class': label_class,
+                    'fill': '#000000'
+                }).text = line
 
             # Draw breaker size in center of breaker
+            breaker_size_y = y + breaker_height // 2 + 4
             ET.SubElement(svg, 'text', {
                 'x': str(breaker_x + self.breaker_width // 2),
                 'y': str(breaker_size_y),
                 'class': 'breaker-size',
                 'fill': '#000000'
             }).text = circuit.breaker_size
+
+    def _wrap_text(self, text: str, max_width: int, max_lines: int = 3) -> List[str]:
+        """Wrap text to fit within the specified pixel width."""
+        if not text:
+            return [""]
+
+        # Came to these numbers by sheer brute force
+        chars_per_line = max(27, int(max_width / 4.5))
+
+        words = text.split()
+        lines = []
+        current_line = ""
+
+        for word in words:
+            test_line = current_line + (" " + word if current_line else word)
+
+            if len(test_line) > chars_per_line:
+                if current_line:  # If we have content, start a new line
+                    lines.append(current_line)
+                    current_line = word
+                else:
+                    lines.append(word)
+                    current_line = ""
+            else:
+                current_line = test_line
+
+        # Add the last line if there's content
+        if current_line:
+            lines.append(current_line)
+
+        return lines if lines else [""]
 
     def _draw_legend(self, svg: ET.Element, dimensions: Dict[str, int]) -> None:
         """Draw the color legend at the bottom of the panel."""
