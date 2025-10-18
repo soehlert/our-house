@@ -17,3 +17,4 @@ data
 *.sqlite3
 media
 GEMINI_CONTEXT.md
+.coverage
