@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+<div class="mb-8">
+    <h2 class="text-lg font-medium text-gray-900 mb-4">Electrical Panel Layout</h2>
+    <div class="bg-white p-4 rounded-lg shadow">
+        <img src="{% url 'house:electrical_panel_image' %}"
+             alt="Electrical Panel Diagram"
+             class="max-w-full h-auto border border-gray-300 rounded">
+    </div>
+</div>

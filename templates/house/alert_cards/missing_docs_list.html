@@ -1,0 +1,54 @@
+{% extends 'base_list.html' %}
+
+{% block list_title %}Missing Documentation{% endblock %}
+{% block list_description %}Appliances that need an owners manual{% endblock %}
+
+{% block search_bar %}
+<div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+        <a href="{% url 'house:home' %}" class="text-primary hover:text-blue-600 font-medium">
+            ← Back to Dashboard
+        </a>
+        <span class="text-sm text-gray-600">{{ appliances|length }} appliance{{ appliances|length|pluralize }} missing documentation</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block list_content %}
+{% if appliances %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for appliance in appliances %}
+        <div class="border border-red-200 rounded-lg p-4 bg-red-50 border-l-4 border-l-red-500">
+            {% if appliance.image %}
+                <img src="{{ appliance.image.url }}" alt="{{ appliance.name }}" class="w-full h-32 object-cover rounded-md mb-3">
+            {% endif %}
+            <h3 class="font-semibold text-gray-900 mb-2">{{ appliance.name  | title}}</h3>
+            <div class="flex flex-wrap gap-1 mb-3">
+                {% if not appliance.owners_manual %}
+                    <span class="inline-block bg-red-500 text-white text-xs px-2 py-1 rounded">Missing Manual</span>
+                {% endif %}
+            </div>
+            <div class="space-y-1 text-sm text-gray-600 mb-3">
+                <p><span class="font-medium">Brand:</span> {{ appliance.brand|default:"Not specified" }}</p>
+                <p><span class="font-medium">Model:</span> {{ appliance.model_number|default:"Not specified" }}</p>
+                <p><span class="font-medium">Room:</span> {{ appliance.room|default:"Not assigned" }}</p>
+            </div>
+            <a href="{% url 'house:appliance_update' appliance.pk %}"
+               class="inline-flex items-center mt-2 px-3 py-1 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none">
+                Edit
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-12">
+        <div class="text-green-500 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.960a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">All documentation complete!</h3>
+        <p class="text-gray-600">Every appliance has all required documentation.</p>
+    </div>
+{% endif %}
+{% endblock %}
