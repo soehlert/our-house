@@ -1,0 +1,15 @@
+
+{% extends 'base_list.html' %}
+
+{% block title %}Maintenance Records{% endblock %}
+
+{% block content %}
+<div class="container mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Maintenance Records</h1>
+    <ul>
+        {% for record in maintenance_records %}
+            <li>{{ record }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
