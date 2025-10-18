@@ -1,0 +1,16 @@
+{% extends '_confirm_delete.html' %}
+
+{% block title %}Delete {{ paint_color.paint_color }}{% endblock %}
+
+{% block header_title %}Delete Paint Color{% endblock %}
+
+{% block object_name %}{{ paint_color.paint_color }} ({{ paint_color.paint_code }}){% endblock %}
+
+{% block warning_message %}
+    This will permanently delete the paint color "{{ paint_color.paint_color }}" and all associated information.
+    {% if paint_color.rooms.exists %}
+        <br><strong>This paint color is currently used in {{ paint_color.rooms.count }} room{{ paint_color.rooms.count|pluralize }}.</strong>
+    {% endif %}
+{% endblock %}
+
+{% block cancel_url %}{% url 'house:paint_color_detail' paint_color.pk %}{% endblock %}
