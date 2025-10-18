@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Vehicles{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Vehicles</h1>
+
+    {% if vehicles_needing_service %}
+    <div class="bg-orange-50 border-l-4 border-orange-400 p-4 mb-6">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-orange-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-orange-800">Vehicles Needing Service</h3>
+                <div class="mt-2 text-sm text-orange-700">
+                    {% for vehicle in vehicles_needing_service %}
+                        <p><strong>{{ vehicle }}</strong> - {{ vehicle.miles_since_oil_change }} miles since last oil change</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for vehicle in vehicles %}
+            <div class="bg-white overflow-hidden shadow rounded-lg {% if vehicle.needs_oil_change %}ring-2 ring-orange-400{% endif %}">
+                {% if vehicle.image %}
+                    <img class="h-48 w-full object-cover" src="{{ vehicle.image.url }}" alt="{{ vehicle }}">
+                {% endif %}
+                <div class="p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">
+                        <a href="{% url 'vehicles:detail' vehicle.id %}" class="hover:text-blue-600">{{ vehicle }}</a>
+                    </h3>
+                    <dl class="grid grid-cols-1 gap-x-4 gap-y-2 text-sm">
+                        <div>
+                            <dt class="text-gray-500">VIN</dt>
+                            <dd class="text-gray-900 font-mono text-xs">{{ vehicle.vin }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-gray-500">Type</dt>
+                            <dd class="text-gray-900">{{ vehicle.get_vehicle_type_display }}</dd>
+                        </div>
+                        {% if vehicle.current_mileage %}
+                        <div>
+                            <dt class="text-gray-500">Mileage</dt>
+                            <dd class="text-gray-900">{{ vehicle.current_mileage|floatformat:0 }} miles</dd>
+                        </div>
+                        {% endif %}
+                        {% if vehicle.last_oil_change_date %}
+                        <div>
+                            <dt class="text-gray-500">Last Oil Change</dt>
+                            <dd class="text-gray-900">{{ vehicle.last_oil_change_date }}</dd>
+                        </div>
+                        {% endif %}
+                    </dl>
+                    {% if vehicle.needs_oil_change %}
+                        <div class="mt-3">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                Service Due
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-span-full text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No vehicles</h3>
+                <p class="mt-1 text-sm text-gray-500">Get started by adding your first vehicle.</p>
+                <div class="mt-6">
+                    <a href="/admin/vehicles/vehicle/add/" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        Add Vehicle
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

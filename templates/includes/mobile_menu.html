@@ -18,8 +18,15 @@
         {% endfor %}
     {% endif %}
 </div>
+<div class="space-y-1">
+    <div class="px-4 py-2 text-gray-400 text-sm font-medium uppercase tracking-wider">
+        Vehicles
+    </div>
+    <a href="{% url 'vehicles:list' %}" class="block px-8 py-2 text-gray-300 hover:text-white text-sm">
+        View All
+    </a>
+</div>
 {% endfor %}
-
 <!-- Settings -->
 <button onclick="toggleSubmenu('settings')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center justify-between mt-4">
     Settings
