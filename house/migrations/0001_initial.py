@@ -61,35 +61,7 @@ class Migration(migrations.Migration):
                 'ordering': ['name'],
             },
         ),
-        migrations.CreateModel(
-            name='Vehicle',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('make', models.CharField(max_length=50)),
-                ('model', models.CharField(max_length=50)),
-                ('year', models.IntegerField()),
-                ('vin', models.CharField(max_length=17, unique=True)),
-                ('vehicle_type', models.CharField(choices=[('car', 'Car'), ('truck', 'Truck'), ('suv', 'SUV'), ('motorcycle', 'Motorcycle'), ('boat', 'Boat'), ('rv', 'RV'), ('other', 'Other')], default='car', max_length=15)),
-                ('oil_type', models.CharField(blank=True, max_length=100)),
-                ('oil_capacity', models.CharField(blank=True, max_length=50)),
-                ('oil_filter_part_number', models.CharField(blank=True, max_length=100)),
-                ('air_filter_part_number', models.CharField(blank=True, max_length=100)),
-                ('last_oil_change_date', models.DateField(blank=True, null=True)),
-                ('last_oil_change_mileage', models.IntegerField(blank=True, null=True)),
-                ('current_mileage', models.IntegerField(blank=True, null=True)),
-                ('registration', models.FileField(blank=True, upload_to='vehicle_docs/registration/')),
-                ('insurance', models.FileField(blank=True, upload_to='vehicle_docs/insurance/')),
-                ('owners_manual', models.FileField(blank=True, upload_to='vehicle_docs/manuals/')),
-                ('service_records', models.FileField(blank=True, upload_to='vehicle_docs/service/')),
-                ('image', models.ImageField(blank=True, upload_to='vehicle_images/')),
-                ('notes', models.TextField(blank=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-            ],
-            options={
-                'ordering': ['year', 'make', 'model'],
-            },
-        ),
+
         migrations.CreateModel(
             name='Circuit',
             fields=[
@@ -183,37 +155,5 @@ class Migration(migrations.Migration):
                 'ordering': ['room__name', 'device_type'],
             },
         ),
-        migrations.CreateModel(
-            name='MaintenanceRecord',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('maintenance_type', models.CharField(choices=[('oil_change', 'Oil Change'), ('tire_rotation', 'Tire Rotation'), ('brake_service', 'Brake Service'), ('transmission', 'Transmission Service'), ('coolant', 'Coolant Service'), ('air_filter', 'Air Filter'), ('fuel_filter', 'Fuel Filter'), ('spark_plugs', 'Spark Plugs'), ('inspection', 'Inspection'), ('other', 'Other')], max_length=20)),
-                ('date_performed', models.DateField()),
-                ('mileage', models.IntegerField(blank=True, null=True)),
-                ('cost', models.DecimalField(blank=True, decimal_places=2, max_digits=8, null=True)),
-                ('location', models.CharField(blank=True, max_length=100)),
-                ('description', models.TextField(blank=True)),
-                ('receipt', models.FileField(blank=True, upload_to='maintenance_receipts/')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('vehicle', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='maintenance_records', to='house.vehicle')),
-            ],
-            options={
-                'ordering': ['-date_performed'],
-            },
-        ),
-        migrations.CreateModel(
-            name='TorqueSetting',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('component', models.CharField(max_length=100)),
-                ('torque_value', models.CharField(max_length=50)),
-                ('notes', models.TextField(blank=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('vehicle', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='torque_settings', to='house.vehicle')),
-            ],
-            options={
-                'ordering': ['component'],
-                'unique_together': {('vehicle', 'component')},
-            },
-        ),
+
     ]
