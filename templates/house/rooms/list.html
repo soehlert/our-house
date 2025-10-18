@@ -1,0 +1,39 @@
+{% extends 'base_list.html' %}
+
+{% block list_title %}Rooms{% endblock %}
+{% block create_url %}{% url 'house:room_create' %}{% endblock %}
+{% block create_button_text %}Add Room{% endblock %}
+{% block search_placeholder %}Search rooms{% endblock %}
+{% block clear_filters_url %}{% url 'house:room_list' %}{% endblock %}
+
+{% block card_title %}
+    {{ item.name }}{% if item.location_description and item.location_description != item.name %} - {{ item.location_description }}{% endif %}
+{% endblock %}
+
+
+{% block card_content %}
+<div class="space-y-2 mb-2">
+    <div class="text-sm text-gray-600">
+        <span class="font-medium">Appliances:</span>
+        <span class="ml-1">{{ item.appliance_set.count }}</span>
+    </div>
+    <div class="text-sm text-gray-600">
+        <span class="font-medium">Circuits:</span>
+        <span class="ml-1">{{ item.circuits.count }}</span>
+    </div>
+    <div class="text-sm text-gray-600">
+        <span class="font-medium">Paint Colors:</span>
+        <span class="ml-1">{{ item.paint_colors.count }}</span>
+    </div>
+    <div class="text-sm text-gray-600">
+        <span class="font-medium">Created:</span>
+        <span class="ml-1">{{ item.created_at|date:"M d, Y" }}</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block item_detail_url %}{% url 'house:room_detail' item.pk %}{% endblock %}
+{% block item_edit_url %}{% url 'house:room_update' item.pk %}{% endblock %}
+
+{% block empty_title %}No rooms{% endblock %}
+{% block empty_description %}Get started by adding a new room.{% endblock %}
