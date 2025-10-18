@@ -11,7 +11,7 @@ import json
 from django.core.serializers import serialize
 
 from house.models import Appliance, Circuit, Device, PaintColor, PurchaseLocation, Room
-from vehicles.models import Vehicle
+
 
 
 def _get_warranty_data():
@@ -78,12 +78,7 @@ def unassigned_devices_list(request):
 def home(request):
     """Home page showing overview of all data."""
 
-    vehicles_needing_service = Vehicle.objects.filter(
-        current_mileage__isnull=False,
-        last_oil_change_mileage__isnull=False
-    ).extra(
-        where=["current_mileage - last_oil_change_mileage >= 5000"]
-    )
+
 
     # Expiring warranties (next 90 days) ignoring appliances without a warranty date
     warranty_data = _get_warranty_data()
@@ -129,8 +124,8 @@ def home(request):
         'missing_docs_count': missing_docs,
         'recent_items': recent_items,
         **warranty_data,
-        'vehicle_count': Vehicle.objects.count(),
-        'vehicles_needing_service': vehicles_needing_service,
+
+
     }
     return render(request, 'house/home.html', context)
 
