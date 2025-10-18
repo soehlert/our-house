@@ -24,6 +24,21 @@
     </div>
 </div>
 {% endfor %}
+<!-- Vehicles Dropdown -->
+<div class="relative group">
+    <button class="text-gray-300 hover:text-white flex items-center">
+        Vehicles
+        <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </button>
+    <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+        <div class="py-1">
+            <a href="{% url 'vehicles:list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">All Vehicles</a>
+            <a href="{% url 'vehicles:create' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Add New</a>
+        </div>
+    </div>
+</div>
 <!-- Settings -->
 <div class="relative group">
     <button class="text-gray-300 hover:text-white flex items-center">
