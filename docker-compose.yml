@@ -1,6 +1,7 @@
 services:
   django:
     image: ghcr.io/soehlert/our-house:latest
+    platform: linux/amd64
     ports:
       - "8021:8000"
     volumes:
