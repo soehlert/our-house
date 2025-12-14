@@ -1,3 +1,4 @@
+from django.http import FileResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
@@ -113,3 +114,11 @@ def electrical_panel_delete(request, pk):
     return render(request, 'tracker/electrical_panels/confirm_delete.html', {
         'panel': panel
     })
+
+
+def download_electrical_panel_svg(request, pk):
+    """Serve the electrical panel SVG for download."""
+    panel = get_object_or_404(ElectricalPanel, pk=pk)
+    svg_file = generate_electrical_panel_image_for_panel(pk)
+    response = FileResponse(svg_file, as_attachment=True, filename=f'{panel.description}.svg')
+    return response

@@ -1,5 +1,9 @@
 from django.urls import path
-from tracker.views import home_views, import_export_views, appliance_views, circuit_diagram_views, circuit_views, electrical_panel_views, device_views, paint_color_views, purchase_location_views, room_views
+from tracker.views import (
+    home_views, import_export_views, appliance_views, circuit_diagram_views,
+    circuit_views, electrical_panel_views, device_views, paint_color_views,
+    purchase_location_views, room_views
+)
 
 app_name = 'tracker'
 
@@ -53,6 +57,7 @@ urlpatterns = [
     path('electrical-panels/create/', electrical_panel_views.electrical_panel_create, name='electrical_panel_create'),
     path('electrical-panels/<int:pk>/update/', electrical_panel_views.electrical_panel_update, name='electrical_panel_update'),
     path('electrical-panels/<int:pk>/delete/', electrical_panel_views.electrical_panel_delete, name='electrical_panel_delete'),
+    path('electrical-panels/<int:pk>/download-svg/', electrical_panel_views.download_electrical_panel_svg, name='download_electrical_panel_svg'),
 
     # Paint Color URLs
     path('paint-colors/', paint_color_views.paint_color_list, name='paint_color_list'),
