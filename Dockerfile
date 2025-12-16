@@ -1,7 +1,5 @@
 FROM python:3.13-slim AS builder
 
-RUN mkdir /app
-
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -13,9 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN pip install --upgrade pip && pip install uv
 
-# Copy UV files first (better caching)
 COPY pyproject.toml uv.lock ./
-
 RUN uv sync --frozen
 
 FROM python:3.13-slim
@@ -23,16 +19,14 @@ FROM python:3.13-slim
 RUN useradd -m -r appuser && \
     mkdir -p /app/data /app/media /app/staticfiles
 
-RUN pip install --upgrade pip && pip install uv
-
-COPY --from=builder /app/.venv /app/.venv
-
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 
+COPY --from=builder /app/.venv /app/.venv
 COPY . .
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
