@@ -1,0 +1,23 @@
+{% extends 'house/base_confirm_delete.html' %}
+
+{% block delete_title %}Delete Appliance{% endblock %}
+
+{% block delete_message %}
+    Are you sure you want to delete <strong>{{ appliance.name }}</strong>? This action cannot be undone.
+{% endblock %}
+
+{% block delete_warnings %}
+    {% if appliance_set.room.count %}
+        <div class="bg-yellow-50 border border-yellow-200 rounded-md p-3 mb-4">
+            <p class="text-sm text-yellow-800 font-medium">Warning:</p>
+            <p class="text-sm text-yellow-700">This appliance has related items that will be affected:</p>
+            <ul class="text-sm text-yellow-700 mt-1 ml-4 list-disc">
+                <li>{{ appliance.room_set.count }} appliance(s)</li>
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block cancel_url %}{% url 'house:appliance_detail' pk=appliance.pk %}{% endblock %}
+
+{% block delete_button_text %}Delete Appliance{% endblock %}
