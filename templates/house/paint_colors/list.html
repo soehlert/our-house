@@ -1,0 +1,57 @@
+{% extends 'house/base_list.html' %}
+
+{% block list_title %}Paint Colors{% endblock %}
+{% block create_url %}{% url 'house:paint_color_create' %}{% endblock %}
+{% block create_button_text %}Add Paint Color{% endblock %}
+{% block search_placeholder %}Search paint colors, codes, brands, rooms{% endblock %}
+{% block clear_filters_url %}{% url 'house:paint_color_list' %}{% endblock %}
+
+{% block card_title %}{{ item.paint_color }}{% endblock %}
+
+{% block card_badge %}
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+    {{ item.paint_code }}
+</span>
+{% endblock %}
+
+{% block card_content %}
+<div class="space-y-2 mb-2">
+    {% if item.paint_brand %}
+        <div class="text-sm text-gray-600">
+            <span class="font-medium">Brand:</span>
+            <span class="ml-1">{{ item.paint_brand }}</span>
+        </div>
+    {% endif %}
+    {% if item.finish_type %}
+        <div class="text-sm text-gray-600">
+            <span class="font-medium">Finish:</span>
+            <span class="ml-1">{{ item.finish_type }}</span>
+        </div>
+    {% endif %}
+    {% if item.rooms.exists %}
+        <div class="flex items-center text-sm text-gray-600">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <span class="font-medium">Rooms:</span>
+            <span class="ml-1">{{ item.rooms.all|join:", " }}</span>
+        </div>
+    {% endif %}
+    {% if item.purchase_date %}
+        <div class="text-sm text-gray-600">
+            <span class="font-medium">Purchased:</span>
+            <span class="ml-1">{{ item.purchase_date|date:"M d, Y" }}</span>
+        </div>
+    {% endif %}
+</div>
+{% if item.notes %}
+    <p class="text-sm text-gray-600 line-clamp-2">{{ item.notes|truncatewords:15 }}</p>
+{% endif %}
+{% endblock %}
+
+{% block item_detail_url %}{% url 'house:paint_color_detail' item.pk %}{% endblock %}
+{% block item_edit_url %}{% url 'house:paint_color_update' item.pk %}{% endblock %}
+
+{% block empty_title %}No paint colors{% endblock %}
+{% block empty_description %}Get started by adding a new paint color.{% endblock %}

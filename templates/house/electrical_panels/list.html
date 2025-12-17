@@ -1,0 +1,50 @@
+{% extends 'house/base_list.html' %}
+
+{% block list_title %}Electrical Panels{% endblock %}
+{% block create_url %}{% url 'house:electrical_panel_create' %}{% endblock %}
+{% block create_button_text %}Add Panel{% endblock %}
+{% block search_placeholder %}Search panels, brands, models{% endblock %}
+{% block clear_filters_url %}{% url 'house:electrical_panel_list' %}{% endblock %}
+
+{% block card_title %}{{ item.description|default:"Electrical Panel" }}{% endblock %}
+
+{% block card_badge %}
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+    {% if item.kind == 'Main Panel' %}bg-primary-100 text-primary-800
+    {% elif item.kind == 'Subpanel' %}bg-success-100 text-success-800
+    {% elif item.kind == 'Disconnect' %}bg-warning-100 text-warning-800
+    {% else %}bg-neutral-100 text-neutral-800
+    {% endif %}">
+    {{ item.get_kind_display }}
+</span>
+{% endblock %}
+
+{% block card_content %}
+<div class="flex items-center text-sm text-gray-600 mb-2">
+    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+    </svg>
+    <span class="font-medium">Brand:</span>
+    <span class="ml-1">{{ item.brand }} {{ item.model }}</span>
+</div>
+<div class="flex items-center text-sm text-gray-600 mb-2">
+    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+    </svg>
+    <span class="font-medium">Circuits:</span>
+    <span class="ml-1">{{ item.circuits.count }}</span>
+</div>
+<div class="flex items-center text-sm text-gray-600">
+    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+    </svg>
+    <span class="font-medium">Breaker Type:</span>
+    <span class="ml-1">{{ item.breaker_type }}</span>
+</div>
+{% endblock %}
+
+{% block item_detail_url %}{% url 'house:electrical_panel_detail' item.pk %}{% endblock %}
+{% block item_edit_url %}{% url 'house:electrical_panel_update' item.pk %}{% endblock %}
+
+{% block empty_title %}No electrical panels{% endblock %}
+{% block empty_description %}Get started by adding your first electrical panel.{% endblock %}

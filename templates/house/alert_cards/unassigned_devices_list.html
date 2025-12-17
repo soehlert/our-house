@@ -1,0 +1,57 @@
+{% extends 'house/base_list.html' %}
+
+{% block list_title %}Unassigned Devices{% endblock %}
+
+{% block create_url %}{% url 'house:device_create' %}{% endblock %}
+{% block create_button_text %}Add Device{% endblock %}
+
+{% block search_placeholder %}Search devices{% endblock %}
+{% block clear_filters_url %}{% url 'house:unassigned_devices_list' %}{% endblock %}
+
+{% block card_title %}
+    {{ item.get_device_type_display }} in {{ item.room.name }}
+{% endblock %}
+
+{% block card_badge %}
+    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 mb-2">
+        No Circuit Assigned
+    </span>
+{% endblock %}
+
+{% block card_content %}
+    {% if item.location_description %}
+        <p class="text-sm text-gray-600 mb-2">{{ item.location_description|truncatewords:10 }}</p>
+    {% endif %}
+    {% if item.position_number %}
+        <p class="text-xs text-gray-500">Position: {{ item.position_number }}</p>
+    {% endif %}
+    {% if item.protection_type and item.protection_type != 'none' %}
+        <div class="mb-2 mt-2">
+            {% if item.protection_type == 'gfci' %}
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    GFCI
+                </span>
+            {% elif item.protection_type == 'afci' %}
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    AFCI
+                </span>
+            {% elif item.protection_type == 'dual_function' %}
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                    Dual Function
+                </span>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block item_detail_url %}{% url 'house:device_detail' item.pk %}{% endblock %}
+{% block item_edit_url %}{% url 'house:device_update' item.pk %}{% endblock %}
+
+{% block empty_icon %}
+<svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+</svg>
+{% endblock %}
+
+{% block empty_title %}No unassigned devices{% endblock %}
+{% block empty_description %}All devices are assigned to circuits.{% endblock %}

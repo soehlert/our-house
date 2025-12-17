@@ -1,0 +1,201 @@
+{% extends 'house/base_list.html' %}
+{% load static %}
+
+{% block list_title %}Device{% endblock %}
+{% block create_url %}{% url 'house:device_create' %}{% endblock %}
+{% block create_button_text %}Add Device{% endblock %}
+{% block search_placeholder %}Search devices, rooms, circuits{% endblock %}
+{% block clear_filters_url %}{% url 'house:device_list' %}{% endblock %}
+
+{% block list_content %}
+{% if search_mode %}
+    <!-- Search results - individual devices -->
+    {% if object_list %}
+        <div class="space-y-4">
+            {% for item in object_list %}
+                <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-3">
+                                <h3 class="text-lg font-medium text-gray-900">{{ item.room.name }} - {{ item.location_description }}</h3>
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                    {% if item.device_type == 'RECEPTACLE' %}bg-blue-100 text-blue-800
+                                    {% elif item.device_type == 'SWITCH' %}bg-green-100 text-green-800
+                                    {% elif item.device_type == 'LIGHT' %}bg-yellow-100 text-yellow-800
+                                    {% endif %}">
+                                    {{ item.get_device_type_display | title }}
+                                </span>
+                            </div>
+
+                            <div class="flex items-center text-sm text-gray-600 mb-2">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                <span class="font-medium">Room:</span>
+                                <span class="ml-1">{{ item.room.name }}</span>
+                            </div>
+
+                            {% if item.circuit %}
+                                <div class="flex items-center text-sm text-gray-600">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                    <span class="font-medium">Circuit:</span>
+                                    <span class="ml-1">{{ item.circuit.circuit_number }}</span>
+                                </div>
+                            {% else %}
+                                <div class="flex items-center text-sm text-red-600">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                    </svg>
+                                    <span class="font-medium">No Circuit Assigned</span>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="flex items-center space-x-3 ml-4">
+                            <a href="{% url 'house:device_detail' item.pk %}"
+                               class="inline-flex items-center px-3 py-1.5 border border-green-600 text-sm font-medium rounded-md text-green-600 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                View
+                            </a>
+                            <a href="{% url 'house:device_update' item.pk %}"
+                               class="inline-flex items-center px-3 py-1.5 border border-blue-600 text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Edit
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-12">
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No devices found</h3>
+            <p class="mt-1 text-sm text-gray-500">Try adjusting your search terms.</p>
+        </div>
+    {% endif %}
+{% else %}
+    <!-- Room cards view -->
+    {% if rooms_with_devices %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for room in rooms_with_devices %}
+                <button onclick="openRoomModal({{ room.id }}, '{{ room.name|escapejs }}')"
+                       title="Click to view all devices in this room"
+                       class="block w-full text-left bg-gray-50 border border-gray-200 rounded-lg overflow-hidden hover:shadow-md hover:border-blue-300 transition-all duration-200 cursor-pointer focus:outline-none">
+                    <div class="p-4 flex flex-col justify-start items-start h-full">
+                        <div class="w-full">
+                            <h3 class="text-lg font-medium text-gray-900 mb-2 capitalize text-left">{{ room.name }}</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-1 mb-3">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                {% if room.receptacle_count > 0 %}bg-blue-100 text-blue-800{% else %}bg-gray-100 text-gray-600{% endif %}">
+                                {{ room.receptacle_count|default:0 }} Receptacle{{ room.receptacle_count|default:0|pluralize }}
+                            </span>
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                {% if room.switch_count > 0 %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-600{% endif %}">
+                                {{ room.switch_count|default:0 }} Switch{{ room.switch_count|default:0|pluralize:"es" }}
+                            </span>
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                {% if room.light_count > 0 %}bg-yellow-100 text-yellow-800{% else %}bg-gray-100 text-gray-600{% endif %}">
+                                {{ room.light_count|default:0 }} Light{{ room.light_count|default:0|pluralize }}
+                            </span>
+                        </div>
+                        <div class="w-full space-y-1 mb-3">
+                            {% for device in room.devices.all|slice:":3" %}
+                                <div class="flex items-center justify-between text-sm py-1">
+                                    <div class="flex items-center flex-wrap gap-1">
+                                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium
+                                            {% if device.device_type == 'Receptacle' %}bg-blue-100 text-blue-700
+                                            {% elif device.device_type == 'Switch' %}bg-green-100 text-green-700
+                                            {% elif device.device_type == 'Light' %}bg-yellow-100 text-yellow-700
+                                            {% endif %}">
+                                            {{ device.get_device_type_display|title }}
+                                        </span>
+                                        <span class="text-gray-600 ml-1">
+                                            {% if device.location_description %}
+                                                {{ device.location_description|truncatewords:3 }}
+                                            {% else %}
+                                                {{ device.get_device_type_display }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    {% if device.circuit %}
+                                        <span class="text-gray-500 text-xs">Circuit {{ device.circuit.circuit_number }}</span>
+                                    {% else %}
+                                        <span class="text-red-500 text-xs">No Circuit</span>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            {% if room.device_count > 3 %}
+                                <div class="text-xs text-gray-500 pt-1">
+                                    +{{ room.device_count|add:"-3" }} more device{{ room.device_count|add:"-3"|pluralize }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </button>
+            {% endfor %}
+        </div>
+        <!-- Modal -->
+        <div id="roomModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50" onclick="closeRoomModal()">
+            <div class="pt-16 px-4 pb-4 min-h-screen">
+                <div class="bg-white rounded-lg shadow-xl max-w-6xl mx-auto max-h-[calc(100vh-8rem)] overflow-hidden" onclick="event.stopPropagation()">
+                    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 id="modalRoomName" class="text-2xl font-bold text-gray-900"></h2>
+                                <p id="modalDeviceCount" class="text-sm text-gray-600"></p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <a id="modalAddDeviceBtn" href="#" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Add Device
+                                </a>
+                                <button onclick="closeRoomModal()" class="text-gray-400 hover:text-gray-600">
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 overflow-y-auto max-h-[calc(100vh-12rem)]">
+                        <div id="modalDeviceGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                        <div id="modalLoading" class="text-center py-8 hidden">
+                            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                            <p class="mt-2 text-gray-600">Loading devices</p>
+                        </div>
+                        <div id="modalError" class="text-center py-8 hidden">
+                            <p class="text-red-600">Error loading devices. Please try again.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No devices</h3>
+            <p class="mt-1 text-sm text-gray-500">Get started by adding a new device.</p>
+        </div>
+    {% endif %}
+{% endif %}
+{% endblock %}
+
+{% block empty_title %}No devices{% endblock %}
+{% block empty_description %}Get started by adding a new device.{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Pass Django URLs to JavaScript
+    window.deviceCreateUrl = "{% url 'house:device_create' %}";
+    window.deviceRoomApiUrl = "{% url 'house:device_list_by_room' 0 %}";
+    window.deviceDetailUrl = "{% url 'house:device_detail' 0 %}".replace('/0/', '/');
+    window.deviceUpdateUrl = "{% url 'house:device_update' 0 %}".replace('/0/', '/DEVICE_ID/');
+</script>
+<script src="{% static 'js/device_modal.js' %}"></script>
+{% endblock %}

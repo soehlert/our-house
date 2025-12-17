@@ -1,0 +1,40 @@
+{% extends 'house/base_list.html' %}
+
+{% block list_title %}Circuit Diagrams{% endblock %}
+{% block create_url %}{% url 'house:circuit_diagram_create' %}{% endblock %}
+{% block create_button_text %}Add Diagram{% endblock %}
+{% block search_placeholder %}Search diagram descriptions{% endblock %}
+{% block clear_filters_url %}{% url 'house:circuit_diagram_list' %}{% endblock %}
+
+{% block card_image %}
+<div class="h-32 bg-gray-100 flex items-center justify-center">
+    {% if item.image %}
+        <img src="{{ item.image.url }}" alt="{{ item.description }}" class="h-full w-full object-cover">
+    {% else %}
+        <svg class="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+        </svg>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block card_title %}{{ item.description|default:"Circuit Diagram" }}{% endblock %}
+
+{% block card_content %}
+<div class="text-sm text-gray-600 mb-2">
+    <span class="font-medium">Created:</span>
+    <span class="ml-1">{{ item.created_at|date:"M d, Y" }}</span>
+</div>
+{% if item.circuits.exists %}
+    <div class="text-sm text-gray-600">
+        <span class="font-medium">Used in:</span>
+        <span class="ml-1">{{ item.circuits.count }} circuit{{ item.circuits.count|pluralize }}</span>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block item_detail_url %}{% url 'house:circuit_diagram_detail' item.pk %}{% endblock %}
+{% block item_edit_url %}{% url 'house:circuit_diagram_update' item.pk %}{% endblock %}
+
+{% block empty_title %}No circuit diagrams{% endblock %}
+{% block empty_description %}Get started by uploading a new diagram.{% endblock %}

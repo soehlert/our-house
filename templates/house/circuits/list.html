@@ -1,0 +1,65 @@
+{% extends 'house/base_list.html' %}
+
+{% block list_title %}Circuits{% endblock %}
+{% block create_url %}{% url 'house:circuit_create' %}{% endblock %}
+{% block create_button_text %}Add Circuit{% endblock %}
+{% block search_placeholder %}Search circuits, descriptions, rooms{% endblock %}
+{% block clear_filters_url %}{% url 'house:circuit_list' %}{% endblock %}
+
+{% block card_title %}{{ item.description }} - Circuit {{ item.circuit_number }}{% endblock %}
+
+{% block card_badge %}
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+    {% if item.breaker_size == '15A' %}bg-green-100 text-green-800
+    {% elif item.breaker_size == '20A' %}bg-blue-100 text-blue-800
+    {% elif item.breaker_size == '30A' %}bg-yellow-100 text-yellow-800
+    {% elif item.breaker_size == '40A' %}bg-orange-100 text-orange-800
+    {% elif item.breaker_size == '50A' %}bg-red-100 text-red-800
+    {% else %}bg-gray-100 text-gray-800
+    {% endif %}">
+    {{ item.breaker_size }}
+</span>
+{% endblock %}
+
+{% block card_content %}
+<div class="space-y-2 mt-2 mb-2">
+    {% if item.panel %}
+        <div class="flex items-center text-sm text-gray-600">
+            <span class="font-medium">Panel:</span>
+            <span class="ml-1">{{ item.panel.brand }} - {{ item.panel.kind }}</span>
+        </div>
+    {% endif %}
+    {% if item.protection_type != 'none' %}
+        {% if item.protection_type == 'gfci' %}
+            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">GFCI</span>
+        {% elif item.protection_type == 'afci' %}
+            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">AFCI</span>
+        {% elif item.protection_type == 'dual_function' %}
+            <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Dual Function</span>
+        {% endif %}
+    {% endif %}
+    <div class="flex items-center text-sm text-gray-600">
+        <span class="font-medium">Type:</span>
+        <span class="ml-1">{{ item.get_pole_type_display }}</span>
+    </div>
+    {% if item.rooms.exists %}
+        <div class="flex items-center text-sm text-gray-600">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <span class="font-medium">Rooms:</span>
+            <span class="ml-1">{{ item.rooms.all|join:", " }}</span>
+        </div>
+    {% endif %}
+</div>
+{% if item.notes %}
+    <p class="text-sm text-gray-600 line-clamp-2">{{ item.notes|truncatewords:15 }}</p>
+{% endif %}
+{% endblock %}
+
+{% block item_detail_url %}{% url 'house:circuit_detail' item.pk %}{% endblock %}
+{% block item_edit_url %}{% url 'house:circuit_update' item.pk %}{% endblock %}
+
+{% block empty_title %}No circuits{% endblock %}
+{% block empty_description %}Get started by adding a new circuit.{% endblock %}
