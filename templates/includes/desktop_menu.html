@@ -13,12 +13,12 @@
                     {{ section.title }}
                 </div>
                 {% for link in section.items %}
-                    <a href="{% url link.url %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ link.name }}</a>
+                    <a href="{{ link.url }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ link.name }}</a>
                 {% endfor %}
             {% endfor %}
         {% else %}
             {% for link in item.items %}
-                <a href="{% url link.url %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ link.name }}</a>
+                <a href="{{ link.url }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ link.name }}</a>
             {% endfor %}
         {% endif %}
     </div>
@@ -38,7 +38,7 @@
                 {{ section.name }}
             </div>
             {% for link in section.items %}
-                <a href="{% url link.url %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ link.name }}</a>
+                <a href="{{ link.url }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ link.name }}</a>
             {% endfor %}
         {% endfor %}
     </div>

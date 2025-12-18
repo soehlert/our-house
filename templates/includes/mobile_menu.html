@@ -9,12 +9,12 @@
     {% if item.sections %}
         {% for section in item.sections %}
             {% for link in section.items %}
-                <a href="{% url link.url %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">{{ link.name }}</a>
+                <a href="{{ link.url }}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">{{ link.name }}</a>
             {% endfor %}
         {% endfor %}
     {% else %}
         {% for link in item.items %}
-            <a href="{% url link.url %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">{{ link.name }}</a>
+            <a href="{{ link.url }}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">{{ link.name }}</a>
         {% endfor %}
     {% endif %}
 </div>
@@ -30,7 +30,7 @@
 <div id="settings-submenu" class="hidden">
     {% for section in settings_items %}
         {% for link in section.items %}
-            <a href="{% url link.url %}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">{{ link.name }}</a>
+            <a href="{{ link.url }}" class="block px-8 py-2 text-gray-300 hover:text-white hover:bg-gray-700">{{ link.name }}</a>
         {% endfor %}
     {% endfor %}
 </div>
