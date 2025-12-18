@@ -1,0 +1,11 @@
+{% extends 'house/base_confirm_delete.html' %}
+
+{% block delete_title %}Delete Vehicle{% endblock %}
+
+{% block delete_message %}
+    Are you sure you want to delete <strong>{{ object.name }}</strong>? This action cannot be undone.
+{% endblock %}
+
+{% block cancel_url %}{% url 'vehicles:vehicle_detail' pk=object.pk %}{% endblock %}
+
+{% block delete_button_text %}Delete Vehicle{% endblock %}
