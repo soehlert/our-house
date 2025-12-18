@@ -1,14 +1,23 @@
 from django.db import models
 from house.models import PurchaseLocation
+from .choices import VehicleMakes
 
 class Vehicle(models.Model):
     """Tracks vehicles and their documentation."""
     name = models.CharField(max_length=100)  # e.g., "Dad's Truck"
-    make = models.CharField(max_length=100, blank=True)  # e.g., "Ford"
-    model = models.CharField(max_length=100, blank=True) # e.g., "F-150"
+    make = models.CharField(max_length=25, choices=VehicleMakes.choices)  # e.g., "Ford"
+    model = models.CharField(max_length=100) # e.g., "F-150"
+    trim = models.CharField(max_length=100, blank=True) # e.g., "Lariat"
     year = models.PositiveIntegerField(null=True, blank=True)
     vin = models.CharField(max_length=17, unique=True, blank=True, null=True)
     license_plate = models.CharField(max_length=10, blank=True)
+
+    # Maintenance Details
+    engine_size = models.CharField(max_length=50, blank=True)
+    oil_type = models.CharField(max_length=50, blank=True)
+    oil_filter_type = models.CharField(max_length=50, blank=True)
+    wiper_blade_size_front = models.CharField(max_length=50, blank=True)
+    wiper_blade_size_back = models.CharField(max_length=50, blank=True)
 
     # Documentation
     registration = models.FileField(upload_to="vehicle/registration/", blank=True, null=True)
