@@ -13,6 +13,11 @@
     {% if object %}{% url 'vehicles:vehicle_detail' pk=object.pk %}{% else %}{% url 'vehicles:vehicle_list' %}{% endif %}
 {% endblock %}
 
+{% block form_content %}
+    {{ block.super }}
+    <datalist id="model-list"></datalist>
+{% endblock %}
+
 {% block extra_buttons %}
     {% if not object %}
         <!-- Show "Save & Add Another" only on add forms -->
@@ -37,4 +42,8 @@
 
 {% block submit_text %}
     {% if object %}Save Vehicle{% else %}Create Vehicle{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/vehicle_form.js' %}"></script>
 {% endblock %}

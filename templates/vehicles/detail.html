@@ -40,6 +40,12 @@
                             <dd class="text-sm text-gray-900">{{ object.model }}</dd>
                         </div>
                     {% endif %}
+                    {% if object.trim %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Trim</dt>
+                            <dd class="text-sm text-gray-900">{{ object.trim }}</dd>
+                        </div>
+                    {% endif %}
                     {% if object.year %}
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Year</dt>
@@ -63,6 +69,44 @@
         </div>
         <!-- Right Column -->
         <div class="space-y-6">
+            <!-- Maintenance Details -->
+            {% if object.engine_size or object.oil_type or object.oil_filter_type or object.wiper_blade_size_front or object.wiper_blade_size_back %}
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Maintenance Details</h3>
+                    <div class="space-y-3">
+                        {% if object.engine_size %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Engine</dt>
+                                <dd class="text-sm text-gray-900">{{ object.engine_size }}</dd>
+                            </div>
+                        {% endif %}
+                        {% if object.oil_type %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Oil Type</dt>
+                                <dd class="text-sm text-gray-900">{{ object.oil_type }}</dd>
+                            </div>
+                        {% endif %}
+                        {% if object.oil_filter_type %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Oil Filter</dt>
+                                <dd class="text-sm text-gray-900">{{ object.oil_filter_type }}</dd>
+                            </div>
+                        {% endif %}
+                        {% if object.wiper_blade_size_front %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Front Wipers</dt>
+                                <dd class="text-sm text-gray-900">{{ object.wiper_blade_size_front }}</dd>
+                            </div>
+                        {% endif %}
+                        {% if object.wiper_blade_size_back %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Back Wiper</dt>
+                                <dd class="text-sm text-gray-900">{{ object.wiper_blade_size_back }}</dd>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
             <!-- Purchase Information -->
             {% if object.purchase_date or object.purchase_location or object.purchase_price %}
                 <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
