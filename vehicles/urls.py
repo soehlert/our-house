@@ -9,4 +9,7 @@ urlpatterns = [
     path('<int:pk>/', views.vehicle_detail, name='vehicle_detail'),
     path('<int:pk>/update/', views.vehicle_update, name='vehicle_update'),
     path('<int:pk>/delete/', views.vehicle_delete, name='vehicle_delete'),
+
+    # API endpoints
+    path('api/models/<str:make>/', views.get_vehicle_models, name='api_get_vehicle_models'),
 ]
