@@ -1,9 +1,18 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.db.models import Q
+from django.http import JsonResponse
 
 from .models import Vehicle
 from .forms import VehicleForm
+from .data import MAKE_MODELS
+
+
+def get_vehicle_models(request, make):
+    """Return a JSON list of models for a given make."""
+    models = MAKE_MODELS.get(make, [])
+    return JsonResponse({'models': models})
+
 
 
 def vehicle_list(request):

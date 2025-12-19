@@ -1,4 +1,4 @@
-{% extends 'house/base_form.html' %}
+{% extends 'base/form.html' %}
 {% load static %}
 
 {% block form_title %}
@@ -11,6 +11,11 @@
 
 {% block cancel_url %}
     {% if object %}{% url 'vehicles:vehicle_detail' pk=object.pk %}{% else %}{% url 'vehicles:vehicle_list' %}{% endif %}
+{% endblock %}
+
+{% block form_content %}
+    {{ block.super }}
+    <datalist id="model-list"></datalist>
 {% endblock %}
 
 {% block extra_buttons %}
@@ -37,4 +42,8 @@
 
 {% block submit_text %}
     {% if object %}Save Vehicle{% else %}Create Vehicle{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/vehicle_form.js' %}"></script>
 {% endblock %}
